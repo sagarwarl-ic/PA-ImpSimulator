@@ -1,0 +1,103 @@
+package fb.pricingAnalytics.dao.impl;
+
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+
+import org.springframework.stereotype.Repository;
+
+import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.model.vo.MenuPricingVo;
+
+
+@Repository
+public class MenuPricingDAOImpl implements MenuPricingDAO{
+
+	@PersistenceContext
+	EntityManager entityManager;
+	
+
+	/*
+	 * @Override public List getMenuPricing() {
+	 * 
+	 * StringBuilder sb = new
+	 * StringBuilder("SELECT (CASE WHEN (vw_store_product_info_temp_ist.Current_Tier = ISNULL(vw_store_product_info_temp_ist.Proposed_Tier, vw_store_product_info_temp_ist.Current_Tier)) THEN 'N' ELSE 'Y' END) AS Tier_Change,"
+	 * ); sb.append("    vw_store_product_info_temp_ist.Cat1 AS Cat1,");
+	 * sb.append("    vw_store_product_info_temp_ist.Cat2 AS Cat2," );
+	 * sb.append("    vw_store_product_info_temp_ist.Current_Tier AS Current_Tier,"
+	 * ); sb.append("    vw_store_product_info_temp_ist.Product_ID AS Product_ID,"
+	 * );
+	 * sb.append("    vw_store_product_info_temp_ist.Product_Name AS Product_Name,"
+	 * ); sb.
+	 * append("    vw_store_product_info_temp_ist.Product_Price_Sensitivity AS Product_Price_Sensitivity,"
+	 * ); sb.
+	 * append("    vw_store_product_info_temp_ist.Proposed_Tier AS Proposed_Tier,"
+	 * ); sb.
+	 * append("    SUM(((ISNULL(vw_store_product_info_temp_ist.New_Price, 0) - ISNULL(vw_store_product_info_temp_ist.Product_Price, 0)) * (vw_store_product_info_temp_ist.Quantity_TY))) AS sales_impact,"
+	 * ); sb.
+	 * append("          SUM(((ISNULL(vw_store_product_info_temp_ist.New_Price, 0) - ISNULL(vw_store_product_info_temp_ist.Product_Price, 0)) * (vw_store_product_info_temp_ist.Quantity_TY))) + SUM(vw_store_product_info_temp_ist.Sales_Gross_TY) as New_Sales,"
+	 * ); sb.append("         " ); sb.append("         " ); sb.append("          ("
+	 * ); sb.
+	 * append("                   CASE WHEN SUM(vw_store_product_info_temp_ist.Sales_Gross_TY)   = 0"
+	 * ); sb.append("                             THEN" ); sb.
+	 * append("                                      SUM(((ISNULL(vw_store_product_info_temp_ist.New_Price, 0) - ISNULL(vw_store_product_info_temp_ist.Product_Price, 0)) * (vw_store_product_info_temp_ist.Quantity_TY))) + SUM(vw_store_product_info_temp_ist.Sales_Gross_TY)"
+	 * ); sb.append("                               ELSE" ); sb.
+	 * append("                                       (SUM(((ISNULL(vw_store_product_info_temp_ist.New_Price, 0) - ISNULL(vw_store_product_info_temp_ist.Product_Price, 0)) * (vw_store_product_info_temp_ist.Quantity_TY))) + SUM(vw_store_product_info_temp_ist.Sales_Gross_TY)/ SUM(vw_store_product_info_temp_ist.Sales_Gross_TY) )   "
+	 * ); sb.append("                             END" );
+	 * sb.append("          ) as Sales_Impact_Percentage ," ); sb.append("         "
+	 * ); sb.
+	 * append("    SUM(vw_store_product_info_temp_ist.Sales_Gross_TY) AS Original_sales,"
+	 * ); sb.
+	 * append("    MIN((CASE WHEN vw_store_product_info_temp_ist.Product_Price = 0 THEN NULL ELSE (CAST((ISNULL(vw_store_product_info_temp_ist.New_Price, 0) - ISNULL(vw_store_product_info_temp_ist.Product_Price, 0)) as float) / vw_store_product_info_temp_ist.Product_Price) END)) AS price_change_percent,"
+	 * ); sb.
+	 * append("    MIN((ISNULL(vw_store_product_info_temp_ist.New_Price, 0) - ISNULL(vw_store_product_info_temp_ist.Product_Price, 0))) AS price_change,"
+	 * );
+	 * sb.append("    MIN(vw_store_product_info_temp_ist.New_Price) AS New_Price,"
+	 * ); sb.
+	 * append("    MIN(vw_store_product_info_temp_ist.Product_Price) AS Product_Price,"
+	 * ); sb.
+	 * append("    SUM(CAST((vw_store_product_info_temp_ist.Quantity_TY) as BIGINT)) AS Quantity_TY,"
+	 * ); sb.
+	 * append("    SUM(vw_store_product_info_temp_ist.Sales_Gross_TY) AS Sales_Gross_TY"
+	 * ); sb.
+	 * append("  FROM vw_store_product_info_temp_ist as vw_store_product_info_temp_ist"
+	 * ); sb.
+	 * append("  GROUP BY (CASE WHEN (vw_store_product_info_temp_ist.Current_Tier = vw_store_product_info_temp_ist.Proposed_Tier) THEN 'N' ELSE 'Y' END),"
+	 * ); sb.append("    vw_store_product_info_temp_ist.Cat1," );
+	 * sb.append("    vw_store_product_info_temp_ist.Cat2," );
+	 * sb.append("    vw_store_product_info_temp_ist.Current_Tier," );
+	 * sb.append("    vw_store_product_info_temp_ist.Product_ID," );
+	 * sb.append("    vw_store_product_info_temp_ist.Product_Name," );
+	 * sb.append("    vw_store_product_info_temp_ist.Product_Price_Sensitivity," );
+	 * sb.append("    vw_store_product_info_temp_ist.Proposed_Tier"); Query query =
+	 * entityManager.unwrap(Session.class).createQuery(sb.toString()); List
+	 * resultObjects = query.list();
+	 * 
+	 * return resultObjects;
+	 * 
+	 * }
+	 */
+	
+	@Override 
+	public List<MenuPricingVo> getMenuPricing()  throws SQLException,Exception{
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		
+		List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
+		for (Object[] row : rows) {
+		    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],
+		    		(String)row[6],(String)row[7],(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(Double)row[12],(Double)row[13],
+		    		(Double)row[14],(Double)row[15],(BigDecimal)row[16],(BigDecimal)row[17]));
+		}
+		return result;
+	}
+	
+
+}
