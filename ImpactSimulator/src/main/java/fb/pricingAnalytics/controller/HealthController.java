@@ -18,7 +18,7 @@ import fb.pricingAnalytics.utils.FBRestResponse;
 @RequestMapping("/pp/health")
 public class HealthController {
 
-	@RequestMapping(value="/check", method = RequestMethod.POST)
+	@RequestMapping(value="/check", method = RequestMethod.GET)
 	public ResponseEntity<?> check(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "OK"),HttpStatus.OK);
