@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fb.pricingAnalytics.utils.FBRestResponse;
 
 @RestController
-@RequestMapping("/pa/health")
+@RequestMapping("/pp/health")
 public class HealthController {
 
 	@RequestMapping(value="/check", method = RequestMethod.POST)

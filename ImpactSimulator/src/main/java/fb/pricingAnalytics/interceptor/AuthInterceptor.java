@@ -26,7 +26,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	 private static Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 			
 	private static List<String> publicProtectedlist = new ArrayList<String>(Arrays.asList(
-			new String[] {"/pa/sendGrid/receiveEmailData"}));  
+			new String[] {"/pp/health"}));  
 	
 	private static List<String> fishbowlProtectedlist = new ArrayList<String>(Arrays.asList(
 			new String[] {"/pa/userAuth/ssoLogin"}));
