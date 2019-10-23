@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.request.RequestPricePlanner;
 
 
 @Repository
@@ -84,7 +85,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	 */
 	
 	@Override 
-	public List<MenuPricingVo> getMenuPricing()  throws SQLException,Exception{
+	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
 		query.execute();
@@ -94,7 +95,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		for (Object[] row : rows) {
 		    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],
 		    		(String)row[6],(String)row[7],(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(Double)row[12],(Double)row[13],
-		    		(Double)row[14],(Double)row[15],(BigDecimal)row[16],(BigDecimal)row[17]));
+		    		(Double)row[14],(Double)row[15],(Integer)row[16],(BigDecimal)row[17]));
 		}
 		return result;
 	}
