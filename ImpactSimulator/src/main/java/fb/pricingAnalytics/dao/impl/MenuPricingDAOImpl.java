@@ -89,6 +89,13 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
+		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
+			if(requestPricePlanner.getPaging().getPageNo()>-1)
+			query.setParameter("@startRowIndex", requestPricePlanner.getPaging().getPageNo());
+			if(requestPricePlanner.getPaging().getPageSize()>0)
+			query.setParameter("@pageSize", requestPricePlanner.getPaging().getPageSize());
+		}
+		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 		
