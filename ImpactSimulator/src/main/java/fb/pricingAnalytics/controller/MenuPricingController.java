@@ -18,16 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
-import fb.pricingAnalytics.request.PagingPricePlanner;
+import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
-import fb.pricingAnalytics.request.SearchPricePlanner;
-import fb.pricingAnalytics.request.SortPricePlanner;
 import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
 import fb.pricingAnalytics.utils.AuthUtils;
-import fb.pricingAnalytics.utils.FBConstants;
 import fb.pricingAnalytics.utils.FBRestResponse;
-import fb.pricingAnalytics.utils.FBUtils;
 
 @RestController
 @RequestMapping("/pp/scenario")
@@ -122,6 +118,39 @@ public class MenuPricingController {
 		 */
 		return new ResponseEntity<MenuPricingResponse>(response, HttpStatus.OK);
 
+	}
+	
+	@RequestMapping(value="/updateMenuTierPrice", method = RequestMethod.POST)
+	public ResponseEntity<?> updateMenuTierPrice(HttpServletRequest request,@RequestBody RequestMenuTierPriceUpdate requestMenuTier) {
+		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
+		int updatedRows = -1;
+		if(null == requestMenuTier || requestMenuTier.getProductId()== null || requestMenuTier.getTier() == null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		logger.info("Product Id  ::: "+requestMenuTier.getProductId()+" "+
+				"Tier  ::: "+requestMenuTier.getTier() +" "+
+				"Price ::: "+requestMenuTier.getPrice() );
+		
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String userName = userAuth.getUserName();
+		try {
+			updatedRows = menuPricingService.updateMenuTierPrice(requestMenuTier,userName);
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		if(updatedRows<=0) {
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "No rows updated. Table does not contain the required record"),
+				    HttpStatus.BAD_REQUEST);
+		}else {
+			
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
+			    HttpStatus.OK);
+		}
 	}
 
 }

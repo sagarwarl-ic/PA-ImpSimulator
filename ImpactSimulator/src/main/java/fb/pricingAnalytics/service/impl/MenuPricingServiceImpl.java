@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.service.MenuPricingService;
 
@@ -22,6 +24,13 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception {
 		
 		return menuPricingDAO.getMenuPricing(requestPricePlanner);
+	}
+	
+	@Transactional
+	@Override
+	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
+
+		return menuPricingDAO.updateMenuTierPrice(requestMenuTier,userName);
 	}
 
 
