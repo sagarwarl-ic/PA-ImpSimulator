@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.service.MenuPricingService;
 
 
@@ -18,9 +19,9 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	@Autowired
 	MenuPricingDAO menuPricingDAO;
 	@Override
-	public List<MenuPricingVo> getMenuPricing()  throws SQLException,Exception {
+	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception {
 		
-		return menuPricingDAO.getMenuPricing();
+		return menuPricingDAO.getMenuPricing(requestPricePlanner);
 	}
 
 

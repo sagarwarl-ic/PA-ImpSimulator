@@ -101,7 +101,7 @@ public class MenuPricingController {
 		@SuppressWarnings("unchecked")
 		MenuPricingResponse response = new MenuPricingResponse();
 		try {
-			List<MenuPricingVo> list = menuPricingService.getMenuPricing();
+			List<MenuPricingVo> list = menuPricingService.getMenuPricing(requestPricePlanner);
 			response.setMenuPrice(list);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
