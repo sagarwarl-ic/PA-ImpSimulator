@@ -92,14 +92,14 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
 		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
 			if(requestPricePlanner.getPaging().getPageNo()>-1){
-				query.registerStoredProcedureParameter("@startRowIndex", Integer.class , ParameterMode.IN);
-				query.setParameter("@startRowIndex", requestPricePlanner.getPaging().getPageNo());
+				query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
+				query.setParameter(0, requestPricePlanner.getPaging().getPageNo());
 				// etc.
 			}
 	
 			if(requestPricePlanner.getPaging().getPageSize()>0){
-				query.registerStoredProcedureParameter("@pageSize", Integer.class , ParameterMode.IN);
-				query.setParameter("@pageSize", requestPricePlanner.getPaging().getPageSize());
+				query.registerStoredProcedureParameter(1, Integer.class , ParameterMode.IN);
+				query.setParameter(1, requestPricePlanner.getPaging().getPageSize());
 			}
 			
 		}
