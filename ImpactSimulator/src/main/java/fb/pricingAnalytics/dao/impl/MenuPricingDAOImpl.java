@@ -1,6 +1,7 @@
 package fb.pricingAnalytics.dao.impl;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		for (Object[] row : rows) {
 		    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],
 		    		(String)row[6],(String)row[7],(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(Double)row[12],(Double)row[13],
-		    		(Double)row[14],(Double)row[15],(Integer)row[16],(BigDecimal)row[17]));
+		    		(Double)row[14],(Double)row[15],(BigInteger)row[16],(BigDecimal)row[17]));
 		}
 		return result;
 	}
