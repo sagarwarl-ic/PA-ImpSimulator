@@ -3,7 +3,9 @@ package fb.pricingAnalytics.dao.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,10 +13,13 @@ import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.StoredProcedureQuery;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 
 
@@ -113,6 +118,22 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		    		(Double)row[14],(Double)row[15],(BigInteger)row[16],(BigDecimal)row[17]));
 		}
 		return result;
+	}
+
+
+	@Override
+	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
+		StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.productId =:product_id AND IST.tier =:tier");
+		
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("price",requestMenuTier.getPrice());	
+		query.setParameter("product_id",requestMenuTier.getProductId());
+		query.setParameter("tier",requestMenuTier.getTier());	
+		query.setParameter("lastUpdated_date",Date.from(Instant.now()));
+		query.setParameter("lastUpdated_by",userName);	
+
+		int resultObjects = query.executeUpdate();
+		return resultObjects;
 	}
 	
 
