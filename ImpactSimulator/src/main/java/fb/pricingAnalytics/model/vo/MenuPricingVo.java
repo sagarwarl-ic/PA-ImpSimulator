@@ -1,6 +1,7 @@
 package fb.pricingAnalytics.model.vo;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -39,7 +40,7 @@ public class MenuPricingVo {
 	@SerializedName("productPrice")
 	private Double Product_Price;
 	@SerializedName("quantityTY")
-	private Integer Quantity_TY;
+	private BigInteger Quantity_TY;
 	@SerializedName("salesGrossTY")
 	private BigDecimal Sales_Gross_TY;
 	
@@ -48,7 +49,7 @@ public class MenuPricingVo {
 	public MenuPricingVo(String tier_Change, String cat1, String cat2, String current_Tier, String product_ID,
 			String product_Name, String product_Price_Sensitivity, String proposed_Tier, Double sales_Impact,
 			Double new_Sales, Double sales_Impact_Percentage, BigDecimal original_Sales, Double price_Change_Percent,
-			Double price_Change, Double new_Price, Double product_Price, Integer quantity_TY,
+			Double price_Change, Double new_Price, Double product_Price, BigInteger quantity_TY,
 			BigDecimal sales_Gross_TY) {
 		super();
 		Tier_Change = tier_Change;
@@ -166,10 +167,10 @@ public class MenuPricingVo {
 	public void setProduct_Price(Double product_Price) {
 		Product_Price = product_Price;
 	}
-	public Integer getQuantity_TY() {
+	public BigInteger getQuantity_TY() {
 		return Quantity_TY;
 	}
-	public void setQuantity_TY(Integer quantity_TY) {
+	public void setQuantity_TY(BigInteger quantity_TY) {
 		Quantity_TY = quantity_TY;
 	}
 	public BigDecimal getSales_Gross_TY() {
