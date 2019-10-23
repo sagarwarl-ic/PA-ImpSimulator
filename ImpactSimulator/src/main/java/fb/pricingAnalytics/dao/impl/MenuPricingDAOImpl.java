@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.StoredProcedureQuery;
 
@@ -89,12 +90,19 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
-//		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
-//			if(requestPricePlanner.getPaging().getPageNo()>-1)
-//			query.setParameter("@startRowIndex", requestPricePlanner.getPaging().getPageNo());
-//			if(requestPricePlanner.getPaging().getPageSize()>0)
-//			query.setParameter("@pageSize", requestPricePlanner.getPaging().getPageSize());
-//		}
+		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
+			if(requestPricePlanner.getPaging().getPageNo()>-1){
+				query.registerStoredProcedureParameter("@startRowIndex", Integer.class , ParameterMode.IN);
+				query.setParameter("@startRowIndex", requestPricePlanner.getPaging().getPageNo());
+				// etc.
+			}
+	
+			if(requestPricePlanner.getPaging().getPageSize()>0){
+				query.registerStoredProcedureParameter("@pageSize", Integer.class , ParameterMode.IN);
+				query.setParameter("@pageSize", requestPricePlanner.getPaging().getPageSize());
+			}
+			
+		}
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
