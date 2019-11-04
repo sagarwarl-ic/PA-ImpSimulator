@@ -9,52 +9,69 @@ public class MenuPricingVo {
 
 	@SerializedName("tierChange")
 	private String Tier_Change;
+	
 	@SerializedName("cat1")
 	private String Cat1;
+	
 	@SerializedName("cat2")
 	private String Cat2;
+	
+	@SerializedName("cat3")
+	private String Cat3;
+	
 	@SerializedName("currentTier")
 	private String Current_Tier;
+	
 	@SerializedName("productID")
 	private String Product_ID;
+	
 	@SerializedName("productName")
 	private String Product_Name;
+	
 	@SerializedName("productPriceSensitivity")
 	private String Product_Price_Sensitivity;
+	
 	@SerializedName("proposedTier")
 	private String Proposed_Tier;
+	
 	@SerializedName("salesImpact")
 	private Double Sales_Impact;
+	
 	@SerializedName("newSales")
 	private Double New_Sales;
+	
 	@SerializedName("salesImpactPercentage")
 	private Double Sales_Impact_Percentage;
+	
 	@SerializedName("originalSales")
 	private BigDecimal Original_Sales;
+	
 	@SerializedName("priceChangePercent")
 	private Double Price_Change_Percent;
+	
 	@SerializedName("priceChange")
 	private Double Price_Change;
+	
 	@SerializedName("newPrice")
 	private Double New_Price;
+	
 	@SerializedName("productPrice")
 	private Double Product_Price;
+	
 	@SerializedName("quantityTY")
 	private BigInteger Quantity_TY;
-	@SerializedName("salesGrossTY")
-	private BigDecimal Sales_Gross_TY;
 	
 	
 	
-	public MenuPricingVo(String tier_Change, String cat1, String cat2, String current_Tier, String product_ID,
+	public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
 			String product_Name, String product_Price_Sensitivity, String proposed_Tier, Double sales_Impact,
 			Double new_Sales, Double sales_Impact_Percentage, BigDecimal original_Sales, Double price_Change_Percent,
-			Double price_Change, Double new_Price, Double product_Price, BigInteger quantity_TY,
-			BigDecimal sales_Gross_TY) {
+			Double price_Change, Double new_Price, Double product_Price, BigInteger quantity_TY) {
 		super();
 		Tier_Change = tier_Change;
 		Cat1 = cat1;
 		Cat2 = cat2;
+		Cat3 = cat3;
 		Current_Tier = current_Tier;
 		Product_ID = product_ID;
 		Product_Name = product_Name;
@@ -69,7 +86,6 @@ public class MenuPricingVo {
 		New_Price = new_Price;
 		Product_Price = product_Price;
 		Quantity_TY = quantity_TY;
-		Sales_Gross_TY = sales_Gross_TY;
 	}
 	public String getTier_Change() {
 		return Tier_Change;
@@ -88,6 +104,12 @@ public class MenuPricingVo {
 	}
 	public void setCat2(String cat2) {
 		Cat2 = cat2;
+	}
+	public String getCat3() {
+		return Cat3;
+	}
+	public void setCat3(String cat3) {
+		Cat3 = cat3;
 	}
 	public String getCurrent_Tier() {
 		return Current_Tier;
@@ -172,12 +194,6 @@ public class MenuPricingVo {
 	}
 	public void setQuantity_TY(BigInteger quantity_TY) {
 		Quantity_TY = quantity_TY;
-	}
-	public BigDecimal getSales_Gross_TY() {
-		return Sales_Gross_TY;
-	}
-	public void setSales_Gross_TY(BigDecimal sales_Gross_TY) {
-		Sales_Gross_TY = sales_Gross_TY;
 	}
 	
 

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.service.MenuPricingService;
@@ -31,6 +32,12 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
 
 		return menuPricingDAO.updateMenuTierPrice(requestMenuTier,userName);
+	}
+
+	@Override
+	public List<StoreTierVo> getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
+		
+		return menuPricingDAO.getStoreTierView(requestPricePlanner);
 	}
 
 
