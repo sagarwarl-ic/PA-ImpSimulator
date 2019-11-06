@@ -131,7 +131,7 @@ public class MenuPricingController {
 
 	}
 	
-	@RequestMapping(value = "/updateStoreTier/{tier}/{code}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateStoreTier", method = RequestMethod.POST)
 	public ResponseEntity<?> updateStoreTier(HttpServletRequest request, @RequestBody UpdateStoreInfoRequest updateStoreInfoRequest) {
 
 		logger.debug("MenuPricingController getMenuPricing function starts :::");
@@ -161,7 +161,7 @@ public class MenuPricingController {
 	}
 	
 
-	@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
 	public ResponseEntity<?> getOtherStoreView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getMenuPricing function starts :::");
@@ -189,6 +189,6 @@ public class MenuPricingController {
 
 		return new ResponseEntity<StoreTierResponse>(response, HttpStatus.OK);
 
-	}
+	}*/
 
 }
