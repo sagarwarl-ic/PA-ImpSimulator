@@ -22,6 +22,7 @@ import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
+import fb.pricingAnalytics.utils.FBRestResponse;
 
 
 @Repository
@@ -95,6 +96,38 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			
 		}
 		
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		
+		List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
+		for (Object[] row : rows) {
+		    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
+		    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
+		}
+		return result;
+	}
+
+
+	@Override
+	public FBRestResponse updateStoreTier(String storeCode, Integer proposedTier)throws SQLException, Exception {
+		
+		StringBuilder sb =  new StringBuilder ("Update [dbo].IST_Store_Info set  Proposed_Tier=:proposedTier where Store_Code =:storeCode");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("proposedTier",proposedTier);	
+		query.setParameter("storeCode",storeCode);
+		int resultObjects = query.executeUpdate();
+		if(resultObjects > 1){
+			return new FBRestResponse(true, "Store Tier Updated Successfully");
+		}
+		return new FBRestResponse(false, "There are no records to be updated for the provided store code : "+storeCode+" and proposed tier :"+proposedTier);
+	}
+
+
+	@Override
+	public List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[Simulator].[dbo].[OtherStoreViewProc]");
+
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 		

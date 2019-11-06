@@ -13,6 +13,7 @@ import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.service.MenuPricingService;
+import fb.pricingAnalytics.utils.FBRestResponse;
 
 
 @Service
@@ -36,8 +37,17 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 
 	@Override
 	public List<StoreTierVo> getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
-		
 		return menuPricingDAO.getStoreTierView(requestPricePlanner);
+	}
+	
+	@Override
+	public FBRestResponse updateStoreTier(String storeCode,Integer proposedTier) throws SQLException, Exception {
+		return menuPricingDAO.updateStoreTier(storeCode,proposedTier);
+	}
+	
+	@Override
+	public List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
+		return menuPricingDAO.getOtherStoreView(requestPricePlanner);
 	}
 
 

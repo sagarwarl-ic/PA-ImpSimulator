@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
+import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
 import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
@@ -37,8 +39,7 @@ public class MenuPricingController {
 
 
 	@RequestMapping(value = "/getMenuPricing", method = RequestMethod.POST)
-	public ResponseEntity<?> getMenuPricing(HttpServletRequest request,
-			@RequestBody RequestPricePlanner requestPricePlanner) {
+	public ResponseEntity<?> getMenuPricing(HttpServletRequest request,	@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getMenuPricing function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
@@ -101,8 +102,7 @@ public class MenuPricingController {
 	}
 	
 	@RequestMapping(value = "/getStoreTierView", method = RequestMethod.POST)
-	public ResponseEntity<?> getStoreTierView(HttpServletRequest request,
-			@RequestBody RequestPricePlanner requestPricePlanner) {
+	public ResponseEntity<?> getStoreTierView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getMenuPricing function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
@@ -131,6 +131,64 @@ public class MenuPricingController {
 
 	}
 	
+	@RequestMapping(value = "/updateStoreTier/{tier}/{code}", method = RequestMethod.POST)
+	public ResponseEntity<?> updateStoreTier(HttpServletRequest request, @RequestBody UpdateStoreInfoRequest updateStoreInfoRequest) {
 
+		logger.debug("MenuPricingController getMenuPricing function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		FBRestResponse response = null;
+		Integer storeCode = updateStoreInfoRequest.getStoreCode();
+		String proposedTier = updateStoreInfoRequest.getProposedTier();
+		try {
+			response = menuPricingService.updateStoreTier(proposedTier,storeCode);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+
+	}
+	
+
+	@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
+	public ResponseEntity<?> getOtherStoreView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+
+		logger.debug("MenuPricingController getMenuPricing function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		StoreTierResponse response = new StoreTierResponse();
+		try {
+			List<StoreTierVo> list = menuPricingService.getStoreTierView(requestPricePlanner);
+			response.setStoreTier(list);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<StoreTierResponse>(response, HttpStatus.OK);
+
+	}
 
 }
