@@ -40,9 +40,10 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 		return menuPricingDAO.getStoreTierView(requestPricePlanner);
 	}
 	
+	@Transactional
 	@Override
-	public FBRestResponse updateStoreTier(String storeCode,Integer proposedTier) throws SQLException, Exception {
-		return menuPricingDAO.updateStoreTier(storeCode,proposedTier);
+	public FBRestResponse updateStoreTier(String proposedTier,Integer storeCode) throws SQLException, Exception {
+		return menuPricingDAO.updateStoreTier(proposedTier,storeCode);
 	}
 	
 	@Override

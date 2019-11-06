@@ -14,7 +14,7 @@ public interface MenuPricingDAO {
 	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException,Exception;
 	public List<StoreTierVo> getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
-	public FBRestResponse updateStoreTier(String storeCode, Integer proposedTier) throws SQLException,Exception;
+	public FBRestResponse updateStoreTier(String proposedTier, Integer storeCode) throws SQLException,Exception;
 	public List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 
 }

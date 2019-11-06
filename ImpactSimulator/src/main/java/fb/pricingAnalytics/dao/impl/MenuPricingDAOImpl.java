@@ -109,14 +109,14 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 
 	@Override
-	public FBRestResponse updateStoreTier(String storeCode, Integer proposedTier)throws SQLException, Exception {
+	public FBRestResponse updateStoreTier(String proposedTier, Integer storeCode)throws SQLException, Exception {
 		
-		StringBuilder sb =  new StringBuilder ("Update [dbo].IST_Store_Info set  Proposed_Tier=:proposedTier where Store_Code =:storeCode");
+		StringBuilder sb =  new StringBuilder ("update IST_Store_Info set  Proposed_Tier=:proposedTier where Store_Code =:storeCode");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("proposedTier",proposedTier);	
 		query.setParameter("storeCode",storeCode);
 		int resultObjects = query.executeUpdate();
-		if(resultObjects > 1){
+		if(resultObjects >= 1){
 			return new FBRestResponse(true, "Store Tier Updated Successfully");
 		}
 		return new FBRestResponse(false, "There are no records to be updated for the provided store code : "+storeCode+" and proposed tier :"+proposedTier);
