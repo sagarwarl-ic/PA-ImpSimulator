@@ -172,8 +172,8 @@ public class MenuPricingController {
 		@SuppressWarnings("unchecked")
 		OverAllImpactsResponse response = new OverAllImpactsResponse();
 		try {
-			List<OverAllImpactsVo> list = menuPricingService.getOverAllImpacts();
-			response.setOverAllImpacts(list);
+			OverAllImpactsVo overAllImpactsVo = menuPricingService.getOverAllImpacts();
+			response.setOverAllImpact(overAllImpactsVo);;
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();

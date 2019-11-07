@@ -17,5 +17,5 @@ public interface MenuPricingService {
 	public List<StoreTierVo> getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 	public FBRestResponse updateStoreTier(String storeCode, Integer proposedTier, String userName)throws SQLException, Exception;
 	List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception;
-	public List<OverAllImpactsVo> getOverAllImpacts()throws SQLException, Exception;
+	public OverAllImpactsVo getOverAllImpacts()throws SQLException, Exception;
 }
