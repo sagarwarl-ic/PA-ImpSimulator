@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
@@ -109,14 +110,18 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 
 	@Override
-	public FBRestResponse updateStoreTier(String storeCode, Integer proposedTier)throws SQLException, Exception {
+	public FBRestResponse updateStoreTier(String proposedTier, Integer storeCode,String userName)throws SQLException, Exception {
 		
-		StringBuilder sb =  new StringBuilder ("Update [dbo].IST_Store_Info set  Proposed_Tier=:proposedTier where Store_Code =:storeCode");
+		StringBuilder sb =  new StringBuilder ("update IST_Store_Info set  Proposed_Tier=:proposedTier,isChanged=:isChanged,"
+				+ "CreatedOn=createdOn,UpdatedOn=:updatedOn,UpdatedBy=:updatedBy where Store_Code =:storeCode");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("proposedTier",proposedTier);	
 		query.setParameter("storeCode",storeCode);
+		query.setParameter("isChanged", true);
+		query.setParameter("updatedOn", Date.from(Instant.now()));
+		query.setParameter("updatedBy", userName);
 		int resultObjects = query.executeUpdate();
-		if(resultObjects > 1){
+		if(resultObjects >= 1){
 			return new FBRestResponse(true, "Store Tier Updated Successfully");
 		}
 		return new FBRestResponse(false, "There are no records to be updated for the provided store code : "+storeCode+" and proposed tier :"+proposedTier);
@@ -135,6 +140,24 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		for (Object[] row : rows) {
 		    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
 		    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
+		}
+		return result;
+	}
+
+
+	@Override
+	public List<OverAllImpactsVo> getOverAllImpacts() throws SQLException,Exception {
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[Simulator].[dbo].[GetOverallImpacts]");
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		
+		List<OverAllImpactsVo> result = new ArrayList<OverAllImpactsVo>(rows.size());
+		for (Object[] row : rows) {
+		    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
+		    
+		    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,((long)((Double)row[1] * 1e4)) / 1e4,
+		    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
 		}
 		return result;
 	}
