@@ -53,7 +53,7 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	}
 
 	@Override
-	public List<OverAllImpactsVo> getOverAllImpacts() throws SQLException,Exception {
+	public OverAllImpactsVo getOverAllImpacts() throws SQLException,Exception {
 		return menuPricingDAO.getOverAllImpacts();
 	}
 

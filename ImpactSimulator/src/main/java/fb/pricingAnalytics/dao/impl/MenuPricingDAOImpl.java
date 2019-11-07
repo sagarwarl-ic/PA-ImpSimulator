@@ -146,7 +146,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 
 	@Override
-	public List<OverAllImpactsVo> getOverAllImpacts() throws SQLException,Exception {
+	public OverAllImpactsVo getOverAllImpacts() throws SQLException,Exception {
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[Simulator].[dbo].[GetOverallImpacts]");
 		query.execute();
@@ -159,7 +159,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,((long)((Double)row[1] * 1e4)) / 1e4,
 		    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
 		}
-		return result;
+		return (OverAllImpactsVo) result.get(0);
 	}
 	
 

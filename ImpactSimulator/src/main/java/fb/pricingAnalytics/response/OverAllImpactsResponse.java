@@ -1,22 +1,23 @@
 package fb.pricingAnalytics.response;
 
-import java.util.List;
-
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
 
 
 public class OverAllImpactsResponse {
 	
 	
-	List<OverAllImpactsVo> overAllImpact;
-	
-	
-	public List<OverAllImpactsVo> getOverAllImpacts() {
+	OverAllImpactsVo overAllImpact;
+
+	public OverAllImpactsVo getOverAllImpact() {
 		return overAllImpact;
 	}
-	public void setOverAllImpacts(List<OverAllImpactsVo> overAllImpact) {
+
+	public void setOverAllImpact(OverAllImpactsVo overAllImpact) {
 		this.overAllImpact = overAllImpact;
 	}
+	
+	
+	
 	
 	
 
