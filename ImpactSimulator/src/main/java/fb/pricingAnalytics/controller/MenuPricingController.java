@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
+import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
 import fb.pricingAnalytics.response.MenuPricingResponse;
+import fb.pricingAnalytics.response.OverAllImpactsResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
 import fb.pricingAnalytics.utils.AuthUtils;
@@ -141,7 +143,7 @@ public class MenuPricingController {
 		Integer storeCode = updateStoreInfoRequest.getStoreCode();
 		String proposedTier = updateStoreInfoRequest.getProposedTier();
 		try {
-			response = menuPricingService.updateStoreTier(proposedTier,storeCode);
+			response = menuPricingService.updateStoreTier(proposedTier,storeCode,userAuth.getUserName());
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
@@ -156,6 +158,36 @@ public class MenuPricingController {
 		}
 
 		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(value = "/getOverAllImpacts", method = RequestMethod.GET)
+	public ResponseEntity<?> getOverAllImpacts(HttpServletRequest request) {
+
+		logger.debug("MenuPricingController getOverAllImpacts function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		OverAllImpactsResponse response = new OverAllImpactsResponse();
+		try {
+			List<OverAllImpactsVo> list = menuPricingService.getOverAllImpacts();
+			response.setOverAllImpacts(list);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity<OverAllImpactsResponse>(response, HttpStatus.OK);
 
 	}
 	
