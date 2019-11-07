@@ -27,6 +27,7 @@ import fb.pricingAnalytics.response.OverAllImpactsResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
 import fb.pricingAnalytics.utils.AuthUtils;
+import fb.pricingAnalytics.utils.FBConstants;
 import fb.pricingAnalytics.utils.FBRestResponse;
 
 @RestController
@@ -186,7 +187,7 @@ public class MenuPricingController {
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
+		response.setResponse(true, FBConstants.SUCCESS);
 		return new ResponseEntity<OverAllImpactsResponse>(response, HttpStatus.OK);
 
 	}
