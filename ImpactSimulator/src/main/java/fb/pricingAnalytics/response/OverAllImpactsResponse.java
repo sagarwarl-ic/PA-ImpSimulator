@@ -1,9 +1,10 @@
 package fb.pricingAnalytics.response;
 
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
+import fb.pricingAnalytics.utils.FBRestResponse;
 
 
-public class OverAllImpactsResponse {
+public class OverAllImpactsResponse extends FBRestResponse{
 	
 	
 	OverAllImpactsVo overAllImpact;
