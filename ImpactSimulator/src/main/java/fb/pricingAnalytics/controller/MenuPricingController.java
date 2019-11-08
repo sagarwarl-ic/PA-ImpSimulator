@@ -16,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import fb.pricingAnalytics.model.auth.UserAuth;
+import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
+import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
+import fb.pricingAnalytics.response.MenuItemDistributionResponse;
 import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.response.OverAllImpactsResponse;
+import fb.pricingAnalytics.response.StoreDistributionResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
 import fb.pricingAnalytics.utils.AuthUtils;
@@ -191,6 +195,70 @@ public class MenuPricingController {
 		return new ResponseEntity<OverAllImpactsResponse>(response, HttpStatus.OK);
 
 	}
+	
+	
+	@RequestMapping(value = "/getStoreDistribution", method = RequestMethod.GET)
+	public ResponseEntity<?> getStoreDistribution(HttpServletRequest request) {
+
+		logger.debug("MenuPricingController getStoreDistribution function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		StoreDistributionResponse response = new StoreDistributionResponse();
+		try {
+			List<StoreDistributionVo> storeDistributionVo = menuPricingService.getStoreDistribution();
+			response.setStoreDistributionVo(storeDistributionVo);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<StoreDistributionResponse>(response, HttpStatus.OK);
+
+	}
+	
+	
+	@RequestMapping(value = "/getMenuItemDistribution", method = RequestMethod.GET)
+	public ResponseEntity<?> getMenuItemDistribution (HttpServletRequest request) {
+
+		logger.debug("MenuPricingController getMenuItemDistribution function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		MenuItemDistributionResponse response = new MenuItemDistributionResponse();
+		try {
+			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService.getMenuItemDistribution();
+			response.setMenuItemDistributionVo(menuItemDistributionVo);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<MenuItemDistributionResponse>(response, HttpStatus.OK);
+
+	}
+	
+	
 	
 
 	/*@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)

@@ -18,8 +18,10 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
+import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
@@ -160,6 +162,42 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
 		}
 		return (OverAllImpactsVo) result.get(0);
+	}
+
+
+	@Override
+	public List<StoreDistributionVo> getStoreDistribution()	throws SQLException, Exception {
+		
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[Simulator].[dbo].[GetStoreDistribution]");
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		
+		List<StoreDistributionVo> result = new ArrayList<StoreDistributionVo>(rows.size());
+		for (Object[] row : rows) {
+		    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
+		    
+		    result.add(new StoreDistributionVo ((String)row[0],(String)row[1],(BigInteger)row[2]));
+		}
+		return result;
+	
+	}
+
+
+	@Override
+	public List<MenuItemDistributionVo> getMenuItemDistribution()throws SQLException, Exception {
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[Simulator].[dbo].[GetMenuItemDistribution]");
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		
+		List<MenuItemDistributionVo> result = new ArrayList<MenuItemDistributionVo>(rows.size());
+		for (Object[] row : rows) {
+		    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
+		    
+		    result.add(new MenuItemDistributionVo ((String)row[0],(BigInteger)row[1]));
+		}
+		return result;
 	}
 	
 

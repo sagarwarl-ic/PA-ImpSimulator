@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
+import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
@@ -56,6 +58,18 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	public OverAllImpactsVo getOverAllImpacts() throws SQLException,Exception {
 		return menuPricingDAO.getOverAllImpacts();
 	}
+
+	@Override
+	public List<StoreDistributionVo> getStoreDistribution()throws SQLException, Exception {
+		return menuPricingDAO.getStoreDistribution();
+	}
+
+	@Override
+	public List<MenuItemDistributionVo> getMenuItemDistribution()throws SQLException, Exception {
+		return menuPricingDAO.getMenuItemDistribution();
+	}
+
+	
 
 
 }
