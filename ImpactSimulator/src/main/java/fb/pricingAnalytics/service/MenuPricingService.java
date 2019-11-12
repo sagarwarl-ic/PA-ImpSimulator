@@ -24,4 +24,5 @@ public interface MenuPricingService {
 	public List<StoreDistributionVo> getStoreDistribution()throws SQLException, Exception;
 	public List<MenuItemDistributionVo> getMenuItemDistribution()throws SQLException, Exception;
 	public FilterData getFilterData()throws SQLException, Exception;
+	public List<Object> getFilterData(String filterParam)throws SQLException, Exception;
 }
