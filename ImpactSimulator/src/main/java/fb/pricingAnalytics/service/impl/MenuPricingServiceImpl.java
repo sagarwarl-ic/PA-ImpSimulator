@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
@@ -68,7 +69,11 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	public List<MenuItemDistributionVo> getMenuItemDistribution()throws SQLException, Exception {
 		return menuPricingDAO.getMenuItemDistribution();
 	}
-
+	
+	@Override
+	public FilterData getFilterData() throws SQLException,Exception {
+		return menuPricingDAO.getFilterData();
+	}
 	
 
 
