@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import fb.pricingAnalytics.model.auth.UserAuth;
+import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
@@ -24,6 +25,7 @@ import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
+import fb.pricingAnalytics.response.FilterDataResponse;
 import fb.pricingAnalytics.response.MenuItemDistributionResponse;
 import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.response.OverAllImpactsResponse;
@@ -258,6 +260,36 @@ public class MenuPricingController {
 
 	}
 	
+	
+	
+	@RequestMapping(value = "/getFilterData", method = RequestMethod.GET)
+	public ResponseEntity<?> getFilterData(HttpServletRequest request) {
+		logger.debug("MenuPricingController getFilterData function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		FilterDataResponse response = new FilterDataResponse();
+		try {
+			FilterData filterData = menuPricingService.getFilterData();
+			response.setFilterData(filterData);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<FilterDataResponse>(response, HttpStatus.OK);
+		
+	}
 	
 	
 

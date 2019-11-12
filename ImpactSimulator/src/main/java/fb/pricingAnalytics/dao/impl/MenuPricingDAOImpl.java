@@ -18,6 +18,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
@@ -198,6 +199,112 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		    result.add(new MenuItemDistributionVo ((String)row[0],(BigInteger)row[1]));
 		}
 		return result;
+	}
+	
+	
+	@Override
+	public FilterData getFilterData() throws SQLException,Exception {
+		FilterData filterData = new FilterData();
+		getCat1Data(filterData);
+		getCat2Data(filterData);
+		getCat3Data(filterData);
+		getCurrentTier(filterData);
+		getPricingPower(filterData);
+		getProductPriceSentivity(filterData);
+		getStoreSentivity(filterData);
+		getTierChange(filterData);
+		return filterData;
+		
+		
+		
+		
+	}
+
+
+	private void getTierChange(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("SELECT distinct "
+					+ "(CASE WHEN (spi.Current_Tier = si.proposedTier) THEN 'N' ELSE 'Y' END) AS Tier_Change FROM vw_store_product_info_temp_ist spi LEFT JOIN IST_Store_Info si ON (spi.Store_Code = si.storeCode)");
+			
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] tierChangeList = rows.stream().toArray(String[]::new);
+		filterData.setTier_Change(tierChangeList);
+	}
+
+
+	private void getStoreSentivity(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] storeSentivityList = rows.stream().toArray(String[]::new);
+		filterData.setStore_Sensitivity(storeSentivityList);
+	}
+
+
+	private void getProductPriceSentivity(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct Product_Price_Sensitivity from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] prodcutPriceSensitivityList = rows.stream().toArray(String[]::new);
+		filterData.setProduct_Price_Sensitivity(prodcutPriceSensitivityList);
+		
+	}
+
+
+	private void getPricingPower(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct Pricing_Power from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] pricingPowerList = rows.stream().toArray(String[]::new);
+		filterData.setPricing_Power(pricingPowerList);
+		
+	}
+
+
+	private void getCurrentTier(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct Current_Tier from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] currentTiers = rows.stream().toArray(String[]::new);
+		filterData.setCurrent_Tier(currentTiers);
+		
+	}
+
+
+	private void getCat3Data(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct Cat3 from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] cat3 = rows.stream().toArray(String[]::new);
+		filterData.setCat3(cat3);
+		
+	}
+
+
+	private void getCat2Data(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct Cat2 from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] cat2 = rows.stream().toArray(String[]::new);
+		filterData.setCat2(cat2);
+		
+	}
+
+
+	private void getCat1Data(FilterData filterData) {
+
+		StringBuilder sb =  new StringBuilder("select distinct Cat1 from vw_store_product_info_temp_ist");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		String[] cat1 = rows.stream().toArray(String[]::new);
+		filterData.setCat1(cat1);
 	}
 	
 

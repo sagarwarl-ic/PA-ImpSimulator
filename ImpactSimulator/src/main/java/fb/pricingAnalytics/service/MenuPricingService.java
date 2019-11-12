@@ -3,6 +3,7 @@ package fb.pricingAnalytics.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
@@ -22,4 +23,5 @@ public interface MenuPricingService {
 	public OverAllImpactsVo getOverAllImpacts()throws SQLException, Exception;
 	public List<StoreDistributionVo> getStoreDistribution()throws SQLException, Exception;
 	public List<MenuItemDistributionVo> getMenuItemDistribution()throws SQLException, Exception;
+	public FilterData getFilterData()throws SQLException, Exception;
 }
