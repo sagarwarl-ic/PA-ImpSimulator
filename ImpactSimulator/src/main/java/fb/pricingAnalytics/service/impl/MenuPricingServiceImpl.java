@@ -75,6 +75,11 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 		return menuPricingDAO.getFilterData();
 	}
 	
+	@Override
+	public List<Object> getFilterData(String filterParam) throws SQLException,Exception {
+		return menuPricingDAO.getFilterData(filterParam);
+	}
+	
 
 
 }

@@ -307,5 +307,44 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		filterData.setCat1(cat1);
 	}
 	
+	
+	@Override
+	public List<Object> getFilterData(String filterParam) throws SQLException,Exception {
+		
+		StringBuilder sb =  new StringBuilder ();
+		switch (filterParam){
+			
+		case ("cat1") :
+			sb.append("select distinct Cat1 from vw_store_product_info_temp_ist");
+			break;
+		case ("cat2") :
+			sb.append("select distinct Cat2 from vw_store_product_info_temp_ist");
+			break;
+		case ("cat3") :
+			sb.append("select distinct Cat3 from vw_store_product_info_temp_ist");
+			break;
+		case ("currenttier") :
+			sb.append("select distinct Current_Tier from vw_store_product_info_temp_ist");
+			break;
+		case ("pricingpower") :
+			sb.append("select distinct Pricing_Power from vw_store_product_info_temp_ist");
+			break;
+		case ("productpricesensitivity") :
+			sb.append("select distinct Product_Price_Sensitivity from vw_store_product_info_temp_ist");
+			break;
+		case ("storesensitivity") :
+			sb.append("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from vw_store_product_info_temp_ist");
+			break;
+		case ("tierchange") :
+			sb.append("SELECT distinct "
+					+ "(CASE WHEN (vspi.Current_Tier = si.proposedTier) THEN 'N' ELSE 'Y' END) AS Tier_Change FROM vw_store_product_info_temp_ist vspi LEFT JOIN IST_Store_Info si ON (vspi.Store_Code = si.storeCode)");
+			break;
+		default :
+				break;
+		}
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		List<Object> rows = query.list();
+		return rows;
 
+	}
 }

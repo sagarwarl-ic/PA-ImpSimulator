@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +26,7 @@ import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
+import fb.pricingAnalytics.response.FilterDataIndividualResponse;
 import fb.pricingAnalytics.response.FilterDataResponse;
 import fb.pricingAnalytics.response.MenuItemDistributionResponse;
 import fb.pricingAnalytics.response.MenuPricingResponse;
@@ -291,6 +293,35 @@ public class MenuPricingController {
 		
 	}
 	
+	
+	@RequestMapping(value = "/getIndividualFilterData/{filterParam}", method = RequestMethod.GET)
+	public ResponseEntity<?> getFilterData(HttpServletRequest request,@PathVariable("filterParam") String filterParam) {
+		logger.debug("MenuPricingController getFilterData function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		FilterDataIndividualResponse response = new FilterDataIndividualResponse();
+		try {
+			List<Object> filterDataList = menuPricingService.getFilterData(filterParam);
+			response.setFilterData(filterDataList);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<FilterDataIndividualResponse>(response, HttpStatus.OK);
+		
+	}
 	
 
 	/*@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
