@@ -26,6 +26,8 @@ import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
+import fb.pricingAnalytics.response.MenuPricingResponse;
+import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.utils.FBRestResponse;
 
 
@@ -37,9 +39,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	
 	
 	@Override 
-	public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
+	public MenuPricingResponse getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
+		MenuPricingResponse response = new MenuPricingResponse();
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
+				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc1]");
 		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
 			if(requestPricePlanner.getPaging().getPageNo()>0&&requestPricePlanner.getPaging().getPageSize()>0){
 				query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
@@ -61,8 +64,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 		    		(String)row[7],(String)row[8],(Double)row[9],(Double)row[10],(Double)row[11],(BigDecimal)row[12],(Double)row[13],(Double)row[14],
 		    		(Double)row[15],(Double)row[16],(BigInteger)row[17]));
+		  
 		}
-		return result;
+		Integer count = (Integer)(rows.get(0))[18];
+		response.setCount(count);
+		response.setMenuPrice(result);
+		return response;
 	}
 
 
@@ -83,9 +90,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 
 	@Override
-	public List<StoreTierVo> getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
+	public StoreTierResponse getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
+		
+		StoreTierResponse response = new StoreTierResponse();
+		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[Simulator].[dbo].[StoreTierViewProc]");
+				.createStoredProcedureQuery("[Simulator].[dbo].[StoreTierViewProc1]");
 		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
 			if(requestPricePlanner.getPaging().getPageNo()>-1){
 				query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
@@ -108,7 +118,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
 		    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
 		}
-		return result;
+		Integer count = (Integer)(rows.get(0))[13];
+		response.setCount(count);
+		response.setStoreTier(result);
+		return response;
 	}
 
 
