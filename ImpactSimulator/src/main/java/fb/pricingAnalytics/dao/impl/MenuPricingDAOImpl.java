@@ -42,7 +42,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	public MenuPricingResponse getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
 		MenuPricingResponse response = new MenuPricingResponse();
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc1]");
+				.createStoredProcedureQuery("[Simulator].[dbo].[MenuitemSelectProc]");
 		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
 			if(requestPricePlanner.getPaging().getPageNo()>0&&requestPricePlanner.getPaging().getPageSize()>0){
 				query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
@@ -51,9 +51,50 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				query.setParameter(1, requestPricePlanner.getPaging().getPageSize());
 				// etc.
 			}
-	
+		}
+		if(requestPricePlanner.getSearch()!=null){
+			if(requestPricePlanner.getSearch().getCat1()!=null){
+				query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
+				query.setParameter(2, requestPricePlanner.getSearch().getCat1());
+			}else{
+				query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
+				query.setParameter(2, null);
+			}if(requestPricePlanner.getSearch().getCat2()!=null){
+				query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
+				query.setParameter(3, requestPricePlanner.getSearch().getCat1());
+			}else{
+				query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
+				query.setParameter(3, null);
+			}if(requestPricePlanner.getSearch().getCurrent_Tier()!=null){
+				query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
+				query.setParameter(4, requestPricePlanner.getSearch().getCurrent_Tier());
+			}else{
+				query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
+				query.setParameter(4, null);
+			}if(requestPricePlanner.getSearch().getTier_Change()!=null){
+				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+				query.setParameter(5, requestPricePlanner.getSearch().getTier_Change());
+			}else{
+				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+				query.setParameter(5, null);
+			}if(requestPricePlanner.getSearch().getPrice_Sensitivity()!=null){
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, requestPricePlanner.getSearch().getPrice_Sensitivity());
+			}else{
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, null);
+			}
+		}
+		if(requestPricePlanner.getSort()!=null){
+			if(requestPricePlanner.getSort().getField()!=null){
+					query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
+					query.setParameter(7, requestPricePlanner.getSort().getField());
+				}
 			
-			
+			if(requestPricePlanner.getSort().getDirection()!=null){
+				query.registerStoredProcedureParameter(8, String.class , ParameterMode.IN);
+				query.setParameter(8, requestPricePlanner.getSort().getDirection());
+			}
 		}
 		
 		query.execute();
@@ -95,7 +136,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		StoreTierResponse response = new StoreTierResponse();
 		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[Simulator].[dbo].[StoreTierViewProc1]");
+				.createStoredProcedureQuery("[Simulator].[dbo].[StoreTierViewProc]");
 		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
 			if(requestPricePlanner.getPaging().getPageNo()>-1){
 				query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
@@ -107,9 +148,44 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				query.registerStoredProcedureParameter(1, Integer.class , ParameterMode.IN);
 				query.setParameter(1, requestPricePlanner.getPaging().getPageSize());
 			}
-			
 		}
+			if(requestPricePlanner.getSearch()!=null){
+				if(requestPricePlanner.getSearch().getCurrent_Tier()!=null){
+					query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
+					query.setParameter(2, requestPricePlanner.getSearch().getCurrent_Tier());
+				}else{
+					query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
+					query.setParameter(2, null);
+				}
+				if(requestPricePlanner.getSearch().getStore_Sensitivity()!=null){
+					query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
+					query.setParameter(3, requestPricePlanner.getSearch().getStore_Sensitivity());
+				}else{
+					query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
+					query.setParameter(3, null);
+				}
+				if(requestPricePlanner.getSearch().getPricing_Power()!=null){
+					query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
+					query.setParameter(4, requestPricePlanner.getSearch().getPricing_Power());
+				}else{
+					query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
+					query.setParameter(4, null);
+				}
+			}
+			if(requestPricePlanner.getSort()!=null){
+				if(requestPricePlanner.getSort().getField()!=null){
+						query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+						query.setParameter(5, requestPricePlanner.getSort().getField());
+					}
+				
+				if(requestPricePlanner.getSort().getDirection()!=null){
+					query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+					query.setParameter(6, requestPricePlanner.getSort().getDirection());
+				}
+			}
+			
 		
+		System.out.println(query.toString());
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 		

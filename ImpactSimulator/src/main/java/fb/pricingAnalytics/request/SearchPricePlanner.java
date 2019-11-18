@@ -3,59 +3,56 @@ package fb.pricingAnalytics.request;
 
 public class SearchPricePlanner {
 	
-	private String freeText;
-	private Integer stage;
-	private String lastUpdated;
-	private String requestedDateFrom;
-	private String requestedDateTo;
-	private String availableDateFrom;
-	private String availableDateTo;
+	private String Current_Tier;
+	private Integer Store_Sensitivity;
+	private String Pricing_Power;
+	private String Tier_Change;
+	private String Price_Sensitivity;
+	private String Cat1;
+	private String cat2;
 	
-	public String getFreeText() {
-		return freeText;
+	public String getCurrent_Tier() {
+		return Current_Tier;
 	}
-	public void setFreeText(String freeText) {
-		this.freeText = freeText;
+	public void setCurrent_Tier(String current_Tier) {
+		Current_Tier = current_Tier;
 	}
-	public Integer getStage() {
-		return stage;
+	public Integer getStore_Sensitivity() {
+		return Store_Sensitivity;
 	}
-	public void setStage(Integer stage) {
-		this.stage = stage;
+	public void setStore_Sensitivity(Integer store_Sensitivity) {
+		Store_Sensitivity = store_Sensitivity;
 	}
-	public String getLastUpdated() {
-		return lastUpdated;
+	public String getPricing_Power() {
+		return Pricing_Power;
 	}
-	public void setLastUpdated(String lastUpdated) {
-		this.lastUpdated = lastUpdated;
+	public void setPricing_Power(String pricing_Power) {
+		Pricing_Power = pricing_Power;
 	}
-	public String getRequestedDateFrom() {
-		return requestedDateFrom;
+	public String getTier_Change() {
+		return Tier_Change;
 	}
-	public void setRequestedDateFrom(String requestedDateFrom) {
-		this.requestedDateFrom = requestedDateFrom;
+	public void setTier_Change(String tier_Change) {
+		Tier_Change = tier_Change;
 	}
-	public String getRequestedDateTo() {
-		return requestedDateTo;
+	public String getPrice_Sensitivity() {
+		return Price_Sensitivity;
 	}
-	public void setRequestedDateTo(String requestedDateTo) {
-		this.requestedDateTo = requestedDateTo;
+	public void setPrice_Sensitivity(String price_Sensitivity) {
+		Price_Sensitivity = price_Sensitivity;
 	}
-	public String getAvailableDateFrom() {
-		return availableDateFrom;
+	public String getCat1() {
+		return Cat1;
 	}
-	public void setAvailableDateFrom(String availableDateFrom) {
-		this.availableDateFrom = availableDateFrom;
+	public void setCat1(String cat1) {
+		Cat1 = cat1;
 	}
-	public String getAvailableDateTo() {
-		return availableDateTo;
+	public String getCat2() {
+		return cat2;
 	}
-	public void setAvailableDateTo(String availableDateTo) {
-		this.availableDateTo = availableDateTo;
+	public void setCat2(String cat2) {
+		this.cat2 = cat2;
 	}
-
 	
-	
-	
-
+		
 }
