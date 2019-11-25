@@ -1,6 +1,6 @@
-USE [Simulator]
+USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[GetMenuItemDistribution]    Script Date: 11/25/2019 2:05:07 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetMenuItemDistribution]    Script Date: 11/25/2019 8:18:09 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -11,12 +11,24 @@ GO
 -- Description:	<Description,,>
 -- =============================================
 ALTER PROCEDURE [dbo].[GetMenuItemDistribution]
-	
+@Project_Id bigint=0,
+@BrandId int=0	
 AS
 BEGIN
-	select [Custom SQL Query].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
-  COUNT_BIG(DISTINCT [Custom SQL Query].[Product_ID]) AS Product_Count
-  
-  FROM [EPL].[vw_store_product_info_temp_ist] [Custom SQL Query]
-  GROUP BY [Custom SQL Query].[Product_Price_Sensitivity]
+	select
+
+(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'ELASTIC') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'INELASTIC') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Mod' ELSE [Custom SQL Query].[Product_Price_Sensitivity] END)
+
+
+
+AS [Product_Price_Sensitivity],
+
+COUNT_BIG(DISTINCT [Custom SQL Query].[Product_ID]) AS Product_Count,
+sum([Sales_Gross_TY]) as Original_Sales,
+sum([Quantity_TY]) as Quantity
+
+FROM [dbo].[IST_Store_Product_Info] [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
+GROUP BY [Custom SQL Query].[Product_Price_Sensitivity]
 END
