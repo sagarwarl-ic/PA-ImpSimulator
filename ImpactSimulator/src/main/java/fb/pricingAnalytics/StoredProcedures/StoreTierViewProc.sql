@@ -1,6 +1,6 @@
-USE [Simulator]
+USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 11/25/2019 2:03:23 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 11/25/2019 8:16:02 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -14,7 +14,10 @@ GO
 ALTER   PROCEDURE  [dbo].[StoreTierViewProc]  @startRowIndex int=0 ,
 	@pageSize int=100,@CurrentTier VARCHAR(100) = null,
 	@StoreSensitivity VARCHAR(100)=null,@PricingPower VARCHAR(100)=null,
-	@SortField VARCHAR(100)='Store_Code', @Direction VARCHAR(100)='ASC'
+	@SortField VARCHAR(100)='Store_Code', @Direction VARCHAR(100)='ASC',
+	@Scenario_Id bigint =0,
+	@Project_Id bigint=0,
+	@BrandId int=0
 AS
 BEGIN
 WITH Data_Store_View
@@ -80,10 +83,12 @@ SELECT
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
-) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
+where  [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Info].BrandId=@BrandId  and [IST_Store_Product_Info].Project_Id=@Project_Id 
+and IST_Store_Info.Scenario_ID =@Scenario_Id 
 
+) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
-) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id and Scenario_ID_Store =@Scenario_ID_Store and Scenario_Id_Product=@Scenario_Id_Product
+) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
 GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END),
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Current_Tier],
@@ -103,7 +108,7 @@ SELECT COUNT(*) AS TotalRows FROM Data_Store_View
 
 SELECT *
 FROM Data_Store_View
-CROSS JOIN Count_CTE  where ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) AND (Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) AND (Pricing_Power = ISNULL(@PricingPower,Pricing_Power)))
+CROSS JOIN Count_CTE  
 order by 
 CASE WHEN @SortField = 'Store_Code' AND  @Direction = 'DESC' THEN [Store_Code] END DESC,
 CASE WHEN @SortField = 'Store_Code' AND  @Direction != 'DESC' THEN [Store_Code] END,
