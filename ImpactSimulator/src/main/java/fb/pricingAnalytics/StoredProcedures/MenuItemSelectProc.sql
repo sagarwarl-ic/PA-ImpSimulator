@@ -13,15 +13,15 @@ GO
 -- =============================================
 ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=1,
 @pageSize int=100,
-@Scenario_Id bigint =0,
-@Project_Id bigint=0,
-@BrandId int=0,
 @Cat1 VARCHAR(100)=null,
 @Cat2 VARCHAR(100)=null,
 @CurrentTier VARCHAR(100) = null,
 @TierChange VARCHAR(100)=null,
 @ProductPriceSensitivity VARCHAR(100)=null,
-@SortField VARCHAR(100)='Product_Name', @Direction VARCHAR(100)='ASC'
+@SortField VARCHAR(100)='Product_Name', @Direction VARCHAR(100)='ASC',
+@Scenario_Id bigint =0,
+@Project_Id bigint=0,
+@BrandId int=0
 AS
 BEGIN
 WITH Data_Menu_Item
