@@ -4,7 +4,7 @@ package fb.pricingAnalytics.request;
 public class SearchPricePlanner {
 	
 	private String Current_Tier;
-	private Integer Store_Sensitivity;
+	private String Store_Sensitivity;
 	private String Pricing_Power;
 	private String Tier_Change;
 	private String Price_Sensitivity;
@@ -17,10 +17,10 @@ public class SearchPricePlanner {
 	public void setCurrent_Tier(String current_Tier) {
 		Current_Tier = current_Tier;
 	}
-	public Integer getStore_Sensitivity() {
+	public String getStore_Sensitivity() {
 		return Store_Sensitivity;
 	}
-	public void setStore_Sensitivity(Integer store_Sensitivity) {
+	public void setStore_Sensitivity(String store_Sensitivity) {
 		Store_Sensitivity = store_Sensitivity;
 	}
 	public String getPricing_Power() {
