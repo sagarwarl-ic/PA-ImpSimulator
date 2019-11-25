@@ -99,17 +99,19 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
-		
-		List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
-		for (Object[] row : rows) {
-		    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
-		    		(String)row[7],(String)row[8],(Double)row[9],(Double)row[10],(Double)row[11],(BigDecimal)row[12],(Double)row[13],(Double)row[14],
-		    		(Double)row[15],(Double)row[16],(BigInteger)row[17]));
-		  
+		if(rows!=null&&rows.size()>0){
+			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
+			for (Object[] row : rows) {
+			    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
+			    		(String)row[7],(String)row[8],(Double)row[9],(Double)row[10],(Double)row[11],(BigDecimal)row[12],(Double)row[13],(Double)row[14],
+			    		(Double)row[15],(Double)row[16],(BigInteger)row[17]));
+			  
+			}
+			Integer count = (Integer)(rows.get(0))[18];
+			response.setCount(count);
+			response.setMenuPrice(result);
 		}
-		Integer count = (Integer)(rows.get(0))[18];
-		response.setCount(count);
-		response.setMenuPrice(result);
+		
 		return response;
 	}
 
