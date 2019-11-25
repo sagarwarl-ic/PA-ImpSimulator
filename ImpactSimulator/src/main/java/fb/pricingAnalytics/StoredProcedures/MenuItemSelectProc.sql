@@ -116,8 +116,8 @@ SELECT *
 FROM Data_Menu_Item
 CROSS JOIN Count_CTE  WHERE (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
   order by  
-CASE WHEN @SortField = 'ProdName' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
-CASE WHEN @SortField = 'ProdName' AND  @Direction != 'DESC' THEN [Product_Name] END,
+CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
+CASE WHEN @SortField = 'Product_Name' AND  @Direction != 'DESC' THEN [Product_Name] END,
 CASE WHEN @SortField = 'Cat1' AND  @Direction = 'DESC' THEN [Cat1] END DESC,
 CASE WHEN @SortField = 'Cat1' AND  @Direction != 'DESC' THEN [Cat1] END,
 CASE WHEN @SortField = 'Cat2' AND  @Direction = 'DESC' THEN [Cat2] END DESC,
