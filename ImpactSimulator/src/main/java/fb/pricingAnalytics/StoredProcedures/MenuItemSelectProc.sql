@@ -97,9 +97,9 @@ FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
 where [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Info].BrandId=@BrandId  and [IST_Store_Product_Info].Project_Id=@Project_Id 
-and IST_Store_Info.Scenario_ID =@Scenario_Id and  ((Cat1 = ISNULL(@Cat1,Cat1)) AND (Cat2 = ISNULL(@Cat2,Cat2))
-AND (Current_Tier = ISNULL(@CurrentTier,Current_Tier))
- AND (Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity)))
+and IST_Store_Info.Scenario_ID =@Scenario_Id and  (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null) AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
+AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
+ AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
 ) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON 
 (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID
