@@ -1,18 +1,27 @@
 package fb.pricingAnalytics.model;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="IST_Product_Tier_Info",schema="Simulator.dbo")
+@Table(name="IST_Product_Tier_Info",schema="ImpactSimulator.dbo")
 public class ISTProductTierInfo implements Serializable {
 
+	@Id
+	@GeneratedValue
+	@Column(name="IstPrdTierId")
+	private BigInteger istPrdTierId;
 
+	@Column(name="BrandId")
+	private int brandId;
+	
 	@Id
 	@Column(name="Product_ID")
 	private String productId;
@@ -25,8 +34,12 @@ public class ISTProductTierInfo implements Serializable {
 	private double price;
 	
 	@Id
-	@Column(name="Scenario_ID")
-	private String scenarioId;
+	@Column(name="Project_Id")
+	private BigInteger projectId;
+	
+	@Id
+	@Column(name="Scenario_Id")
+	private BigInteger scenarioId;
 	
 	@Column(name="Comment")
 	private String comment;
@@ -45,6 +58,31 @@ public class ISTProductTierInfo implements Serializable {
 	
 	@Column(name="UpdatedBy")
 	private String updatedBy;
+	
+	
+	public BigInteger getIstPrdTierId() {
+		return istPrdTierId;
+	}
+
+	public void setIstPrdTierId(BigInteger istPrdTierId) {
+		this.istPrdTierId = istPrdTierId;
+	}
+
+	public BigInteger getScenarioId() {
+		return scenarioId;
+	}
+
+	public void setScenarioId(BigInteger scenarioId) {
+		this.scenarioId = scenarioId;
+	}
+
+	public int getBrandId() {
+		return brandId;
+	}
+
+	public void setBrandId(int brandId) {
+		this.brandId = brandId;
+	}
 
 	public String getProductId() {
 		return productId;
@@ -70,14 +108,7 @@ public class ISTProductTierInfo implements Serializable {
 		this.price = price;
 	}
 
-	public String getScenarioId() {
-		return scenarioId;
-	}
-
-	public void setScenarioId(String scenarioId) {
-		this.scenarioId = scenarioId;
-	}
-
+	
 	public String getComment() {
 		return comment;
 	}
@@ -124,6 +155,16 @@ public class ISTProductTierInfo implements Serializable {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	
+
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
 	}
 
 	@Override

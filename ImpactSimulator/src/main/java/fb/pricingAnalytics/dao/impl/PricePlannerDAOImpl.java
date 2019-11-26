@@ -1,12 +1,15 @@
 package fb.pricingAnalytics.dao.impl;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -30,7 +33,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	EntityManager entityManager;
 
 	@Override
-	public int createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
+	public BigInteger createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
 
 		logger.debug("PricePlannerDAOImpl createProject function starts ::: ");
 		Project project = new Project();
@@ -43,12 +46,12 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		project.setUpdatedOn(Date.from(Instant.now()));
 		project.setStatus(projectRequest.getStatusId());
 		project.setProjectName(projectRequest.getProjectName());
-
 		
 		logger.info("Hibernate will save the project object ::: "+project.toString());
+		
 		session.save(project);
 		
-		return project.getId();
+		return project.getProjectId();
 	
 		
 	}
@@ -64,15 +67,16 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		if(projectRequest.getStatusId()!=null) {
 			sb.append(" ,P.status =: status");
 		}
-		if(projectRequest.getDeleted()!=null) {
+		if(projectRequest.isDeleted()) {
 			sb.append(" ,P.deleted =: deleted");
 		}
 		
-		sb.append(" WHERE P.id =:id");
+		sb.append(" WHERE P.projectId =:id and P.brandId=:brandId");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("updated_on",Date.from(Instant.now()));
 		query.setParameter("updated_by",userName);	
 		query.setParameter("id",projectRequest.getProjectId());	
+		query.setParameter("brandId",Integer.parseInt(brandId));	
 		
 		if(projectRequest.getProjectName()!=null) {
 			query.setParameter("proj_name",projectRequest.getProjectName());	
@@ -80,8 +84,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		if(projectRequest.getStatusId()!=null) {
 			query.setParameter("status",projectRequest.getStatusId());	
 		}
-		if(projectRequest.getDeleted()!=null) {
-			query.setParameter("deleted",projectRequest.getDeleted());	
+		if(projectRequest.isDeleted()) {
+			query.setParameter("deleted",projectRequest.isDeleted());	
 		}
 		
 		int resultObjects = query.executeUpdate();
@@ -89,7 +93,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	public int createScenario(PricePlannerScenarioRequest scenarioRequest, String brandId, String userName)
+	public BigInteger createScenario(PricePlannerScenarioRequest scenarioRequest, String brandId, String userName)
 			throws SQLException, Exception {
 
 		logger.debug("PricePlannerDAOImpl createScenario function starts ::: ");
@@ -108,7 +112,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		logger.info("Hibernate will save the scenario object ::: "+scenario.toString());
 		session.save(scenario);
 		
-		return scenario.getId();
+		return scenario.getScenarioId();
 	
 		
 	}
@@ -125,11 +129,12 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 			sb.append(" ,S.projectId =: proj_id");
 		}
 		
-		sb.append(" WHERE S.id =:id");
+		sb.append(" WHERE S.scenarioId =:id and S.brandId=:brandId");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("updated_on",Date.from(Instant.now()));
 		query.setParameter("updated_by",userName);	
 		query.setParameter("id",scenarioRequest.getScenarioId());	
+		query.setParameter("brandId",Integer.parseInt(brandId));
 		
 		if(scenarioRequest.getScenarioName()!=null) {
 			query.setParameter("scenario_name",scenarioRequest.getScenarioName());	
@@ -145,15 +150,64 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 
 	@Override
 	public List<PricePlannerVo> getProject(String brandId, int projectId) throws SQLException, Exception {
-		StringBuilder sb = new StringBuilder ("SELECT NEW fb.pricingAnalytics.model.vo.PricePlannerVo(PR.id, PR.brandId, PR.projectName, PR.status, PR.deleted, PR.createdOn, PR.createdBy, PR.updatedOn, PR.updatedBy, "
-				+ "SC.id, SC.scenarioName, SC.createdOn, SC.createdBy, SC.updatedOn, SC.updatedBy)"
-				+ " FROM Project PR LEFT JOIN Scenario SC ON SC.projectId = PR.id WHERE PR.id= :project_id AND PR.brandId =: brand_id");
+		StringBuilder sb = new StringBuilder ("SELECT NEW fb.pricingAnalytics.model.vo.PricePlannerVo(PR.projectId, PR.brandId, PR.projectName, PR.status, PR.deleted, PR.createdOn, PR.createdBy, PR.updatedOn, PR.updatedBy, "
+				+ "SC.scenarioId, SC.scenarioName, SC.createdOn, SC.createdBy, SC.updatedOn, SC.updatedBy)"
+				+ " FROM Project PR LEFT JOIN Scenario SC ON SC.projectId = PR.projectId WHERE PR.projectId= :project_id AND PR.brandId =: brand_id");
 		
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("project_id",projectId);
 		query.setParameter("brand_id",Integer.parseInt(brandId));
 		List<PricePlannerVo> resultObjects  = query.list();
 		return resultObjects;
+	}
+
+	@Override
+	public void copyProjectData(BigInteger projectId, String brandId,String userName) {
+	
+		try{
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyProjectData]");
+		query.registerStoredProcedureParameter(0, BigInteger.class , ParameterMode.IN);
+		query.setParameter(0, projectId);
+		query.registerStoredProcedureParameter(1, Integer.class , ParameterMode.IN);
+		query.setParameter(1, Integer.valueOf(brandId));
+		query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
+		query.setParameter(2, userName);
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		if(rows.size() > 0){
+			logger.info("Project Data Copied Successfully from Store_Product_Info to IST_Store_Product_Info ... ");
+		}
+		}catch(Exception ex){
+			logger.info("Exception occured while copying Project Data from Store_Product_Info to IST_Store_Product_Info ... ");
+		}
+	}
+
+	@Override
+	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,
+			String brandId, String userName)  {
+		
+		try{
+			
+		
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyScenarioData]");
+		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
+		query.setParameter(0, Integer.valueOf(brandId));
+		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
+		query.setParameter(1, projectId);
+		query.registerStoredProcedureParameter(2, BigInteger.class , ParameterMode.IN);
+		query.setParameter(2, scenarioId);
+		query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
+		query.setParameter(3, scenarioId);
+		query.execute();
+		List<Object[]> rows = query.getResultList();
+		if(rows.size() > 0){
+			logger.info("Scenario Data Copied Successfully from Store_Product_Info to IST_Store_Info and IST_Product_Tier_Info ... ");
+		}
+		}catch(Exception ex){
+			logger.info("Exception occured while copying Scenario data from Store_Product_Info to IST_Store_Info and IST_Product_Tier_Info ... ");
+		}
 	}
 
 

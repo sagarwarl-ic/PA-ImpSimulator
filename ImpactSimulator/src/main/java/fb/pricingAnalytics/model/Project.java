@@ -1,5 +1,6 @@
 package fb.pricingAnalytics.model;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,13 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Project",schema="Simulator.dbo")
+@Table(name="Project",schema="ImpactSimulator.dbo")
 public class Project {
-
 
 	@Id
 	@GeneratedValue
-	private int id;
+	@Column(name="ProjectId")
+	private BigInteger projectId;
 	
 	@Column(name="BrandId")
 	private int brandId;
@@ -25,6 +26,9 @@ public class Project {
 	
 	@Column(name="Status")
 	private int status;
+	
+	@Column(name="Comment")
+	private String comment;
 	
 	@Column(name="Deleted")
 	private int deleted;
@@ -41,12 +45,20 @@ public class Project {
 	@Column(name="UpdatedBy")
 	private String updatedBy;
 
-	public int getId() {
-		return id;
+	public BigInteger getProjectId() {
+		return projectId;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	public int getBrandId() {
@@ -115,7 +127,7 @@ public class Project {
 
 	@Override
 	public String toString() {
-		return "Project [id=" + id + ", brandId=" + brandId + ", projectName=" + projectName + ", status=" + status
+		return "Project [ProjectId=" + projectId + ", brandId=" + brandId + ", projectName=" + projectName + ", status=" + status
 				+ ", deleted=" + deleted + ", createdOn=" + createdOn + ", createdBy=" + createdBy + ", updatedOn="
 				+ updatedOn + ", updatedBy=" + updatedBy + "]";
 	}

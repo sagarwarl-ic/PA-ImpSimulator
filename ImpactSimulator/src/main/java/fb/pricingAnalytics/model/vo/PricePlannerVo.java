@@ -1,5 +1,6 @@
 package fb.pricingAnalytics.model.vo;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PricePlannerVo {
 	
 	
-	private Integer id;
+	private BigInteger id;
 	private Integer brandId;
 	private String name;
 	private Integer status;
@@ -19,7 +20,7 @@ public class PricePlannerVo {
 	private String updatedBy;
 	
 	@JsonIgnore
-	private Integer scenarioId;
+	private BigInteger scenarioId;
 	@JsonIgnore
 	private String scenarioName;
 	@JsonIgnore
@@ -41,7 +42,7 @@ public class PricePlannerVo {
 	
 
 
-	public PricePlannerVo(Integer id, Integer brandId, String name, Integer status, Integer deleted, Date createdOn, String createdBy,
+	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, Integer deleted, Date createdOn, String createdBy,
 			Date updatedOn, String updatedBy) {
 		super();
 		this.id = id;
@@ -56,8 +57,8 @@ public class PricePlannerVo {
 	}
 
 
-	public PricePlannerVo(Integer id, Integer brandId, String name, Integer status, Integer deleted, Date createdOn, String createdBy,
-			Date updatedOn, String updatedBy, Integer scenarioId, String scenarioName, Date scenarioCreatedOn, String scenarioCreatedBy,
+	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, Integer deleted, Date createdOn, String createdBy,
+			Date updatedOn, String updatedBy, BigInteger scenarioId, String scenarioName, Date scenarioCreatedOn, String scenarioCreatedBy,
 			Date scenarioUpdatedOn, String scenarioUpdatedBy) {
 		super();
 		this.id = id;
@@ -82,11 +83,11 @@ public class PricePlannerVo {
 	}
 
 
-	public Integer getId() {
+	public BigInteger getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 
@@ -154,11 +155,11 @@ public class PricePlannerVo {
 		this.updatedBy = updatedBy;
 	}
 
-	public Integer getScenarioId() {
+	public BigInteger getScenarioId() {
 		return scenarioId;
 	}
 
-	public void setScenarioId(Integer scenarioId) {
+	public void setScenarioId(BigInteger scenarioId) {
 		this.scenarioId = scenarioId;
 	}
 

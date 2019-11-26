@@ -1,5 +1,6 @@
 package fb.pricingAnalytics.service.impl;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 
 	@Transactional
 	@Override
-	public int createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
+	public BigInteger createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
 		
 		return pricePlannerDAO.createProject(projectRequest, brandId, userName);
 		
@@ -40,7 +41,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 
 	@Transactional
 	@Override
-	public int createScenario(PricePlannerScenarioRequest scenarioRequest, String brandId, String userName)
+	public BigInteger createScenario(PricePlannerScenarioRequest scenarioRequest, String brandId, String userName)
 			throws SQLException, Exception {
 
 		return pricePlannerDAO.createScenario(scenarioRequest, brandId, userName);
@@ -82,6 +83,17 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 		else {
 			return null;
 		}
+	}
+
+	@Override
+	public void copyProjectData(BigInteger projectId, String brandId, String userName){
+		pricePlannerDAO.copyProjectData(projectId, brandId, userName);
+	}
+
+	@Override
+	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,String brandId, String userName) {
+		pricePlannerDAO.copyScenarioData(projectId, scenarioId,brandId, userName);
+		
 	}
 
 

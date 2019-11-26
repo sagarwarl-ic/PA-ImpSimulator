@@ -1,10 +1,15 @@
 package fb.pricingAnalytics.request;
 
+import java.math.BigInteger;
+
 public class RequestPricePlanner {
 	
 	private SearchPricePlanner search;
 	private SortPricePlanner sort;
 	private PagingPricePlanner paging;
+	private BigInteger scenario_Id ;
+	private BigInteger project_Id;
+	private Integer brandId;
 	
 	public SearchPricePlanner getSearch() {
 		return search;
@@ -23,6 +28,24 @@ public class RequestPricePlanner {
 	}
 	public void setPaging(PagingPricePlanner paging) {
 		this.paging = paging;
+	}
+	public BigInteger getScenario_Id() {
+		return scenario_Id;
+	}
+	public void setScenario_Id(BigInteger scenario_Id) {
+		this.scenario_Id = scenario_Id;
+	}
+	public BigInteger getProject_Id() {
+		return project_Id;
+	}
+	public void setProject_Id(BigInteger project_Id) {
+		this.project_Id = project_Id;
+	}
+	public Integer getBrandId() {
+		return brandId;
+	}
+	public void setBrandId(Integer brandId) {
+		this.brandId = brandId;
 	}
 	
 }

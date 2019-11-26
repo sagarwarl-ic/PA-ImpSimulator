@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="vw_store_product_info_temp_ist",schema="Simulator.EPL")
+@Table(name="vw_store_product_info_temp_ist",schema="ImpactSimulator.EPL")
 public class vw_store_product_info_temp_ist implements Serializable {
 
 	@Id
