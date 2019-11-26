@@ -359,16 +359,16 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	
 	
 	@Override
-	public FilterData getFilterData() throws SQLException,Exception {
+	public FilterData getFilterData(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
 		FilterData filterData = new FilterData();
-		getCat1Data(filterData);
-		getCat2Data(filterData);
-		getCat3Data(filterData);
-		getCurrentTier(filterData);
-		getPricingPower(filterData);
-		getProductPriceSentivity(filterData);
-		getStoreSentivity(filterData);
-		getTierChange(filterData);
+		getCat1Data(filterData,requestPricePlanner);
+		getCat2Data(filterData,requestPricePlanner);
+		getCat3Data(filterData,requestPricePlanner);
+		getCurrentTier(filterData,requestPricePlanner);
+		getPricingPower(filterData,requestPricePlanner);
+		getProductPriceSentivity(filterData,requestPricePlanner);
+		getStoreSentivity(filterData,requestPricePlanner);
+		//getTierChange(filterData,requestPricePlanner);
 		return filterData;
 		
 		
@@ -377,32 +377,40 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	}
 
 
-	private void getTierChange(FilterData filterData) {
+	private void getTierChange(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
 		StringBuilder sb =  new StringBuilder("SELECT distinct "
-					+ "(CASE WHEN (spi.Current_Tier = si.proposedTier) THEN 'N' ELSE 'Y' END) AS Tier_Change FROM vw_store_product_info_temp_ist spi LEFT JOIN IST_Store_Info si ON (spi.Store_Code = si.storeCode)");
+					+ "(CASE WHEN (spi.Current_Tier = si.proposedTier) THEN 'N' ELSE 'Y' END) AS Tier_Change FROM IST_Store_Product_Info spi LEFT JOIN IST_Store_Info si ON (spi.storeCode = si.storeCode and spi.brandId = si.brandId and spi.projectId = si.projectId)"
+					+ "where spi.brandId=:brand_Id and spi.projectId=:project_Id and spi.scenarioId=:scenario_Id");
 			
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("scenario_Id", requestPricePlanner.getScenario_Id());
 		List<Object> rows = query.list();
 		String[] tierChangeList = rows.stream().toArray(String[]::new);
 		filterData.setTier_Change(tierChangeList);
 	}
 
 
-	private void getStoreSentivity(FilterData filterData) {
+	private void getStoreSentivity(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] storeSentivityList = rows.stream().toArray(String[]::new);
 		filterData.setStore_Sensitivity(storeSentivityList);
 	}
 
 
-	private void getProductPriceSentivity(FilterData filterData) {
+	private void getProductPriceSentivity(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Product_Price_Sensitivity from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct Product_Price_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] prodcutPriceSensitivityList = rows.stream().toArray(String[]::new);
 		filterData.setProduct_Price_Sensitivity(prodcutPriceSensitivityList);
@@ -410,10 +418,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	}
 
 
-	private void getPricingPower(FilterData filterData) {
+	private void getPricingPower(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Pricing_Power from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] pricingPowerList = rows.stream().toArray(String[]::new);
 		filterData.setPricing_Power(pricingPowerList);
@@ -421,10 +431,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	}
 
 
-	private void getCurrentTier(FilterData filterData) {
+	private void getCurrentTier(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Current_Tier from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct Current_Tier from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] currentTiers = rows.stream().toArray(String[]::new);
 		filterData.setCurrent_Tier(currentTiers);
@@ -432,10 +444,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	}
 
 
-	private void getCat3Data(FilterData filterData) {
+	private void getCat3Data(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Cat3 from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct Cat3 from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] cat3 = rows.stream().toArray(String[]::new);
 		filterData.setCat3(cat3);
@@ -443,10 +457,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	}
 
 
-	private void getCat2Data(FilterData filterData) {
+	private void getCat2Data(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Cat2 from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct Cat2 from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] cat2 = rows.stream().toArray(String[]::new);
 		filterData.setCat2(cat2);
@@ -454,10 +470,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	}
 
 
-	private void getCat1Data(FilterData filterData) {
+	private void getCat1Data(FilterData filterData, RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Cat1 from vw_store_product_info_temp_ist");
+		StringBuilder sb =  new StringBuilder("select distinct Cat1 from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
 		List<Object> rows = query.list();
 		String[] cat1 = rows.stream().toArray(String[]::new);
 		filterData.setCat1(cat1);

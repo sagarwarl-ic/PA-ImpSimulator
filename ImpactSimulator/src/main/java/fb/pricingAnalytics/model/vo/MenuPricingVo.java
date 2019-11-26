@@ -7,58 +7,58 @@ import com.google.gson.annotations.SerializedName;
 
 public class MenuPricingVo {
 
-	@SerializedName("tierChange")
+	//@SerializedName("tierChange")
 	private String Tier_Change;
 	
-	@SerializedName("cat1")
+	//@SerializedName("cat1")
 	private String Cat1;
 	
-	@SerializedName("cat2")
+	//@SerializedName("cat2")
 	private String Cat2;
 	
-	@SerializedName("cat3")
+	//@SerializedName("cat3")
 	private String Cat3;
 	
-	@SerializedName("currentTier")
+	//@SerializedName("currentTier")
 	private String Current_Tier;
 	
-	@SerializedName("productID")
+	//@SerializedName("productID")
 	private String Product_ID;
 	
-	@SerializedName("productName")
+	//@SerializedName("productName")
 	private String Product_Name;
 	
-	@SerializedName("productPriceSensitivity")
+	//@SerializedName("productPriceSensitivity")
 	private String Product_Price_Sensitivity;
 	
-	@SerializedName("proposedTier")
+	//@SerializedName("proposedTier")
 	private String Proposed_Tier;
 	
-	@SerializedName("salesImpact")
+	//@SerializedName("salesImpact")
 	private Double Sales_Impact;
 	
-	@SerializedName("newSales")
+	//@SerializedName("newSales")
 	private Double New_Sales;
 	
-	@SerializedName("salesImpactPercentage")
+	//@SerializedName("salesImpactPercentage")
 	private Double Sales_Impact_Percentage;
 	
-	@SerializedName("originalSales")
+	//@SerializedName("originalSales")
 	private BigDecimal Original_Sales;
 	
-	@SerializedName("priceChangePercent")
+	//@SerializedName("priceChangePercent")
 	private Double Price_Change_Percent;
 	
-	@SerializedName("priceChange")
+	//@SerializedName("priceChange")
 	private Double Price_Change;
 	
-	@SerializedName("newPrice")
+	//@SerializedName("newPrice")
 	private Double New_Price;
 	
-	@SerializedName("productPrice")
+	//@SerializedName("productPrice")
 	private Double Product_Price;
 	
-	@SerializedName("quantityTY")
+	//@SerializedName("quantityTY")
 	private BigInteger Quantity_TY;
 	
 	
