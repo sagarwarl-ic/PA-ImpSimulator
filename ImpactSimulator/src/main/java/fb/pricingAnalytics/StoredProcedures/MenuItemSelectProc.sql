@@ -11,7 +11,7 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=1,
+ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
 @pageSize int=100,
 @Cat1 VARCHAR(100)=null,
 @Cat2 VARCHAR(100)=null,
