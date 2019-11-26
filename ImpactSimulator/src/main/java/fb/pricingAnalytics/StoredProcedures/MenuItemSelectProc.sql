@@ -110,7 +110,9 @@ AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_
 (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID
 and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
-) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id  
+) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
+and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id 
+and (Tier_Change_Text = ISNULL(@TierChange,Tier_Change_Text)) 
 GROUP BY (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Cat1],
 [Custom SQL Query].[Cat2],
