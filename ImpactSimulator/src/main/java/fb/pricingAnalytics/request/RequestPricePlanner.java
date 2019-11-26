@@ -7,7 +7,7 @@ public class RequestPricePlanner {
 	private SearchPricePlanner search;
 	private SortPricePlanner sort;
 	private PagingPricePlanner paging;
-	private BigInteger scenario_Id ;
+	private BigInteger scenario_Id;
 	private BigInteger project_Id;
 	private Integer brandId;
 	

@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
-import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
 import fb.pricingAnalytics.model.vo.StoreDistributionVo;
-import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
@@ -56,7 +54,7 @@ public class MenuPricingController {
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getScenario_Id()==null){
+		if(!validateInputRequest(requestPricePlanner)){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -82,6 +80,8 @@ public class MenuPricingController {
 		return new ResponseEntity<MenuPricingResponse>(response, HttpStatus.OK);
 
 	}
+
+	
 	
 	@RequestMapping(value="/updateMenuTierPrice", method = RequestMethod.POST)
 	public ResponseEntity<?> updateMenuTierPrice(HttpServletRequest request,@RequestBody RequestMenuTierPriceUpdate requestMenuTier) {
@@ -128,7 +128,7 @@ public class MenuPricingController {
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getScenario_Id()==null){
+		if(!validateInputRequest(requestPricePlanner)){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -198,7 +198,7 @@ public class MenuPricingController {
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getScenario_Id()==null){
+		if(!validateInputRequest(requestPricePlanner)){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -296,17 +296,21 @@ public class MenuPricingController {
 	
 	
 	
-	@RequestMapping(value = "/getFilterData", method = RequestMethod.GET)
-	public ResponseEntity<?> getFilterData(HttpServletRequest request) {
+	@RequestMapping(value = "/getFilterData", method = RequestMethod.POST)
+	public ResponseEntity<?> getFilterData(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 		logger.debug("MenuPricingController getFilterData function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
-		String tenantId = userAuth.getBrandId();
+		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
 		logger.info("tenantId = " + tenantId);
-		
+		requestPricePlanner.setBrandId(tenantId);
+		if(!validateInputRequest(requestPricePlanner)){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+					HttpStatus.BAD_REQUEST);
+		}
 		@SuppressWarnings("unchecked")
 		FilterDataResponse response = new FilterDataResponse();
 		try {
-			FilterData filterData = menuPricingService.getFilterData();
+			FilterData filterData = menuPricingService.getFilterData(requestPricePlanner);
 			response.setFilterData(filterData);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
@@ -356,6 +360,16 @@ public class MenuPricingController {
 	}
 	
 
+	
+	private boolean validateInputRequest(RequestPricePlanner requestPricePlanner) {
+		
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 || requestPricePlanner.getScenario_Id()==null
+				|| requestPricePlanner.getScenario_Id().intValue() <= 0){
+			return false;
+		}
+		return true;
+	}
+	
 	/*@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
 	public ResponseEntity<?> getOtherStoreView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 

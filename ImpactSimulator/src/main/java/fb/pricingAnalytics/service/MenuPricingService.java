@@ -26,6 +26,6 @@ public interface MenuPricingService {
 	public OverAllImpactsVo getOverAllImpacts(RequestPricePlanner requestPricePlanner)throws SQLException, Exception;
 	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)throws SQLException, Exception;
 	public List<MenuItemDistributionVo> getMenuItemDistribution(RequestPricePlanner requestPricePlanner)throws SQLException, Exception;
-	public FilterData getFilterData()throws SQLException, Exception;
+	public FilterData getFilterData(RequestPricePlanner requestPricePlanner)throws SQLException, Exception;
 	public List<Object> getFilterData(String filterParam)throws SQLException, Exception;
 }

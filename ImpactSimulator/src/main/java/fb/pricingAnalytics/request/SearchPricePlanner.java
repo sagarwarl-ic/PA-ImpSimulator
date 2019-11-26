@@ -9,7 +9,7 @@ public class SearchPricePlanner {
 	private String Tier_Change;
 	private String Price_Sensitivity;
 	private String Cat1;
-	private String cat2;
+	private String Cat2;
 	
 	public String getCurrent_Tier() {
 		return Current_Tier;
@@ -48,11 +48,12 @@ public class SearchPricePlanner {
 		Cat1 = cat1;
 	}
 	public String getCat2() {
-		return cat2;
+		return Cat2;
 	}
 	public void setCat2(String cat2) {
-		this.cat2 = cat2;
+		Cat2 = cat2;
 	}
+	
 	
 		
 }

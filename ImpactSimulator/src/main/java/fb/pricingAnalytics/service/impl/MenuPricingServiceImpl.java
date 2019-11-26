@@ -74,8 +74,8 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	}
 	
 	@Override
-	public FilterData getFilterData() throws SQLException,Exception {
-		return menuPricingDAO.getFilterData();
+	public FilterData getFilterData(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
+		return menuPricingDAO.getFilterData(requestPricePlanner);
 	}
 	
 	@Override
