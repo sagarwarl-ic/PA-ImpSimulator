@@ -61,7 +61,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				query.setParameter(2, null);
 			}if(requestPricePlanner.getSearch().getCat2()!=null){
 				query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
-				query.setParameter(3, requestPricePlanner.getSearch().getCat1());
+				query.setParameter(3, requestPricePlanner.getSearch().getCat2());
 			}else{
 				query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
 				query.setParameter(3, null);

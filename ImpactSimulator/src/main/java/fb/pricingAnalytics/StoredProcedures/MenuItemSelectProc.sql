@@ -11,7 +11,7 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=1,
+ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
 @pageSize int=100,
 @Cat1 VARCHAR(100)=null,
 @Cat2 VARCHAR(100)=null,
@@ -92,7 +92,8 @@ SELECT
 [IST_Store_Product_Info].[Store_Sensitivity] AS [Store_Sensitivity],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
-[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store]
+[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store],
+(CASE WHEN ([IST_Store_Product_Info].[Current_Tier] = [IST_Store_Info].[Proposed_Tier]) THEN 'N' ELSE 'Y' END) AS Tier_Change_Text 
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
@@ -109,7 +110,9 @@ AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_
 (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID
 and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
-) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id  
+) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
+and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id 
+and (Tier_Change_Text = ISNULL(@TierChange,Tier_Change_Text)) 
 GROUP BY (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Cat1],
 [Custom SQL Query].[Cat2],
@@ -129,7 +132,7 @@ SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item
 )
 SELECT *
 FROM Data_Menu_Item
-CROSS JOIN Count_CTE  WHERE (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
+CROSS JOIN Count_CTE 
   order by  
 CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction != 'DESC' THEN [Product_Name] END,
