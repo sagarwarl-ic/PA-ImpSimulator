@@ -1,5 +1,6 @@
 package fb.pricingAnalytics.controller;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -47,7 +48,7 @@ public class PricePlannerController {
 		
 		logger.info("Project Name  ::: "+projectRequest.getProjectName() +" "+
 				"Status Id ::: "+projectRequest.getStatusId() +" "+
-				"Deleted ::: "+projectRequest.getDeleted() );
+				"Deleted ::: "+projectRequest.isDeleted());
 		
 		UserAuth userAuth=AuthUtils.getUserAuthData(request);
 		String brandId = userAuth.getBrandId();
@@ -58,12 +59,13 @@ public class PricePlannerController {
 		logger.info("Brand Id ::: "+ brandId);
 			
 		try {
-				int projectId = pricePlannerService.createProject(projectRequest, brandId, userName);
-				if(projectId<=0) {
+				BigInteger projectId = pricePlannerService.createProject(projectRequest, brandId, userName);
+				if(null != projectId && projectId.intValue()<=0) {
 					return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the table"),
 						    HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-				response.setResult(projectId);
+				pricePlannerService.copyProjectData(projectId,brandId,userName);
+				response.setResult(projectId.intValue());
 			}
 		catch(SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
@@ -94,7 +96,7 @@ public class PricePlannerController {
 		logger.info("Project Id  ::: "+projectRequest.getProjectId() +" "+
 				 "Project Name  ::: "+projectRequest.getProjectName() +" "+
 				"Status Id ::: "+projectRequest.getStatusId() +" "+
-				"Deleted ::: "+projectRequest.getDeleted() );
+				"Deleted ::: "+projectRequest.isDeleted());
 		
 		UserAuth userAuth=AuthUtils.getUserAuthData(request);
 		String userName = userAuth.getUserName();
@@ -140,12 +142,13 @@ public class PricePlannerController {
 		logger.info("Brand Id ::: "+ brandId);
 			
 		try {
-				int scenarioId = pricePlannerService.createScenario(scenarioRequest, brandId, userName);
-				if(scenarioId<=0) {
+			BigInteger scenarioId = pricePlannerService.createScenario(scenarioRequest, brandId, userName);
+				if(null != scenarioId && scenarioId.intValue() > 0) {
 					return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the table"),
 						    HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-				response.setResult(scenarioId);
+				pricePlannerService.copyScenarioData(scenarioRequest.getProjectId(),scenarioId,brandId,userName);
+				response.setResult(scenarioId.intValue());
 			}
 		catch(SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());

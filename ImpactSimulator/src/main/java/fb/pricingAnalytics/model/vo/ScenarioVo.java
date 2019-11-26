@@ -1,21 +1,23 @@
 package fb.pricingAnalytics.model.vo;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 public class ScenarioVo {
 	
-	private Integer id;
+	private BigInteger id;
 	private Integer brandId;
 	private String sceanrioName;
-	private Integer projectId;
+	private BigInteger projectId;
 	private Date createdOn;
 	private String createdBy;
 	private Date updatedOn;
 	private String updatedBy;
-	public Integer getId() {
+	
+	public BigInteger getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(BigInteger id) {
 		this.id = id;
 	}
 	public Integer getBrandId() {
@@ -30,10 +32,10 @@ public class ScenarioVo {
 	public void setSceanrioName(String sceanrioName) {
 		this.sceanrioName = sceanrioName;
 	}
-	public Integer getProjectId() {
+	public BigInteger getProjectId() {
 		return projectId;
 	}
-	public void setProjectId(Integer projectId) {
+	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
 	}
 	public Date getCreatedOn() {

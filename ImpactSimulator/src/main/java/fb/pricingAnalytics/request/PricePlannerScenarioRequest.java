@@ -1,21 +1,25 @@
 package fb.pricingAnalytics.request;
 
+import java.math.BigInteger;
+
 public class PricePlannerScenarioRequest {
 	
-	private Integer scenarioId;
-	private Integer projectId;
+	private BigInteger scenarioId;
+	private BigInteger projectId;
 	private String scenarioName;
 	
-	public Integer getScenarioId() {
+	
+	public BigInteger getScenarioId() {
 		return scenarioId;
 	}
-	public void setScenarioId(Integer scenarioId) {
+	public void setScenarioId(BigInteger scenarioId) {
 		this.scenarioId = scenarioId;
 	}
-	public Integer getProjectId() {
+	
+	public BigInteger getProjectId() {
 		return projectId;
 	}
-	public void setProjectId(Integer projectId) {
+	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
 	}
 	public String getScenarioName() {

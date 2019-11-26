@@ -55,6 +55,11 @@ public class MenuPricingController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
+		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getScenario_Id()==null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+					HttpStatus.BAD_REQUEST);
+		}
 		
 		@SuppressWarnings("unchecked")
 		MenuPricingResponse response = new MenuPricingResponse();
@@ -82,7 +87,13 @@ public class MenuPricingController {
 	public ResponseEntity<?> updateMenuTierPrice(HttpServletRequest request,@RequestBody RequestMenuTierPriceUpdate requestMenuTier) {
 		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
 		int updatedRows = -1;
-		if(null == requestMenuTier || requestMenuTier.getProductId()== null || requestMenuTier.getTier() == null){
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String userName = userAuth.getUserName();
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		requestMenuTier.setBrandId(Integer.valueOf(tenantId));
+		if(null == requestMenuTier || requestMenuTier.getProductId()== null || requestMenuTier.getTier() == null || 
+				requestMenuTier.getProjectId()==null || requestMenuTier.getScenarioId()==null){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
@@ -91,8 +102,6 @@ public class MenuPricingController {
 				"Tier  ::: "+requestMenuTier.getTier() +" "+
 				"Price ::: "+requestMenuTier.getPrice() );
 		
-		UserAuth userAuth=AuthUtils.getUserAuthData(request);
-		String userName = userAuth.getUserName();
 		try {
 			updatedRows = menuPricingService.updateMenuTierPrice(requestMenuTier,userName);
 		}catch(Exception e) {
@@ -118,7 +127,11 @@ public class MenuPricingController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
-		
+		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getScenario_Id()==null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+					HttpStatus.BAD_REQUEST);
+		}
 		@SuppressWarnings("unchecked")
 		StoreTierResponse response = new StoreTierResponse();
 		try {
@@ -148,11 +161,18 @@ public class MenuPricingController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
+		updateStoreInfoRequest.setBrandId(Integer.valueOf(tenantId));
 		FBRestResponse response = null;
-		Integer storeCode = updateStoreInfoRequest.getStoreCode();
-		String proposedTier = updateStoreInfoRequest.getProposedTier();
+		
+		if(null == updateStoreInfoRequest || updateStoreInfoRequest.getStoreCode()== null || updateStoreInfoRequest.getProposedTier()== null || 
+				updateStoreInfoRequest.getProject_Id()==null || updateStoreInfoRequest.getScenario_Id()==null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		
 		try {
-			response = menuPricingService.updateStoreTier(proposedTier,storeCode,userAuth.getUserName());
+			response = menuPricingService.updateStoreTier(updateStoreInfoRequest,userAuth.getUserName());
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
@@ -170,18 +190,22 @@ public class MenuPricingController {
 
 	}
 	
-	@RequestMapping(value = "/getOverAllImpacts", method = RequestMethod.GET)
-	public ResponseEntity<?> getOverAllImpacts(HttpServletRequest request) {
+	@RequestMapping(value = "/getOverAllImpacts", method = RequestMethod.POST)
+	public ResponseEntity<?> getOverAllImpacts(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getOverAllImpacts function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
-		
+		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getScenario_Id()==null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+					HttpStatus.BAD_REQUEST);
+		}
 		@SuppressWarnings("unchecked")
 		OverAllImpactsResponse response = new OverAllImpactsResponse();
 		try {
-			OverAllImpactsVo overAllImpactsVo = menuPricingService.getOverAllImpacts();
+			OverAllImpactsVo overAllImpactsVo = menuPricingService.getOverAllImpacts(requestPricePlanner);
 			response.setOverAllImpact(overAllImpactsVo);;
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
@@ -201,18 +225,22 @@ public class MenuPricingController {
 	}
 	
 	
-	@RequestMapping(value = "/getStoreDistribution", method = RequestMethod.GET)
-	public ResponseEntity<?> getStoreDistribution(HttpServletRequest request) {
+	@RequestMapping(value = "/getStoreDistribution", method = RequestMethod.POST)
+	public ResponseEntity<?> getStoreDistribution(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getStoreDistribution function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
-		
+		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
+		if(requestPricePlanner.getProject_Id()==null ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId is a required field"),
+					HttpStatus.BAD_REQUEST);
+		}
 		@SuppressWarnings("unchecked")
 		StoreDistributionResponse response = new StoreDistributionResponse();
 		try {
-			List<StoreDistributionVo> storeDistributionVo = menuPricingService.getStoreDistribution();
+			List<StoreDistributionVo> storeDistributionVo = menuPricingService.getStoreDistribution(requestPricePlanner);
 			response.setStoreDistributionVo(storeDistributionVo);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
@@ -232,18 +260,22 @@ public class MenuPricingController {
 	}
 	
 	
-	@RequestMapping(value = "/getMenuItemDistribution", method = RequestMethod.GET)
-	public ResponseEntity<?> getMenuItemDistribution (HttpServletRequest request) {
+	@RequestMapping(value = "/getMenuItemDistribution", method = RequestMethod.POST)
+	public ResponseEntity<?> getMenuItemDistribution (HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getMenuItemDistribution function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
-		
+		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
+		if(requestPricePlanner.getProject_Id()==null ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId is a required field"),
+					HttpStatus.BAD_REQUEST);
+		}
 		@SuppressWarnings("unchecked")
 		MenuItemDistributionResponse response = new MenuItemDistributionResponse();
 		try {
-			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService.getMenuItemDistribution();
+			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService.getMenuItemDistribution(requestPricePlanner);
 			response.setMenuItemDistributionVo(menuItemDistributionVo);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());

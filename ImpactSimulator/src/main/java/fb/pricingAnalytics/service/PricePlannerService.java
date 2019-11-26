@@ -1,5 +1,6 @@
 package fb.pricingAnalytics.service;
 
+import java.math.BigInteger;
 import java.sql.SQLException;
 
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
@@ -8,11 +9,13 @@ import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
 
 public interface PricePlannerService {
 	
-	public int createProject(PricePlannerProjectRequest projectRequest,String brandId, String userName) throws SQLException,Exception;
+	public BigInteger createProject(PricePlannerProjectRequest projectRequest,String brandId, String userName) throws SQLException,Exception;
 	public int updateProject(PricePlannerProjectRequest projectRequest,String brandId, String userName) throws SQLException,Exception;
-	public int createScenario(PricePlannerScenarioRequest scenarioRequest,String brandId, String userName) throws SQLException,Exception;
+	public BigInteger createScenario(PricePlannerScenarioRequest scenarioRequest,String brandId, String userName) throws SQLException,Exception;
 	public int updateScenario(PricePlannerScenarioRequest scenarioRequest,String brandId, String userName) throws SQLException,Exception;
 	public PricePlannerVo getProject(String brandId, int projectId) throws SQLException,Exception;
+	public void copyProjectData(BigInteger projectId, String brandId, String userName);
+	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,String brandId, String userName);
 
 
 }

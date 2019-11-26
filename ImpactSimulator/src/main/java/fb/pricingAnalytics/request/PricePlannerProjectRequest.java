@@ -1,16 +1,19 @@
 package fb.pricingAnalytics.request;
 
+import java.math.BigInteger;
+
 public class PricePlannerProjectRequest {
 	
-	private Integer projectId;
+	private BigInteger projectId;
 	private String projectName;
 	private Integer statusId;
-	private Integer deleted;
+	private boolean deleted;
 	
-	public Integer getProjectId() {
+	
+	public BigInteger getProjectId() {
 		return projectId;
 	}
-	public void setProjectId(Integer projectId) {
+	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
 	}
 	public String getProjectName() {
@@ -25,11 +28,12 @@ public class PricePlannerProjectRequest {
 	public void setStatusId(Integer statusId) {
 		this.statusId = statusId;
 	}
-	public Integer getDeleted() {
+	public boolean isDeleted() {
 		return deleted;
 	}
-	public void setDeleted(Integer deleted) {
+	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+	
 
 }

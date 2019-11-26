@@ -15,6 +15,7 @@ import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
+import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
 import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
@@ -48,8 +49,8 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	
 	@Transactional
 	@Override
-	public FBRestResponse updateStoreTier(String proposedTier,Integer storeCode,String userName) throws SQLException, Exception {
-		return menuPricingDAO.updateStoreTier(proposedTier,storeCode,userName);
+	public FBRestResponse updateStoreTier(UpdateStoreInfoRequest updateStoreInfoRequest,String userName) throws SQLException, Exception {
+		return menuPricingDAO.updateStoreTier(updateStoreInfoRequest,userName);
 	}
 	
 	@Override
@@ -58,18 +59,18 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	}
 
 	@Override
-	public OverAllImpactsVo getOverAllImpacts() throws SQLException,Exception {
-		return menuPricingDAO.getOverAllImpacts();
+	public OverAllImpactsVo getOverAllImpacts(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
+		return menuPricingDAO.getOverAllImpacts(requestPricePlanner);
 	}
 
 	@Override
-	public List<StoreDistributionVo> getStoreDistribution()throws SQLException, Exception {
-		return menuPricingDAO.getStoreDistribution();
+	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)throws SQLException, Exception {
+		return menuPricingDAO.getStoreDistribution(requestPricePlanner);
 	}
 
 	@Override
-	public List<MenuItemDistributionVo> getMenuItemDistribution()throws SQLException, Exception {
-		return menuPricingDAO.getMenuItemDistribution();
+	public List<MenuItemDistributionVo> getMenuItemDistribution(RequestPricePlanner requestPricePlanner)throws SQLException, Exception {
+		return menuPricingDAO.getMenuItemDistribution(requestPricePlanner);
 	}
 	
 	@Override
