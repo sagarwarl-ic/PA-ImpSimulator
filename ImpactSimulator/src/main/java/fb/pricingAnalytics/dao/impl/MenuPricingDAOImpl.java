@@ -146,8 +146,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.setParameter("tier",requestMenuTier.getTier());	
 		query.setParameter("lastUpdated_date",Date.from(Instant.now()));
 		query.setParameter("lastUpdated_by",userName);	
-		query.setParameter("project_Id",requestMenuTier.getProjectId());	
-		query.setParameter("scenario_Id", requestMenuTier.getScenarioId());
+		query.setParameter("project_Id",requestMenuTier.getProject_Id());	
+		query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
 		query.setParameter("brand_Id", requestMenuTier.getBrandId());
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
