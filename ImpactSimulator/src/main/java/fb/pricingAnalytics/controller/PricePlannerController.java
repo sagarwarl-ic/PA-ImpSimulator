@@ -146,7 +146,7 @@ public class PricePlannerController {
 			
 		try {
 			BigInteger scenarioId = pricePlannerService.createScenario(scenarioRequest, brandId, userName);
-				if(null != scenarioId && scenarioId.intValue() > 0) {
+				if(null == scenarioId && scenarioId.intValue() <= 0) {
 					return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the table"),
 						    HttpStatus.INTERNAL_SERVER_ERROR);
 				}
