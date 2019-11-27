@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import fb.pricingAnalytics.dao.PricePlannerDAO;
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
+import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.model.vo.ScenarioVo;
 import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
@@ -96,5 +97,9 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 		
 	}
 
+	@Override
+	public List<ProjectVo> getProjectList(String brandId) throws SQLException,Exception {
+		return pricePlannerDAO.getProjectList(brandId);
+	}
 
 }

@@ -21,6 +21,7 @@ import fb.pricingAnalytics.dao.PricePlannerDAO;
 import fb.pricingAnalytics.model.Project;
 import fb.pricingAnalytics.model.Scenario;
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
+import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
 
@@ -210,5 +211,16 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		}
 	}
 
+	@Override
+	public List<ProjectVo> getProjectList(String brandId) throws SQLException,Exception {
+		StringBuilder sb = new StringBuilder("SELECT NEW fb.pricingAnalytics.model.vo.ProjectVo(PR.projectId,PR.brandId,PR.projectName,PR.status,"
+				+ "PR.comment,PR.deleted,PR.createdOn,PR.createdBy,PR.updatedOn,PR.updatedBy) FROM Project PR where PR.brandId =:brand_id and PR.deleted=0 order by PR.updatedOn DESC");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_id",Integer.parseInt(brandId));
+		System.out.println("Query : "+query);
+		List<ProjectVo> resultObjects  = query.list();
+		return resultObjects;
+		
+	}
 
 }
