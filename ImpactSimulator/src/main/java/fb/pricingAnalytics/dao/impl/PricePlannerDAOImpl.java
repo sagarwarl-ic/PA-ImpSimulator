@@ -153,7 +153,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	public List<PricePlannerVo> getProject(String brandId, int projectId) throws SQLException, Exception {
+	public List<PricePlannerVo> getProject(String brandId, BigInteger projectId) throws SQLException, Exception {
 		StringBuilder sb = new StringBuilder ("SELECT NEW fb.pricingAnalytics.model.vo.PricePlannerVo(PR.projectId, PR.brandId, PR.projectName, PR.status, PR.deleted, PR.createdOn, PR.createdBy, PR.updatedOn, PR.updatedBy, "
 				+ "SC.scenarioId, SC.scenarioName, SC.createdOn, SC.createdBy, SC.updatedOn, SC.updatedBy)"
 				+ " FROM Project PR LEFT JOIN Scenario SC ON SC.projectId = PR.projectId WHERE PR.projectId= :project_id AND PR.brandId =: brand_id");

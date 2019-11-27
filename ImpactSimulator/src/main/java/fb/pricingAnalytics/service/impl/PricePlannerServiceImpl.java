@@ -57,7 +57,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public PricePlannerVo getProject(String brandId, int projectId) throws SQLException, Exception {
+	public PricePlannerVo getProject(String brandId, BigInteger projectId) throws SQLException, Exception {
 
 		List<PricePlannerVo> projectList =  pricePlannerDAO.getProject(brandId, projectId);
 		if(projectList!=null && projectList.size()>0) {

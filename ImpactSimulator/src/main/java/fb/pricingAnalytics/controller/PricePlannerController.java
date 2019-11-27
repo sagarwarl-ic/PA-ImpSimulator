@@ -206,7 +206,7 @@ public class PricePlannerController {
 	}
 	
 	@RequestMapping(value="/getProject", method = RequestMethod.GET)
-	public ResponseEntity<?> getProject(HttpServletRequest request,@RequestParam("projectId") int projectId) {
+	public ResponseEntity<?> getProject(HttpServletRequest request,@RequestParam("projectId") BigInteger projectId) {
 		logger.debug("PricePlannerController getProject function starts :::");
 		UserAuth userAuth=AuthUtils.getUserAuthData(request);
 		String brandId = userAuth.getBrandId();
@@ -214,7 +214,7 @@ public class PricePlannerController {
 		PricePlannerVo pricePlannerVo = new PricePlannerVo();
 		logger.info("Project Id ::: " +projectId);
 		try {
-			if(projectId>0 && brandId!=null) {
+			if(projectId.intValue()>0 && brandId!=null) {
 				pricePlannerVo = pricePlannerService.getProject(brandId, projectId);
 			}else {
 				logger.error("The project Id is less than or equal to 0 or brandId is not set");
