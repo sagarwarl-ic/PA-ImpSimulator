@@ -109,6 +109,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		scenario.setScenarioName(scenarioRequest.getScenarioName());
 		scenario.setProjectId(scenarioRequest.getProjectId());
 		scenario.setIsLockedBy(userName);
+		//scenario.setComment(null);
+		scenario.setDeleted(false);
 
 		
 		logger.info("Hibernate will save the scenario object ::: "+scenario.toString());
