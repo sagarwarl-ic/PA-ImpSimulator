@@ -233,8 +233,8 @@ public class MenuPricingController {
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId is a required field"),
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -268,8 +268,8 @@ public class MenuPricingController {
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId is a required field"),
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -303,10 +303,12 @@ public class MenuPricingController {
 		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(tenantId);
-		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
+		
 		@SuppressWarnings("unchecked")
 		FilterDataResponse response = new FilterDataResponse();
 		try {
