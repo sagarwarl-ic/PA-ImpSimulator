@@ -297,14 +297,19 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 		
-		List<OverAllImpactsVo> result = new ArrayList<OverAllImpactsVo>(rows.size());
-		for (Object[] row : rows) {
-		    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
-		    
-		    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,((long)((Double)row[1] * 1e4)) / 1e4,
-		    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
+		if(rows.size()>0){
+			List<OverAllImpactsVo> result = new ArrayList<OverAllImpactsVo>(rows.size());
+			for (Object[] row : rows) {
+			    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
+			    
+			    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,((long)((Double)row[1] * 1e4)) / 1e4,
+			    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
+			}
+			return (OverAllImpactsVo) result.get(0);
+		}else{
+			return new OverAllImpactsVo((double)0, (double)0, (double)0, (double)0);
 		}
-		return (OverAllImpactsVo) result.get(0);
+		
 	}
 
 
