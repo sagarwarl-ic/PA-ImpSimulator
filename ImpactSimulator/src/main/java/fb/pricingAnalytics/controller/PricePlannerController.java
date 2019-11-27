@@ -31,7 +31,7 @@ import fb.pricingAnalytics.utils.FBConstants;
 import fb.pricingAnalytics.utils.FBRestResponse;
 
 @RestController
-@RequestMapping("/pa/priceplanner")
+@RequestMapping("/pp/priceplanner")
 public class PricePlannerController {
 
 	private static Logger logger = LoggerFactory.getLogger(PricePlannerController.class);
