@@ -171,17 +171,18 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		try{
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyProjectData]");
-		query.registerStoredProcedureParameter(0, BigInteger.class , ParameterMode.IN);
-		query.setParameter(0, projectId);
-		query.registerStoredProcedureParameter(1, Integer.class , ParameterMode.IN);
-		query.setParameter(1, Integer.valueOf(brandId));
+	
+		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
+		query.setParameter(0, Integer.valueOf(brandId));
+		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
+		query.setParameter(1, projectId);
 		query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
 		query.setParameter(2, userName);
 		query.execute();
-		List<Object[]> rows = query.getResultList();
+		/*List<Object[]> rows = query.getResultList();
 		if(rows.size() > 0){
 			logger.info("Project Data Copied Successfully from Store_Product_Info to IST_Store_Product_Info ... ");
-		}
+		}*/
 		}catch(Exception ex){
 			logger.info("Exception occured while copying Project Data from Store_Product_Info to IST_Store_Product_Info ... ");
 		}
@@ -203,12 +204,12 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		query.registerStoredProcedureParameter(2, BigInteger.class , ParameterMode.IN);
 		query.setParameter(2, scenarioId);
 		query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
-		query.setParameter(3, scenarioId);
+		query.setParameter(3, userName);
 		query.execute();
-		List<Object[]> rows = query.getResultList();
+		/*List<Object[]> rows = query.getResultList();
 		if(rows.size() > 0){
 			logger.info("Scenario Data Copied Successfully from Store_Product_Info to IST_Store_Info and IST_Product_Tier_Info ... ");
-		}
+		}*/
 		}catch(Exception ex){
 			logger.info("Exception occured while copying Scenario data from Store_Product_Info to IST_Store_Info and IST_Product_Tier_Info ... ");
 		}
