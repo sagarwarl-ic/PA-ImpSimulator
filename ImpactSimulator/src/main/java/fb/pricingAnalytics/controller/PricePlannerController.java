@@ -3,6 +3,7 @@ package fb.pricingAnalytics.controller;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
+import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
 import fb.pricingAnalytics.response.PricePlannerResponse;
+import fb.pricingAnalytics.response.ProjectListResponse;
 import fb.pricingAnalytics.service.PricePlannerService;
 import fb.pricingAnalytics.utils.AuthUtils;
 import fb.pricingAnalytics.utils.FBConstants;
@@ -238,5 +241,39 @@ public class PricePlannerController {
 		response.setResponse(true, FBConstants.SUCCESS);
 		response.setResultObject(pricePlannerVo);
 		return new ResponseEntity<PricePlannerResponse>(response,HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/getProjectList", method = RequestMethod.GET)
+	public ResponseEntity<?> getProjectList(HttpServletRequest request) {
+		logger.debug("PricePlannerController getProjectList function starts :::");
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String brandId = userAuth.getBrandId();
+		ProjectListResponse response = new ProjectListResponse();
+		List<ProjectVo> projectVo = new ArrayList<ProjectVo>();
+		
+		try {
+			
+			projectVo = pricePlannerService.getProjectList(brandId);
+			
+		}
+		catch(SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+				    HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if(null == projectVo || projectVo.size() == 0){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "There are no projects with the associated brandid"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		response.setProjectVo(projectVo);
+		return new ResponseEntity<ProjectListResponse>(response,HttpStatus.OK);
 	}
 }

@@ -2,8 +2,10 @@ package fb.pricingAnalytics.service;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.List;
 
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
+import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
 
@@ -16,6 +18,7 @@ public interface PricePlannerService {
 	public PricePlannerVo getProject(String brandId, int projectId) throws SQLException,Exception;
 	public void copyProjectData(BigInteger projectId, String brandId, String userName);
 	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,String brandId, String userName);
+	public List<ProjectVo> getProjectList(String brandId)throws SQLException,Exception;
 
 
 }
