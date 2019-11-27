@@ -93,7 +93,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestMenuTier.setBrandId(Integer.valueOf(tenantId));
 		if(null == requestMenuTier || requestMenuTier.getProductId()== null || requestMenuTier.getTier() == null || 
-				requestMenuTier.getProjectId()==null || requestMenuTier.getScenarioId()==null){
+				requestMenuTier.getProject_Id()==null || requestMenuTier.getScenario_Id()==null){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
