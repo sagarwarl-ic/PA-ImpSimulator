@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 11/26/2019 1:42:48 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 11/27/2019 12:00:50 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -86,12 +86,14 @@ LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].B
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
 where  [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Info].BrandId=@BrandId  and [IST_Store_Product_Info].Project_Id=@Project_Id 
 and IST_Store_Info.Scenario_ID =@Scenario_Id 
-and  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
 
 ) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
-) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id and  ((Store_Sensitivity_text = ISNULL(@StoreSensitivity,Store_Sensitivity_text)) OR Store_Sensitivity_text is null) 
+) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
+and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
+and  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
+and  ((Store_Sensitivity_text = ISNULL(@StoreSensitivity,Store_Sensitivity_text)) OR Store_Sensitivity_text is null) 
 GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END),
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Current_Tier],
