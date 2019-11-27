@@ -8,8 +8,8 @@ public class RequestMenuTierPriceUpdate {
 	private String productId;
 	private String tier;
 	private Double price;	
-	private BigInteger projectId;
-	private BigInteger scenarioId;
+	private BigInteger project_Id;
+	private BigInteger scenario_Id;
 	private Integer brandId;
 	
 	public String getProductId() {
@@ -31,17 +31,18 @@ public class RequestMenuTierPriceUpdate {
 		this.price = price;
 	}
 	
-	public BigInteger getProjectId() {
-		return projectId;
+	
+	public BigInteger getProject_Id() {
+		return project_Id;
 	}
-	public void setProjectId(BigInteger projectId) {
-		this.projectId = projectId;
+	public void setProject_Id(BigInteger project_Id) {
+		this.project_Id = project_Id;
 	}
-	public BigInteger getScenarioId() {
-		return scenarioId;
+	public BigInteger getScenario_Id() {
+		return scenario_Id;
 	}
-	public void setScenarioId(BigInteger scenarioId) {
-		this.scenarioId = scenarioId;
+	public void setScenario_Id(BigInteger scenario_Id) {
+		this.scenario_Id = scenario_Id;
 	}
 	public Integer getBrandId() {
 		return brandId;
