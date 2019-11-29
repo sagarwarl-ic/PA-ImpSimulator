@@ -128,6 +128,7 @@ SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item where   (((Cat1 = ISNULL(@Cat1,
 AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
 AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
 AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
+and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
 )
 SELECT *
 FROM Data_Menu_Item
@@ -135,8 +136,9 @@ CROSS JOIN Count_CTE  where   (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null)
 AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
 AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
 AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
+and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
   order by  
-CASE WHEN @SortField = '	Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
+CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction != 'DESC' THEN [Product_Name] END,
 CASE WHEN @SortField = 'Cat1' AND  @Direction = 'DESC' THEN [Cat1] END DESC,
 CASE WHEN @SortField = 'Cat1' AND  @Direction != 'DESC' THEN [Cat1] END,
