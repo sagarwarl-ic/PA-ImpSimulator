@@ -78,14 +78,22 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			}else{
 				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
 				query.setParameter(5, null);
-			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getPrice_Sensitivity()!=null){
+			}/*if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getPrice_Sensitivity()!=null){
 				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
 				query.setParameter(6, requestPricePlanner.getSearch().getPrice_Sensitivity());
 			}else{
 				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
 				query.setParameter(6, null);
-			}
+			}*/
 		
+			if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getProduct_Price_Sensitivity()!=null){
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, requestPricePlanner.getSearch().getProduct_Price_Sensitivity());
+			}else{
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, null);
+			}
+			
 	
 			if(requestPricePlanner.getSort()!=null && requestPricePlanner.getSort().getField()!=null){
 					query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
