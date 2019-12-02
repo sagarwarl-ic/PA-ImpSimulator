@@ -31,7 +31,7 @@ public class Project {
 	private String comment;
 	
 	@Column(name="Deleted")
-	private int deleted;
+	private boolean deleted;
 	
 	@Column(name="CreatedOn")
 	private Date createdOn;
@@ -85,16 +85,25 @@ public class Project {
 		this.status = status;
 	}
 
-	public int getDeleted() {
+	/*public int getDeleted() {
 		return deleted;
 	}
 
 	public void setDeleted(int deleted) {
 		this.deleted = deleted;
-	}
+	}*/
 
+	
 	public Date getCreatedOn() {
 		return createdOn;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public void setCreatedOn(Date createdOn) {
