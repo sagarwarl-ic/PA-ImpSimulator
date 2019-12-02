@@ -274,6 +274,7 @@ public class PricePlannerController {
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
 		response.setProjectVo(projectVo);
+		response.setCount(projectVo.size());
 		return new ResponseEntity<ProjectListResponse>(response,HttpStatus.OK);
 	}
 }
