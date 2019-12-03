@@ -13,7 +13,7 @@ public class PricePlannerVo {
 	private Integer brandId;
 	private String name;
 	private Integer status;
-	private Integer deleted;
+	private boolean deleted;
 	private Date createdOn;
 	private String createdBy;
 	private Date updatedOn;
@@ -42,7 +42,7 @@ public class PricePlannerVo {
 	
 
 
-	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, Integer deleted, Date createdOn, String createdBy,
+	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, boolean deleted, Date createdOn, String createdBy,
 			Date updatedOn, String updatedBy) {
 		super();
 		this.id = id;
@@ -57,7 +57,7 @@ public class PricePlannerVo {
 	}
 
 
-	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, Integer deleted, Date createdOn, String createdBy,
+	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, boolean deleted, Date createdOn, String createdBy,
 			Date updatedOn, String updatedBy, BigInteger scenarioId, String scenarioName, Date scenarioCreatedOn, String scenarioCreatedBy,
 			Date scenarioUpdatedOn, String scenarioUpdatedBy) {
 		super();
@@ -113,15 +113,16 @@ public class PricePlannerVo {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
+	}	
 
-	public Integer getDeleted() {
+	public boolean isDeleted() {
 		return deleted;
 	}
 
-	public void setDeleted(Integer deleted) {
+	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
+
 
 	public Date getCreatedOn() {
 		return createdOn;
