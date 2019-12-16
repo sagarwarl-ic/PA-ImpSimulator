@@ -420,7 +420,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getProductPriceSentivity(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Product_Price_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Mod' ELSE Product_Price_Sensitivity END) AS Product_Price_Sensitivity "
+				+ "from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
 		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
