@@ -57,7 +57,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public PricePlannerVo getProject(String brandId, int projectId) throws SQLException, Exception {
+	public PricePlannerVo getProject(String brandId, BigInteger projectId) throws SQLException, Exception {
 
 		List<PricePlannerVo> projectList =  pricePlannerDAO.getProject(brandId, projectId);
 		if(projectList!=null && projectList.size()>0) {
@@ -77,7 +77,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 				scenarioList.add(scenario);
 				}
 			}
-			PricePlannerVo pricePlannerRequestObj = new PricePlannerVo(projectList.get(0).getId(),projectList.get(0).getBrandId(),projectList.get(0).getName(),projectList.get(0).getStatus(),projectList.get(0).getDeleted(),projectList.get(0).getCreatedOn(),projectList.get(0).getCreatedBy(),projectList.get(0).getUpdatedOn(),projectList.get(0).getUpdatedBy());
+			PricePlannerVo pricePlannerRequestObj = new PricePlannerVo(projectList.get(0).getId(),projectList.get(0).getBrandId(),projectList.get(0).getName(),projectList.get(0).getStatus(),projectList.get(0).isDeleted(),projectList.get(0).getCreatedOn(),projectList.get(0).getCreatedBy(),projectList.get(0).getUpdatedOn(),projectList.get(0).getUpdatedBy());
 			pricePlannerRequestObj.setScenarioList(scenarioList);
 			return pricePlannerRequestObj;
 		}

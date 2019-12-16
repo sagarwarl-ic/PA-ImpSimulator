@@ -15,7 +15,7 @@ public interface PricePlannerService {
 	public int updateProject(PricePlannerProjectRequest projectRequest,String brandId, String userName) throws SQLException,Exception;
 	public BigInteger createScenario(PricePlannerScenarioRequest scenarioRequest,String brandId, String userName) throws SQLException,Exception;
 	public int updateScenario(PricePlannerScenarioRequest scenarioRequest,String brandId, String userName) throws SQLException,Exception;
-	public PricePlannerVo getProject(String brandId, int projectId) throws SQLException,Exception;
+	public PricePlannerVo getProject(String brandId, BigInteger projectId) throws SQLException,Exception;
 	public void copyProjectData(BigInteger projectId, String brandId, String userName);
 	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,String brandId, String userName);
 	public List<ProjectVo> getProjectList(String brandId)throws SQLException,Exception;
