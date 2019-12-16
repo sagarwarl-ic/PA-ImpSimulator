@@ -39,8 +39,8 @@ BrandId
 ,UpdatedBy
 )
 
-Select distinct @BrandId,@Project_Id,@Scenario_ID,Product_ID,Current_tier,Current_Price,@CreatedBy,@CreatedBy from [dbo].[Store_Product_Info] 
-where Current_Price IS NOT NULL and BrandId = @BrandId 
+Select distinct @BrandId,@Project_Id,@Scenario_ID,product_id,current_tier,current_price,@CreatedBy,@CreatedBy from [dbo].[Store_Product_Info] 
+where current_price IS NOT NULL and corp_fran='C' and  brand_id = @BrandId 
 
 
 INSERT INTO dbo.IST_Store_Info
@@ -55,8 +55,8 @@ BrandId
 ,UpdatedBy
 )
 
-Select distinct @BrandId,@Project_Id,@Scenario_ID,Store_Code,Current_tier,@CreatedBy,@CreatedBy from [dbo].[Store_Product_Info] where Current_tier IS NOT NULL and
- BrandId = @BrandId 
+Select distinct @BrandId,@Project_Id,@Scenario_ID,store_code,current_tier,@CreatedBy,@CreatedBy from [dbo].[Store_Product_Info] where current_tier IS NOT NULL and corp_fran='C' and 
+ brand_id = @BrandId 
  COMMIT
  END TRY
  BEGIN CATCH
