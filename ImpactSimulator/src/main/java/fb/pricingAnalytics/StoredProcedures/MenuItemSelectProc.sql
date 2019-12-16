@@ -108,11 +108,7 @@ and a.Product_ID = IST_Product_Tier_Info.Product_ID
 and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
 ) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
 and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id 
-and  (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null) 
-AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
-AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
-AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
-and (Tier_Change_Text = ISNULL(@TierChange,Tier_Change_Text)) 
+
 GROUP BY (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Cat1],
 [Custom SQL Query].[Cat2],
@@ -128,11 +124,19 @@ GROUP BY (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Pro
 Count_CTE
 AS
 (
-SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item
+SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item where   (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null) 
+AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
+AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
+AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
+and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
 )
 SELECT *
 FROM Data_Menu_Item
-CROSS JOIN Count_CTE 
+CROSS JOIN Count_CTE  where   (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null) 
+AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
+AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
+AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
+and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
   order by  
 CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction != 'DESC' THEN [Product_Name] END,

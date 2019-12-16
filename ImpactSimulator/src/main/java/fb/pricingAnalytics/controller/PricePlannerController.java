@@ -270,7 +270,7 @@ public class PricePlannerController {
 		}
 		if(null == projectVo || projectVo.size() == 0){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "There are no projects with the associated brandid"),
-				    HttpStatus.BAD_REQUEST);
+				    HttpStatus.OK);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
 		response.setProjectVo(projectVo);

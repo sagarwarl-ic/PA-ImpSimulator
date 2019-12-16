@@ -91,9 +91,6 @@ and IST_Store_Info.Scenario_ID =@Scenario_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
 ) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
 and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
-and  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
-and  ((Store_Sensitivity_text = ISNULL(@StoreSensitivity,Store_Sensitivity_text)) OR Store_Sensitivity_text is null) 
 GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END),
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Current_Tier],
@@ -108,12 +105,18 @@ GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHE
 Count_CTE
 AS
 (
-SELECT COUNT(*) AS TotalRows FROM Data_Store_View
+SELECT COUNT(*) AS TotalRows FROM Data_Store_View where 
+  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
+and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR Store_Sensitivity is null) 
 )
 
 SELECT *
 FROM Data_Store_View
-CROSS JOIN Count_CTE  
+CROSS JOIN Count_CTE  where 
+  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
+and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR Store_Sensitivity is null)  
 order by 
 CASE WHEN @SortField = 'Store_Code' AND  @Direction = 'DESC' THEN [Store_Code] END DESC,
 CASE WHEN @SortField = 'Store_Code' AND  @Direction != 'DESC' THEN [Store_Code] END,
