@@ -26,7 +26,7 @@ BEGIN
 AS [Product_Price_Sensitivity],
 
 COUNT_BIG(DISTINCT [Custom SQL Query].[Product_ID]) AS Product_Count,
-sum([Sales_Gross_TY]) as Original_Sales,
+ROUND(sum([Sales_Gross_TY]),0) as Original_Sales,
 sum([Quantity_TY]) as Quantity
 
 FROM [dbo].[IST_Store_Product_Info] [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 

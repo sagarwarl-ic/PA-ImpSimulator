@@ -33,19 +33,19 @@ SELECT
 [Custom SQL Query].[Proposed_Tier] AS [Proposed_Tier],
 [Custom SQL Query].[Store_Code] AS [Store_Code],
 [Custom SQL Query].[Store_Name] AS [Store_Name],
-SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) AS Sales_Impact,
+ROUND(SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))),0) AS Sales_Impact,
 
-SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]) as New_Sales,
+ROUND(SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
+SUM([Custom SQL Query].[Sales_Gross_TY]),0) as New_Sales,
 
-((
+ROUND(((
 CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0
 THEN NULL
 ELSE
 (SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY])))
 / SUM([Custom SQL Query].[Sales_Gross_TY]))
 END
-)*100)
+)*100),2)
 as Sales_Impact_Percentage ,
 
 SUM([Custom SQL Query].[Sales_Gross_TY]) AS Original_Sales,
@@ -106,17 +106,17 @@ Count_CTE
 AS
 (
 SELECT COUNT(*) AS TotalRows FROM Data_Store_View where 
-  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
-and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR Store_Sensitivity is null) 
+    ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR (@CurrentTier is null and Current_Tier is null)) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR (@PricingPower is null and Pricing_Power is null )) 
+and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR (@StoreSensitivity is null and Store_Sensitivity is null ))  
 )
 
 SELECT *
 FROM Data_Store_View
 CROSS JOIN Count_CTE  where 
-  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
-and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR Store_Sensitivity is null)  
+  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR (@CurrentTier is null and Current_Tier is null)) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR (@PricingPower is null and Pricing_Power is null )) 
+and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR (@StoreSensitivity is null and Store_Sensitivity is null ))  
 order by 
 CASE WHEN @SortField = 'Store_Code' AND  @Direction = 'DESC' THEN [Store_Code] END DESC,
 CASE WHEN @SortField = 'Store_Code' AND  @Direction != 'DESC' THEN [Store_Code] END,
