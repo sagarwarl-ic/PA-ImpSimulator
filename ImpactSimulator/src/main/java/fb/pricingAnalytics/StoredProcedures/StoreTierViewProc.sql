@@ -106,17 +106,17 @@ Count_CTE
 AS
 (
 SELECT COUNT(*) AS TotalRows FROM Data_Store_View where 
-  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
-and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR Store_Sensitivity is null) 
+    ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR (@CurrentTier is null and Current_Tier is null)) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR (@PricingPower is null and Pricing_Power is null )) 
+and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR (@StoreSensitivity is null and Store_Sensitivity is null ))  
 )
 
 SELECT *
 FROM Data_Store_View
 CROSS JOIN Count_CTE  where 
-  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR Current_Tier is null) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR Pricing_Power is null) 
-and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR Store_Sensitivity is null)  
+  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR (@CurrentTier is null and Current_Tier is null)) 
+and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR (@PricingPower is null and Pricing_Power is null )) 
+and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR (@StoreSensitivity is null and Store_Sensitivity is null ))  
 order by 
 CASE WHEN @SortField = 'Store_Code' AND  @Direction = 'DESC' THEN [Store_Code] END DESC,
 CASE WHEN @SortField = 'Store_Code' AND  @Direction != 'DESC' THEN [Store_Code] END,

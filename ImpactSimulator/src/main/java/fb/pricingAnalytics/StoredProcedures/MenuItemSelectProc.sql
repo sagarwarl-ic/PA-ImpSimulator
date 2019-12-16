@@ -36,7 +36,10 @@ SELECT
 [Custom SQL Query].[Current_Tier] AS [Current_Tier],
 [Custom SQL Query].[Product_ID] AS [Product_ID],
 [Custom SQL Query].[Product_Name] AS [Product_Name],
-[Custom SQL Query].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
+(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'ELASTIC') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'INELASTIC') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Mod' ELSE [Custom SQL Query].[Product_Price_Sensitivity] END)
+AS [Product_Price_Sensitivity],
 [Custom SQL Query].[Proposed_Tier] AS [Proposed_Tier],
 
 SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) AS Sales_Impact,
@@ -124,18 +127,19 @@ GROUP BY (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Pro
 Count_CTE
 AS
 (
-SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item where   (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null) 
-AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
-AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
-AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
+SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item where  
+((Cat1 = ISNULL(@Cat1,Cat1)) OR (@Cat1 is null and Cat1 is null)) 
+AND ((Cat2 = ISNULL(@Cat2,Cat2))OR (@Cat2 is null and Cat2 is null))
+AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR (@CurrentTier is null and Current_Tier is null)) 
+AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR ( @ProductPriceSensitivity is null and Product_Price_Sensitivity is null))
 and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
 )
 SELECT *
 FROM Data_Menu_Item
-CROSS JOIN Count_CTE  where   (((Cat1 = ISNULL(@Cat1,Cat1)) OR Cat1 is null) 
-AND ((Cat2 = ISNULL(@Cat2,Cat2))OR Cat2 is null)
-AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR Current_Tier is null)
-AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR Product_Price_Sensitivity is null))
+CROSS JOIN Count_CTE  where   ((Cat1 = ISNULL(@Cat1,Cat1)) OR (@Cat1 is null and Cat1 is null)) 
+AND ((Cat2 = ISNULL(@Cat2,Cat2))OR (@Cat2 is null and Cat2 is null))
+AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR (@CurrentTier is null and Current_Tier is null)) 
+AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR ( @ProductPriceSensitivity is null and Product_Price_Sensitivity is null))
 and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
   order by  
 CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
