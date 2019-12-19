@@ -29,16 +29,14 @@ AS
 (
 SELECT
 
-(CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END) AS Tier_Change ,
 [Custom SQL Query].[Cat1] AS [Cat1],
 [Custom SQL Query].[Cat2] AS [Cat2],
 [Custom SQL Query].[Cat3] AS [Cat3],
-[Custom SQL Query].[Current_Tier] AS [Current_Tier],
 [Custom SQL Query].[Product_ID] AS [Product_ID],
 [Custom SQL Query].[Product_Name] AS [Product_Name],
 (CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'ELASTIC') THEN 'High' WHEN
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'INELASTIC') THEN 'Low' WHEN
-(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Mod' ELSE [Custom SQL Query].[Product_Price_Sensitivity] END)
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Moderate' ELSE 'NA' END)
 AS [Product_Price_Sensitivity],
 [Custom SQL Query].[Proposed_Tier] AS [Proposed_Tier],
 
@@ -95,31 +93,31 @@ SELECT
 [IST_Store_Product_Info].[Store_Sensitivity] AS [Store_Sensitivity],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
-[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store],
-(CASE WHEN ([IST_Store_Product_Info].[Current_Tier] = [IST_Store_Info].[Proposed_Tier]) THEN 'N' ELSE 'Y' END) AS Tier_Change_Text 
+[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store]
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
-where 
-[IST_Store_Product_Info].BrandId=@BrandId 
-and [IST_Store_Info].BrandId=@BrandId  
-and [IST_Store_Product_Info].Project_Id=@Project_Id 
-and IST_Store_Info.Scenario_ID =@Scenario_Id 
-) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON 
+where
+[IST_Store_Product_Info].BrandId=@BrandId
+and [IST_Store_Info].BrandId=@BrandId
+and [IST_Store_Product_Info].Project_Id=@Project_Id
+and IST_Store_Info.Scenario_ID =@Scenario_Id
+) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON
 (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID
 and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
-) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
-and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id 
+) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id
+and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
 
-GROUP BY (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
+GROUP BY 
 [Custom SQL Query].[Cat1],
 [Custom SQL Query].[Cat2],
 [Custom SQL Query].[Cat3],
-[Custom SQL Query].[Current_Tier],
 [Custom SQL Query].[Product_ID],
 [Custom SQL Query].[Product_Name],
-[Custom SQL Query].[Product_Price_Sensitivity],
+(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'ELASTIC') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'INELASTIC') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Moderate' ELSE 'NA' END),
 [Custom SQL Query].[Proposed_Tier]
 ),
 

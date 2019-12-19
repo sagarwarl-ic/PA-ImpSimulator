@@ -17,12 +17,23 @@ ALTER PROCEDURE [dbo].[GetStoreDistribution]
 AS
 BEGIN
 	
-	select (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity,
-[Custom SQL Query].[Pricing_Power] AS [Pricing_Power],
+	
+	select (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END) AS Store_Sensitivity,
+	
+	(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'HIGH') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'LOW') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'MID') THEN 'Moderate' ELSE 'NA' END)
+AS [Pricing_Power],
+	
 COUNT_BIG(DISTINCT [Custom SQL Query].[Store_Code]) AS Store_Count
 FROM [dbo].[IST_Store_Product_Info] [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
 group by
-(CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END),
-[Custom SQL Query].[Pricing_Power]
+(CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END),
+	(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'HIGH') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'LOW') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'MID') THEN 'Moderate' ELSE 'NA' END)
+
+
+
 
 END
