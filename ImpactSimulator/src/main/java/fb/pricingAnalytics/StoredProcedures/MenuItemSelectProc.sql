@@ -15,8 +15,7 @@ ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
 @pageSize int=100,
 @Cat1 VARCHAR(100)=null,
 @Cat2 VARCHAR(100)=null,
-@CurrentTier VARCHAR(100) = null,
-@TierChange VARCHAR(100)=null,
+@Tier VARCHAR(100) = null,
 @ProductPriceSensitivity VARCHAR(100)=null,
 @SortField VARCHAR(100)='Product_Name', @Direction VARCHAR(100)='ASC',
 @Scenario_Id bigint =0,
@@ -80,7 +79,6 @@ SELECT
 [IST_Store_Product_Info].[Cat1] AS [Cat1],
 [IST_Store_Product_Info].[Cat2] AS [Cat2],
 [IST_Store_Product_Info].[Cat3] AS [Cat3],
-[IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Sales_Gross_LY] AS [Sales_Gross_LY],
@@ -128,17 +126,17 @@ AS
 SELECT COUNT(*) AS TotalRows FROM Data_Menu_Item where  
 ((Cat1 = ISNULL(@Cat1,Cat1)) OR (@Cat1 is null and Cat1 is null)) 
 AND ((Cat2 = ISNULL(@Cat2,Cat2))OR (@Cat2 is null and Cat2 is null))
-AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR (@CurrentTier is null and Current_Tier is null)) 
+AND ((Proposed_Tier = ISNULL(@Tier,Proposed_Tier))OR (@Tier is null and Proposed_Tier is null)) 
 AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR ( @ProductPriceSensitivity is null and Product_Price_Sensitivity is null))
-and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
+
 )
 SELECT *
 FROM Data_Menu_Item
 CROSS JOIN Count_CTE  where   ((Cat1 = ISNULL(@Cat1,Cat1)) OR (@Cat1 is null and Cat1 is null)) 
 AND ((Cat2 = ISNULL(@Cat2,Cat2))OR (@Cat2 is null and Cat2 is null))
-AND ((Current_Tier = ISNULL(@CurrentTier,Current_Tier))OR (@CurrentTier is null and Current_Tier is null)) 
+AND ((Proposed_Tier = ISNULL(@Tier,Proposed_Tier))OR (@Tier is null and Proposed_Tier is null)) 
 AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR ( @ProductPriceSensitivity is null and Product_Price_Sensitivity is null))
-and (Tier_Change = ISNULL(@TierChange,Tier_Change)) 
+
   order by  
 CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction != 'DESC' THEN [Product_Name] END,
