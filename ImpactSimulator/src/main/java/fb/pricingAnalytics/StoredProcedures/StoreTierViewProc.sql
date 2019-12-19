@@ -25,11 +25,15 @@ AS
 (
 
 SELECT
-(CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity,
+(CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END) AS Store_Sensitivity,
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END) AS Tier_Change,
 [Custom SQL Query].[Current_Tier] AS [Current_Tier],
 [Custom SQL Query].[Market_Name] AS [Market_Name],
-[Custom SQL Query].[Pricing_Power] AS [Pricing_Power],
+
+	(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'HIGH') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'LOW') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'MID') THEN 'Moderate' ELSE 'NA' END)
+AS [Pricing_Power],
 [Custom SQL Query].[Proposed_Tier] AS [Proposed_Tier],
 [Custom SQL Query].[Store_Code] AS [Store_Code],
 [Custom SQL Query].[Store_Name] AS [Store_Name],
@@ -80,7 +84,7 @@ SELECT
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
 [IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store],
-(CASE WHEN ([IST_Store_Product_Info].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([IST_Store_Product_Info].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END)  AS [Store_Sensitivity_text]
+(CASE WHEN ([IST_Store_Product_Info].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([IST_Store_Product_Info].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END)  AS [Store_Sensitivity_text]
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
@@ -91,14 +95,18 @@ and IST_Store_Info.Scenario_ID =@Scenario_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Product_Tier_Info.Tier)
 ) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
 and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
-GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Mod' END),
+GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END),
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Current_Tier],
 [Custom SQL Query].[Market_Name],
-[Custom SQL Query].[Pricing_Power],
+(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'HIGH') THEN 'High' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'LOW') THEN 'Low' WHEN
+(UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'MID') THEN 'Moderate' ELSE 'NA' END),
 [Custom SQL Query].[Proposed_Tier],
 [Custom SQL Query].[Store_Code],
 [Custom SQL Query].[Store_Name]
+
+
 
 ),
 
