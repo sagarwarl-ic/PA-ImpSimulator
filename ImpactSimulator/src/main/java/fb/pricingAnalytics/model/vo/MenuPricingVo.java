@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class MenuPricingVo {
 
 	//@SerializedName("tierChange")
-	private String Tier_Change;
+	//private String Tier_Change;
 	
 	//@SerializedName("cat1")
 	private String Cat1;
@@ -20,7 +20,7 @@ public class MenuPricingVo {
 	private String Cat3;
 	
 	//@SerializedName("currentTier")
-	private String Current_Tier;
+	//private String Current_Tier;
 	
 	//@SerializedName("productID")
 	private String Product_ID;
@@ -58,12 +58,17 @@ public class MenuPricingVo {
 	//@SerializedName("productPrice")
 	private Double Product_Price;
 	
+	//@SerializedName("productPrice")
+	private Double Current_Price;
+	
 	//@SerializedName("quantityTY")
 	private BigInteger Quantity_TY;
 	
 	
 	
-	public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
+	
+	
+	/*public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
 			String product_Name, String product_Price_Sensitivity, String proposed_Tier, Double sales_Impact,
 			Double new_Sales, Double sales_Impact_Percentage, BigDecimal original_Sales, Double price_Change_Percent,
 			Double price_Change, Double new_Price, Double product_Price, BigInteger quantity_TY) {
@@ -86,13 +91,42 @@ public class MenuPricingVo {
 		New_Price = new_Price;
 		Product_Price = product_Price;
 		Quantity_TY = quantity_TY;
+	}*/
+	
+	
+	public MenuPricingVo(String cat1, String cat2, String cat3,
+			String product_ID, String product_Name,
+			String product_Price_Sensitivity, String proposed_Tier,
+			Double sales_Impact, Double new_Sales,
+			Double sales_Impact_Percentage, BigDecimal original_Sales,
+			Double price_Change_Percent, Double price_Change, Double new_Price,
+			Double current_Price, BigInteger quantity_TY) {
+		super();
+		Cat1 = cat1;
+		Cat2 = cat2;
+		Cat3 = cat3;
+		Product_ID = product_ID;
+		Product_Name = product_Name;
+		Product_Price_Sensitivity = product_Price_Sensitivity;
+		Proposed_Tier = proposed_Tier;
+		Sales_Impact = sales_Impact;
+		New_Sales = new_Sales;
+		Sales_Impact_Percentage = sales_Impact_Percentage;
+		Original_Sales = original_Sales;
+		Price_Change_Percent = price_Change_Percent;
+		Price_Change = price_Change;
+		New_Price = new_Price;
+		Current_Price = current_Price;
+		Quantity_TY = quantity_TY;
 	}
-	public String getTier_Change() {
+
+
+	/*public String getTier_Change() {
 		return Tier_Change;
 	}
 	public void setTier_Change(String tier_Change) {
 		Tier_Change = tier_Change;
-	}
+	}*/
 	public String getCat1() {
 		return Cat1;
 	}
@@ -111,12 +145,12 @@ public class MenuPricingVo {
 	public void setCat3(String cat3) {
 		Cat3 = cat3;
 	}
-	public String getCurrent_Tier() {
+	/*public String getCurrent_Tier() {
 		return Current_Tier;
 	}
 	public void setCurrent_Tier(String current_Tier) {
 		Current_Tier = current_Tier;
-	}
+	}*/
 	public String getProduct_ID() {
 		return Product_ID;
 	}
@@ -194,6 +228,16 @@ public class MenuPricingVo {
 	}
 	public void setQuantity_TY(BigInteger quantity_TY) {
 		Quantity_TY = quantity_TY;
+	}
+
+
+	public Double getCurrent_Price() {
+		return Current_Price;
+	}
+
+
+	public void setCurrent_Price(Double current_Price) {
+		Current_Price = current_Price;
 	}
 	
 

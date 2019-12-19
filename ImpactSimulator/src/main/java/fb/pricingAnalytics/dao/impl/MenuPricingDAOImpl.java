@@ -66,19 +66,19 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			}else{
 				query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
 				query.setParameter(3, null);
-			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getCurrent_Tier()!=null){
+			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getTier()!=null){
 				query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
-				query.setParameter(4, requestPricePlanner.getSearch().getCurrent_Tier());
+				query.setParameter(4, requestPricePlanner.getSearch().getTier());
 			}else{
 				query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
 				query.setParameter(4, null);
-			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getTier_Change()!=null){
+			}/*if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getTier_Change()!=null){
 				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
 				query.setParameter(5, requestPricePlanner.getSearch().getTier_Change());
 			}else{
 				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
 				query.setParameter(5, null);
-			}/*if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getPrice_Sensitivity()!=null){
+			}*//*if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getPrice_Sensitivity()!=null){
 				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
 				query.setParameter(6, requestPricePlanner.getSearch().getPrice_Sensitivity());
 			}else{
@@ -87,42 +87,42 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			}*/
 		
 			if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getProduct_Price_Sensitivity()!=null){
-				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
-				query.setParameter(6, requestPricePlanner.getSearch().getProduct_Price_Sensitivity());
+				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+				query.setParameter(5, requestPricePlanner.getSearch().getProduct_Price_Sensitivity());
 			}else{
-				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
-				query.setParameter(6, null);
+				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+				query.setParameter(5, null);
 			}
 			
 	
 			if(requestPricePlanner.getSort()!=null && requestPricePlanner.getSort().getField()!=null){
-					query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
-					query.setParameter(7, requestPricePlanner.getSort().getField());
+					query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+					query.setParameter(6, requestPricePlanner.getSort().getField());
 			}else {
-				query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
-				query.setParameter(7, "Product_Name");
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, "Product_Name");
 			}
 			
 			
 			if(requestPricePlanner.getSort()!=null && requestPricePlanner.getSort().getDirection()!=null){
-				query.registerStoredProcedureParameter(8, String.class , ParameterMode.IN);
-				query.setParameter(8, requestPricePlanner.getSort().getDirection());
+				query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
+				query.setParameter(7, requestPricePlanner.getSort().getDirection());
 			}else {
-				query.registerStoredProcedureParameter(8, String.class , ParameterMode.IN);
-				query.setParameter(8, "ASC");
+				query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
+				query.setParameter(7, "ASC");
 			}
 		
 		
-			query.registerStoredProcedureParameter(9, BigInteger.class , ParameterMode.IN);
-			query.setParameter(9, requestPricePlanner.getScenario_Id());
+			query.registerStoredProcedureParameter(8, BigInteger.class , ParameterMode.IN);
+			query.setParameter(8, requestPricePlanner.getScenario_Id());
 		
 	
-			query.registerStoredProcedureParameter(10, BigInteger.class , ParameterMode.IN);
-			query.setParameter(10, requestPricePlanner.getProject_Id());
+			query.registerStoredProcedureParameter(9, BigInteger.class , ParameterMode.IN);
+			query.setParameter(9, requestPricePlanner.getProject_Id());
 	
 	
-			query.registerStoredProcedureParameter(11, Integer.class , ParameterMode.IN);
-			query.setParameter(11, requestPricePlanner.getBrandId());
+			query.registerStoredProcedureParameter(10, Integer.class , ParameterMode.IN);
+			query.setParameter(10, requestPricePlanner.getBrandId());
 	
 		
 		query.execute();
@@ -130,12 +130,16 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		if(rows!=null&&rows.size()>0){
 			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
 			for (Object[] row : rows) {
-			    result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
+			    /*result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 			    		(String)row[7],(String)row[8],(Double)row[9],(Double)row[10],(Double)row[11],(BigDecimal)row[12],(Double)row[13],(Double)row[14],
-			    		(Double)row[15],(Double)row[16],(BigInteger)row[17]));
+			    		(Double)row[15],(Double)row[16],(BigInteger)row[17]));*/
+				
+				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
+			    		(Double)row[7],(Double)row[8],(Double)row[9],(BigDecimal)row[10],(Double)row[11],(Double)row[12],
+			    		(Double)row[13],(Double)row[14],(BigInteger)row[15]));
 			  
 			}
-			Integer count = (Integer)(rows.get(0))[18];
+			Integer count = (Integer)(rows.get(0))[16];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
@@ -408,7 +412,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getStoreSentivity(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		//StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Moderate' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id =:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
 		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
@@ -420,8 +425,9 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getProductPriceSentivity(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Mod' ELSE Product_Price_Sensitivity END) AS Product_Price_Sensitivity "
-				+ "from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		/*StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Mod' ELSE Product_Price_Sensitivity END) AS Product_Price_Sensitivity "
+				+ "from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");*/
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Moderate' ELSE 'NA' END) AS Product_Price_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id =:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
 		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
@@ -434,7 +440,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getPricingPower(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		//StringBuilder sb =  new StringBuilder("select distinct Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Pricing_Power))) = 'HIGH') THEN 'High' WHEN(UPPER(LTRIM(RTRIM(Pricing_Power))) = 'LOW') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Pricing_Power))) = 'MID') THEN 'Moderate' ELSE 'NA' END) as Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id =:project_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
 		query.setParameter("project_Id", requestPricePlanner.getProject_Id());

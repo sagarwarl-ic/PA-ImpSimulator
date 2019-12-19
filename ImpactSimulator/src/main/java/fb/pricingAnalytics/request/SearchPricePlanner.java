@@ -11,6 +11,7 @@ public class SearchPricePlanner {
 	private String Cat1;
 	private String Cat2;
 	private String Product_Price_Sensitivity;
+	private String Tier;
 	
 	public String getCurrent_Tier() {
 		return Current_Tier;
@@ -59,6 +60,12 @@ public class SearchPricePlanner {
 	}
 	public void setProduct_Price_Sensitivity(String product_Price_Sensitivity) {
 		Product_Price_Sensitivity = product_Price_Sensitivity;
+	}
+	public String getTier() {
+		return Tier;
+	}
+	public void setTier(String tier) {
+		Tier = tier;
 	}
 	
 	
