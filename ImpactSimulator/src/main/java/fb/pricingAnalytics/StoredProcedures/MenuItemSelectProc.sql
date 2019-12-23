@@ -11,13 +11,13 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
+Alter   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
 @pageSize int=100,
 @Cat1 VARCHAR(100)=null,
 @Cat2 VARCHAR(100)=null,
 @Tier VARCHAR(100) = null,
 @ProductPriceSensitivity VARCHAR(100)=null,
-@SortField VARCHAR(100)='Product_Name', @Direction VARCHAR(100)='ASC',
+@SortField VARCHAR(100)='Product_ID', @Direction VARCHAR(100)='ASC',
 @Scenario_Id bigint =0,
 @Project_Id bigint=0,
 @BrandId int=0
@@ -138,6 +138,8 @@ AND ((Proposed_Tier = ISNULL(@Tier,Proposed_Tier))OR (@Tier is null and Proposed
 AND ((Product_Price_Sensitivity = ISNULL(@ProductPriceSensitivity,Product_Price_Sensitivity))OR ( @ProductPriceSensitivity is null and Product_Price_Sensitivity is null))
 
   order by  
+CASE WHEN @SortField = 'Product_ID' AND  @Direction = 'DESC' THEN [Product_ID] END DESC,
+CASE WHEN @SortField = 'Product_ID' AND  @Direction != 'DESC' THEN [Product_ID] END,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction != 'DESC' THEN [Product_Name] END,
 CASE WHEN @SortField = 'Cat1' AND  @Direction = 'DESC' THEN [Cat1] END DESC,
