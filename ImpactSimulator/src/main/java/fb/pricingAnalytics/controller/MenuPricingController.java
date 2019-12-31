@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import fb.pricingAnalytics.events.ImpactSimulatorEvent;
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
@@ -33,6 +34,7 @@ import fb.pricingAnalytics.response.StoreDistributionResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.service.MenuPricingService;
 import fb.pricingAnalytics.utils.AuthUtils;
+import fb.pricingAnalytics.utils.FBAzureQueuePublisher;
 import fb.pricingAnalytics.utils.FBConstants;
 import fb.pricingAnalytics.utils.FBRestResponse;
 
@@ -371,6 +373,46 @@ public class MenuPricingController {
 		}
 		return true;
 	}
+	
+	
+	@RequestMapping(value = "/postImpSimulatorEvent", method = RequestMethod.POST)
+	public ResponseEntity<?> postImpSimulatorEvent(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+		logger.debug("MenuPricingController postImpSimulatorEvent function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
+		logger.info("tenantId = " + tenantId);
+		requestPricePlanner.setBrandId(tenantId);
+
+		if(!validateInputRequest(requestPricePlanner)){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		FBRestResponse response = new FBRestResponse();
+		try {
+			ImpactSimulatorEvent event = new ImpactSimulatorEvent();
+			event.setAction("impactsimulatorevent");
+			event.setBrandid(Integer.valueOf(userAuth.getBrandId()));
+			event.setUserid(Integer.valueOf(userAuth.getUserId()));
+			//event.setUsername(userAuth.getUserName());
+			event.setProjectid(requestPricePlanner.getProject_Id());
+			event.setScenarioid(requestPricePlanner.getScenario_Id());
+			logger.info("start sending reportrequestevent to queue");
+			new FBAzureQueuePublisher().sendEventToQueue(event, userAuth);
+			logger.info("finished sending reportrequestevent to queue");
+		
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+		
+	}
+	
 	
 	/*@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
 	public ResponseEntity<?> getOtherStoreView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
