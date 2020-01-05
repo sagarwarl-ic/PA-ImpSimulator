@@ -13,7 +13,9 @@ Alter   PROCEDURE [dbo].[SummaryCategoryView]
 AS 
 BEGIN
 	
-	
+with
+
+Summary_Categories as(
 SELECT
 
 [t0].[Cat3] AS [Cat3],
@@ -86,6 +88,10 @@ and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Prod
 ) [Custom SQL Query] where [Custom SQL Query].[Scenario_ID_Store] = [Custom SQL Query].[Scenario_Id_Product] and BrandId=@BrandId and Project_Id =@Project_Id
 and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
 GROUP BY ()
-) [t1]
+) [t1])
+
+Select * from Summary_Categories
+union  all
+Select 'Total',sum(Percet_Of_Total_Impact ) from Summary_Categories
 
 END;

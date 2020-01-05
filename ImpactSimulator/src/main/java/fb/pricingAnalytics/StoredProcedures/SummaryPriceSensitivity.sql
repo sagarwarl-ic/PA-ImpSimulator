@@ -13,6 +13,10 @@ Alter   PROCEDURE [dbo].[SummaryPriceSensitivity]
 AS 
 BEGIN
 	
+with
+
+Product_price_sensitivity as(
+	
 SELECT
 [t0].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
 case when [t1].Total_Quantity = 0 then NULL else
@@ -111,6 +115,10 @@ and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Prod
 ) [Custom SQL Query] where [Custom SQL Query].[Scenario_ID_Store] = [Custom SQL Query].[Scenario_Id_Product] and BrandId=@BrandId and Project_Id =@Project_Id
 and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id
 GROUP BY ()
-) [t1]
+) [t1])
+
+Select * from Product_price_sensitivity
+union all
+select 'Grand Total', round(sum(Quantity_Percent),2),round(sum(Quantity),0),round(sum(Original_Sales),0),round(sum(New_Sales),0),round(sum(Sales_Impact),0),round(sum(Sales_Impact_Percent),2),round(sum(Total_Impact_Percent),2) from Product_price_sensitivity;
 
 END;
