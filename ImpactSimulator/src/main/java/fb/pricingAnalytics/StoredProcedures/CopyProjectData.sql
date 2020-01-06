@@ -19,7 +19,6 @@ ALTER   PROCEDURE [dbo].[CopyProjectData]
 AS
 BEGIN
 
- 
 
 INSERT INTO [dbo].[IST_Store_Product_Info]
 (
@@ -39,55 +38,48 @@ Quantity_LY,
 Current_Price,
 Price_Change_Per,
 Sales_Impact,
-CreatedBy
+CreatedBy,
+Store_Sensitivity,
+Store_Name,
+Market_Name,
+Pricing_power,
+Transaction_TY,
+Product_Price_Sensitivity
 )
 select 
 
 @BrandId,
 @Project_Id,
-store_code as Store_Code,
-product_id as Product_ID,
-product_name as Product_Name,
-cat1 as Cat1,
-cat2 as Cat2,
-cat3 as Cat3,
-current_tier as Current_Tier,
-sales_gross_ty as Sales_Gross_TY,
-quantity_ty as Quantity_TY,
-sales_gross_ly as Sales_Gross_LY,
-quantity_ly as Quantity_LY,
-current_price as Current_Price,
-price_change_per as Price_Change_Per,
-sales_impact as Sales_Impact,
-@CreatedBy
+Store_Product_Info.store_code as Store_Code,
+Store_Product_Info.product_id as Product_ID,
+Store_Product_Info.product_name as Product_Name,
+Store_Product_Info.cat1 as Cat1,
+Store_Product_Info.cat2 as Cat2,
+Store_Product_Info.cat3 as Cat3,
+Store_Product_Info.current_tier as Current_Tier,
+Store_Product_Info.sales_gross_ty as Sales_Gross_TY,
+Store_Product_Info.quantity_ty as Quantity_TY,
+Store_Product_Info.sales_gross_ly as Sales_Gross_LY,
+Store_Product_Info.quantity_ly as Quantity_LY,
+Store_Product_Info.current_price as Current_Price,
+Store_Product_Info.price_change_per as Price_Change_Per,
+Store_Product_Info.sales_impact as Sales_Impact,
+@CreatedBy as CreatedBy,
+Store_Info.store_sensitivity as Store_Sensitivity,
+Store_Info.store_name as Store_Name,
+Store_Info.market_name as Market_Name,
+Store_Info.pricing_power as Pricing_power,
+Store_Info.transaction_ty as Transaction_TY,
+Product_Tier_Info.Product_Price_Sensitivity 
 
-FROM [dbo].[Store_Product_Info] where current_tier IS NOT NULL and current_price IS NOT NULL and corp_fran='C'
-and brand_id = @BrandId 
+FROM [dbo].[Store_Product_Info] Store_Product_Info left join [dbo].[Store_Info] Store_Info 
 
+on Store_Info.brand_id=Store_Product_Info.brand_id and Store_Info.store_code=Store_Product_Info.store_code 
+left join [dbo].[Product_Tier_Info] Product_Tier_Info  on Product_Tier_Info.brand_id=Store_Product_Info.brand_id and 
+Product_Tier_Info.product_id=Store_Product_Info.product_id 
 
-
-Update [dbo].[IST_Store_Product_Info] set Store_Sensitivity = ( select store_sensitivity from [dbo].[Store_Info]
- where brand_id=[dbo].[IST_Store_Product_Info].BrandId and store_code=[dbo].[IST_Store_Product_Info].Store_Code
-  and corp_fran='C') where BrandId=@BrandId and Project_Id=@Project_Id
-
-
-Update [dbo].[IST_Store_Product_Info] set Store_Name = (select store_name from [dbo].[Store_Info] 
-where brand_id=[dbo].[IST_Store_Product_Info].BrandId and store_code=[dbo].[IST_Store_Product_Info].Store_Code and corp_fran='C'
-) where BrandId=@BrandId and Project_Id=@Project_Id
-
-Update [dbo].[IST_Store_Product_Info] set Market_Name = (select market_name from [dbo].[Store_Info] 
-where brand_id=[dbo].[IST_Store_Product_Info].BrandId and store_code=[dbo].[IST_Store_Product_Info].Store_Code and corp_fran='C'
-) where BrandId=@BrandId and Project_Id=@Project_Id
-
-Update [dbo].[IST_Store_Product_Info]  set Pricing_power = (select pricing_power from [dbo].[Store_Info] 
-where brand_id=[dbo].[IST_Store_Product_Info].BrandId and  store_code=[dbo].[IST_Store_Product_Info].Store_Code and corp_fran='C'
-) where BrandId=@BrandId and Project_Id=@Project_Id
-
-Update [dbo].[IST_Store_Product_Info]  set Transaction_TY = (select transaction_ty from [dbo].[Store_Info] 
-where brand_id=[dbo].[IST_Store_Product_Info].BrandId and  store_code=[dbo].[IST_Store_Product_Info].Store_Code and corp_fran='C'
-) where BrandId=@BrandId and Project_Id=@Project_Id
-
-Update [dbo].[IST_Store_Product_Info] set Product_Price_Sensitivity = (select product_price_sensitivity from [dbo].[Product_Tier_Info] where 
- brand_id=[dbo].[IST_Store_Product_Info].BrandId and 
-product_id=[dbo].[IST_Store_Product_Info].Product_ID) where BrandId=@BrandId and Project_Id=@Project_Id
+  where Store_Product_Info.current_tier IS NOT NULL and Store_Product_Info.current_price IS NOT NULL and 
+  Store_Product_Info.corp_fran='C'
+and Store_Product_Info.brand_id = @BrandId  
+	
 END

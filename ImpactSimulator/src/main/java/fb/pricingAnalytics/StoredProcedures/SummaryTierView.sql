@@ -1,18 +1,21 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[GetOverallImpacts]    Script Date: 11/25/2019 2:07:12 AM ******/
+/****** Object:  StoredProcedure [dbo].[SummaryTierView]    Script Date: 1/5/2020 8:08:17 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-Create   PROCEDURE [dbo].[SummaryTierView]
+ALTER   PROCEDURE [dbo].[SummaryTierView]
 @Scenario_Id bigint =0,
 @Project_Id bigint=0,
 @BrandId int=0
 AS 
 BEGIN
-	
+With	
+Tiers_view
+AS
+(
 SELECT [Custom SQL Query].[Current_Tier] AS [Current_Tier],
 [Custom SQL Query].[Proposed_Tier] AS [Proposed_Tier],
 
@@ -61,6 +64,10 @@ and a.Proposed_Tier=IST_Product_Tier_Info.Tier )
 BrandId=@BrandId and Project_Id =@Project_Id and Scenario_ID_Store =@Scenario_Id and Scenario_Id_Product=@Scenario_Id)
 GROUP BY [Custom SQL Query].[Current_Tier],
 [Custom SQL Query].[Proposed_Tier]
-ORDER BY Current_Tier
+)
+
+Select * from Tiers_view
+union all
+select 'Total',' ',sum(Count_Of_Stores),sum(Impact_by_Tier) from Tiers_view
 
 END;
