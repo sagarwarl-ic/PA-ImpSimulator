@@ -367,8 +367,8 @@ public class MenuPricingController {
 	
 	private boolean validateInputRequest(RequestPricePlanner requestPricePlanner) {
 		
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 || requestPricePlanner.getScenario_Id()==null
-				|| requestPricePlanner.getScenario_Id().intValue() <= 0){
+		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()< 0 || requestPricePlanner.getScenario_Id()==null
+				|| requestPricePlanner.getScenario_Id().intValue() < 0){
 			return false;
 		}
 		return true;
@@ -398,7 +398,7 @@ public class MenuPricingController {
 			event.setProjectid(requestPricePlanner.getProject_Id());
 			event.setScenarioid(requestPricePlanner.getScenario_Id());
 			logger.info("start sending reportrequestevent to queue");
-			new FBAzureQueuePublisher().sendEventToQueue(event, userAuth);
+			new FBAzureQueuePublisher().sendEventToQueue(event, userAuth,request);
 			logger.info("finished sending reportrequestevent to queue");
 		
 		} catch (Exception e) {
