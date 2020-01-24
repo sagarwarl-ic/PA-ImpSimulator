@@ -277,4 +277,37 @@ public class PricePlannerController {
 		response.setCount(projectVo.size());
 		return new ResponseEntity<ProjectListResponse>(response,HttpStatus.OK);
 	}
+	
+	
+	
+	@RequestMapping(value="/deleteProject", method = RequestMethod.POST)
+	public ResponseEntity<?> deleteProject(HttpServletRequest request,@RequestBody PricePlannerProjectRequest projectRequest) {
+		logger.debug("PricePlannerController deleteProject function starts :::");
+		int updatedRows = -1;
+		if(null == projectRequest|| projectRequest.getProjectId() == null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Either the Request object or the Project Id is null"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		logger.info("Project Id  ::: "+projectRequest.getProjectId() );
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String brandId = userAuth.getBrandId();
+		BigInteger projectId = projectRequest.getProjectId();
+		logger.info("Brand Id ::: "+ brandId);
+		
+		try {
+			updatedRows = pricePlannerService.deleteProject(brandId,projectId);
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		if(updatedRows<=0) {
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "There is no Project with the provided project id"),
+				    HttpStatus.BAD_REQUEST);
+		}
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Project Deleted Successfully"),
+			    HttpStatus.OK);
+	}
 }

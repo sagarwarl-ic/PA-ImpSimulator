@@ -227,4 +227,14 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		
 	}
 
+	@Override
+	public int deleteProject(String brandId, BigInteger projectId)throws SQLException, Exception {
+		StringBuilder sb = new StringBuilder("UPDATE Project PR SET PR.deleted = 1 where PR.projectId=:project_id and PR.brandId=:brand_id ");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("project_id",projectId);
+		query.setParameter("brand_id",Integer.parseInt(brandId));
+		int rowsUpdated = query.executeUpdate();
+		return rowsUpdated;
+	}
+
 }

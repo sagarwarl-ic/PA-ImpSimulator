@@ -102,4 +102,10 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 		return pricePlannerDAO.getProjectList(brandId);
 	}
 
+	@Transactional
+	@Override
+	public int deleteProject(String brandId, BigInteger projectId)throws SQLException, Exception {
+		return pricePlannerDAO.deleteProject(brandId,projectId);
+	}
+
 }
