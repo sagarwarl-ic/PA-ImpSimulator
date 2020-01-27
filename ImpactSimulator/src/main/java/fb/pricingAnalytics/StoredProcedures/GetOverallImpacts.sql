@@ -14,17 +14,19 @@ AS
 BEGIN
 
 SELECT
-Round((SUM(((([Custom SQL Query].[Transaction_TY]) +
-(([Custom SQL Query].[Transaction_TY]) * (ISNULL([Custom SQL Query].[Store_PE], 0) *
-ISNULL((CASE WHEN [Custom SQL Query].[Original_Sales] = 0 THEN NULL ELSE (CAST([Custom SQL Query].[Sales_Impact] as float) /
-[Custom SQL Query].[Original_Sales]) END), 0)))) - ([Custom SQL Query].[Transaction_TY])))
+Round((SUM(((CASE WHEN (ISNULL([Custom SQL Query].[Store_PE], 0) > 0) THEN CAST(([Custom SQL Query].[Transaction_TY]) as float)
+ELSE (([Custom SQL Query].[Transaction_TY]) + (([Custom SQL Query].[Transaction_TY]) * (ISNULL([Custom SQL Query].[Store_PE], 0)
+* ISNULL((CASE WHEN [Custom SQL Query].[Original_Sales] = 0 THEN NULL ELSE (CAST([Custom SQL Query].[Sales_Impact] as float)
+/ [Custom SQL Query].[Original_Sales]) END), 0)))) END) - ([Custom SQL Query].[Transaction_TY])))
 / SUM(CAST(([Custom SQL Query].[Transaction_TY]) as BIGINT)))*100,2) AS Transaction_Risk,
 Round(SUM([Custom SQL Query].[Sales_Impact]),0) AS Sales_Impact,
 Round((SUM([Custom SQL Query].[Sales_Impact]) / SUM([Custom SQL Query].[Original_Sales]))*100,2) as Sales_Impact_Percent,
-Round(((SUM(((([Custom SQL Query].[Transaction_TY]) +
-(([Custom SQL Query].[Transaction_TY]) * (ISNULL([Custom SQL Query].[Store_PE], 0) *
-ISNULL((CASE WHEN [Custom SQL Query].[Original_Sales] = 0 THEN NULL ELSE (CAST([Custom SQL Query].[Sales_Impact] as float) /
-[Custom SQL Query].[Original_Sales]) END), 0)))) - ([Custom SQL Query].[Transaction_TY]))) / SUM(CAST(([Custom SQL Query].[Transaction_TY]) as BIGINT)) )
+
+Round(((SUM(((CASE WHEN (ISNULL([Custom SQL Query].[Store_PE], 0) > 0) THEN CAST(([Custom SQL Query].[Transaction_TY]) as float)
+ELSE (([Custom SQL Query].[Transaction_TY]) + (([Custom SQL Query].[Transaction_TY]) * (ISNULL([Custom SQL Query].[Store_PE], 0)
+* ISNULL((CASE WHEN [Custom SQL Query].[Original_Sales] = 0 THEN NULL ELSE (CAST([Custom SQL Query].[Sales_Impact] as float)
+/ [Custom SQL Query].[Original_Sales]) END), 0)))) END) - ([Custom SQL Query].[Transaction_TY])))
+/ SUM(CAST(([Custom SQL Query].[Transaction_TY]) as BIGINT)))
 + (SUM([Custom SQL Query].[Sales_Impact]) / SUM([Custom SQL Query].[Original_Sales])))*100,2) as Net_Impact_Percent
 
 
