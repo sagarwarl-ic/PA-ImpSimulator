@@ -237,4 +237,15 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		return rowsUpdated;
 	}
 
+	@Override
+	public int deleteScenario(String brandId, BigInteger projectId,BigInteger scenarioId) throws SQLException, Exception {		
+		StringBuilder sb = new StringBuilder("UPDATE Scenario SC SET SC.deleted = 1 where SC.projectId=:project_id and SC.scenarioId=:scenario_id and SC.brandId=:brand_id ");
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("project_id",projectId);
+		query.setParameter("scenario_id",scenarioId);
+		query.setParameter("brand_id",Integer.parseInt(brandId));
+		int rowsUpdated = query.executeUpdate();
+		return rowsUpdated;
+	}
+
 }

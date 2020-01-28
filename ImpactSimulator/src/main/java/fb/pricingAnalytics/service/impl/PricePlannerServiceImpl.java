@@ -108,4 +108,10 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 		return pricePlannerDAO.deleteProject(brandId,projectId);
 	}
 
+	@Transactional
+	@Override
+	public int deleteScenario(String brandId, BigInteger projectId,BigInteger scenarioId) throws SQLException, Exception {
+		return pricePlannerDAO.deleteScenario(brandId,projectId,scenarioId);
+	}
+
 }

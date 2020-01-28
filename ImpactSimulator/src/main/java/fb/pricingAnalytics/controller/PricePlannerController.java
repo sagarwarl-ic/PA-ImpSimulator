@@ -310,4 +310,38 @@ public class PricePlannerController {
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Project Deleted Successfully"),
 			    HttpStatus.OK);
 	}
+	
+	
+	@RequestMapping(value="/deleteScenario", method = RequestMethod.POST)
+	public ResponseEntity<?> deleteScenario(HttpServletRequest request,@RequestBody PricePlannerScenarioRequest pricePlannerRequest) {
+		logger.debug("PricePlannerController deleteProject function starts :::");
+		int updatedRows = -1;
+		if(null == pricePlannerRequest|| pricePlannerRequest.getProjectId() == null || pricePlannerRequest.getScenarioId()==null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Either the Request object or the Project Id or ScenarioId is null"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String brandId = userAuth.getBrandId();
+		BigInteger projectId = pricePlannerRequest.getProjectId();
+		BigInteger scenarioId = pricePlannerRequest.getScenarioId();
+		logger.info("Project Id  ::: "+projectId);
+		logger.info("Scenario Id  ::: "+scenarioId);
+		logger.info("Brand Id ::: "+ brandId);
+		
+		try {
+			updatedRows = pricePlannerService.deleteScenario(brandId,projectId,scenarioId);
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		if(updatedRows<=0) {
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "There is no scenario present with the associated project id"),
+				    HttpStatus.BAD_REQUEST);
+		}
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Scenario Deleted Successfully"),
+			    HttpStatus.OK);
+	}
 }
