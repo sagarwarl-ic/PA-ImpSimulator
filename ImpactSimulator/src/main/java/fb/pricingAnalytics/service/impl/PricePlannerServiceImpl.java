@@ -64,7 +64,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 			List<ScenarioVo> scenarioList = new ArrayList<ScenarioVo>();
 			
 			for(PricePlannerVo pricePlannerVo: projectList) {
-				if(pricePlannerVo.getScenarioId()!=null) {
+				if(pricePlannerVo.getScenarioId()!=null && !pricePlannerVo.getScenarioDeleted()) {
 				ScenarioVo scenario = new ScenarioVo();
 				scenario.setId(pricePlannerVo.getScenarioId());
 				scenario.setSceanrioName(pricePlannerVo.getScenarioName());
