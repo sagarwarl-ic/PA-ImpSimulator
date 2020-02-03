@@ -544,4 +544,30 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		return rows;
 
 	}
+
+
+	@Override
+	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName,int tenantId)throws SQLException, Exception {
+		
+		try{
+			for(UpdateStoreInfoRequest updateStoreTierRequest : updateStoreInfoRequest){
+				StringBuilder sb =  new StringBuilder ("update IST_Store_Info set  Proposed_Tier=:proposed_Tier,isChanged=:isChanged,"
+						+ "CreatedOn=createdOn,UpdatedOn=:updatedOn,UpdatedBy=:updatedBy where BrandId=:brand_Id and Project_Id =:project_Id and Scenario_Id=:scenario_Id and Store_Code =:store_Code");
+				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+				query.setParameter("proposed_Tier",updateStoreTierRequest.getProposedTier());	
+				query.setParameter("store_Code",updateStoreTierRequest.getStoreCode());
+				query.setParameter("isChanged", true);
+				query.setParameter("updatedOn", Date.from(Instant.now()));
+				query.setParameter("updatedBy", userName);
+				query.setParameter("project_Id",updateStoreTierRequest.getProject_Id());	
+				query.setParameter("scenario_Id", updateStoreTierRequest.getScenario_Id());
+				query.setParameter("brand_Id", tenantId);
+				query.executeUpdate();
+			}
+		}catch(Exception ex){
+			return new FBRestResponse(false, "Exception occured while updating the stores");
+		}
+		return new FBRestResponse(true, "Store Tier for all the provided stores Updated Successfully"); 
+	}
+	
 }

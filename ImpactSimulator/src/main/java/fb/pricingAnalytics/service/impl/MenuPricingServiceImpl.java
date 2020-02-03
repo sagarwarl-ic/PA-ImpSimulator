@@ -83,6 +83,10 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 		return menuPricingDAO.getFilterData(filterParam);
 	}
 	
-
+	@Transactional
+	@Override
+	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName,int tenantId) throws SQLException, Exception {
+		return menuPricingDAO.updateStores(updateStoreInfoRequest,userName,tenantId);
+	}
 
 }
