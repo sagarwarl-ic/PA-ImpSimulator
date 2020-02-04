@@ -89,4 +89,10 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 		return menuPricingDAO.updateStores(updateStoreInfoRequest,userName,tenantId);
 	}
 
+	@Transactional
+	@Override
+	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,int tenantId,String userName)throws SQLException, Exception {
+		return menuPricingDAO.updateMenuTierPrices(menuTierPriceUpdateReq,tenantId,userName);
+	}
+
 }
