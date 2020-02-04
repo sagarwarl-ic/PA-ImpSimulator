@@ -24,7 +24,7 @@ Scenario_ID_Store,
 [Custom SQL Query].Name,
 ROUND((SUM([Custom SQL Query].[Sales_Impact]) / SUM([Custom SQL Query].[Original_Sales]))*100,2) as Sales_Impact_Percent,
 ROUND(SUM([Custom SQL Query].[Original_Sales]),0) as Original_Sales,
-ROUND(SUM([Custom SQL Query].[Sales_Impact]),0) AS Sales_Impact
+ROUND(SUM([Custom SQL Query].[Sales_Impact]),0) AS Sales_Impact,
 
 
 Round(((SUM(((CASE WHEN (ISNULL([Custom SQL Query].[Store_PE], 0) > 0) THEN CAST(([Custom SQL Query].[Transaction_TY]) as float)
