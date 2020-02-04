@@ -1,10 +1,13 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[CompareScenario]    Script Date: 1/27/2020 11:40:19 AM ******/
+
+/****** Object:  StoredProcedure [dbo].[CompareScenario]    Script Date: 1/27/2020 12:23:59 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 -- =============================================
 -- Author:		<Author,,Name>
@@ -18,11 +21,12 @@ AS
 BEGIN
 SELECT
 Scenario_ID_Store,
-Scenario_Id_Product,
 [Custom SQL Query].Name,
 ROUND((SUM([Custom SQL Query].[Sales_Impact]) / SUM([Custom SQL Query].[Original_Sales]))*100,2) as Sales_Impact_Percent,
 ROUND(SUM([Custom SQL Query].[Original_Sales]),0) as Original_Sales,
-ROUND(SUM([Custom SQL Query].[Sales_Impact]),0) AS Sales_Impact,
+ROUND(SUM([Custom SQL Query].[Sales_Impact]),0) AS Sales_Impact
+
+
 Round(((SUM(((CASE WHEN (ISNULL([Custom SQL Query].[Store_PE], 0) > 0) THEN CAST(([Custom SQL Query].[Transaction_TY]) as float)
 ELSE (([Custom SQL Query].[Transaction_TY]) + (([Custom SQL Query].[Transaction_TY]) * (ISNULL([Custom SQL Query].[Store_PE], 0)
 * ISNULL((CASE WHEN [Custom SQL Query].[Original_Sales] = 0 THEN NULL ELSE (CAST([Custom SQL Query].[Sales_Impact] as float)
@@ -84,14 +88,13 @@ LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON
 ) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info
 ON ( a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID
-and a.Proposed_Tier=IST_Product_Tier_Info.Tier ) where a.[Scenario_ID_Store] = IST_Product_Tier_Info.[Scenario_Id]
+and a.Proposed_Tier=IST_Product_Tier_Info.Tier and a.Scenario_ID_Store=IST_Product_Tier_Info.[Scenario_Id] ) 
 ) as [Custom SQL Query] left join [dbo].[Scenario] as [Scenario] on
 ([Custom SQL Query].BrandId=Scenario.BrandId
-and [Custom SQL Query].Project_Id=[Scenario].Project_Id and [Custom SQL Query].Scenario_ID_Store=[Scenario].ScenarioId and
-[Custom SQL Query].Scenario_Id_Product=[Scenario].ScenarioId
+and [Custom SQL Query].Project_Id=[Scenario].Project_Id and [Custom SQL Query].Scenario_ID_Store=[Scenario].ScenarioId 
 )
 
-WHERE (([Custom SQL Query].[Scenario_ID_Store] = [Custom SQL Query].[Scenario_Id_Product]) and
+WHERE (
 [Custom SQL Query].BrandId=@BrandId AND ([Custom SQL Query].[Project_Id] = @Project_Id))
 
 
@@ -105,6 +108,7 @@ GROUP BY
 [Scenario].Name
 ) [Custom SQL Query]
 GROUP BY [Custom SQL Query].[Scenario_ID_Store],
-[Custom SQL Query].[Scenario_Id_Product],
 [Custom SQL Query].Name
 END
+GO
+
