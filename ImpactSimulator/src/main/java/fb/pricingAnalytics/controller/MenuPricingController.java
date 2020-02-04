@@ -451,6 +451,37 @@ public class MenuPricingController {
 	}
 	
 	
+	@RequestMapping(value="/updateMenuTierPrices", method = RequestMethod.POST)
+	public ResponseEntity<?> updateMenuTierPrices(HttpServletRequest request,@RequestBody List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq) {
+		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
+		
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String userName = userAuth.getUserName();
+		int tenantId = Integer.valueOf(userAuth.getBrandId());
+		logger.info("TenantId = " + tenantId);
+		logger.info("UserName = " + userName);
+		FBRestResponse response = null;
+		//requestMenuTier.setBrandId(Integer.valueOf(tenantId));
+		if(null == menuTierPriceUpdateReq || menuTierPriceUpdateReq.isEmpty()){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			response = menuPricingService.updateMenuTierPrices(menuTierPriceUpdateReq,tenantId,userName);
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.BAD_REQUEST);
+		}
+	
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
+			    HttpStatus.OK);
+	
+	}
+	
+	
 	/*@RequestMapping(value = "/getOtherStoreView", method = RequestMethod.POST)
 	public ResponseEntity<?> getOtherStoreView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 

@@ -29,4 +29,5 @@ public interface MenuPricingService {
 	public FilterData getFilterData(RequestPricePlanner requestPricePlanner)throws SQLException, Exception;
 	public List<Object> getFilterData(String filterParam)throws SQLException, Exception;
 	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName, int tenantId)throws SQLException, Exception;
+	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,int tenantId, String userName) throws SQLException, Exception;
 }
