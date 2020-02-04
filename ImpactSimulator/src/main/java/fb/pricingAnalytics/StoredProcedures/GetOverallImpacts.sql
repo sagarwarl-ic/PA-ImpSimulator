@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[GetOverallImpacts]    Script Date: 11/25/2019 2:07:12 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetOverallImpacts]    Script Date: 2/4/2020 4:08:32 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
