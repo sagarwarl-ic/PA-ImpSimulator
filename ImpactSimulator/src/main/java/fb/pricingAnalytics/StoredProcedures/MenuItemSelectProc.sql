@@ -1,6 +1,6 @@
-	USE [ImpactSimulator]
+USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc]    Script Date: 11/26/2019 11:54:22 PM ******/
+/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc]    Script Date: 2/10/2020 3:33:28 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -11,7 +11,7 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-Alter   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
+ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
 @pageSize int=100,
 @Cat1 VARCHAR(100)=null,
 @Cat2 VARCHAR(100)=null,
