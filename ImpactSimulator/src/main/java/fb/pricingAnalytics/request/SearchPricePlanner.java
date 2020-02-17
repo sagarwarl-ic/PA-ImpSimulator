@@ -10,6 +10,7 @@ public class SearchPricePlanner {
 	private String Price_Sensitivity;
 	private String Cat1;
 	private String Cat2;
+	private String Cat3;
 	private String Product_Price_Sensitivity;
 	private String Tier;
 	
@@ -67,7 +68,11 @@ public class SearchPricePlanner {
 	public void setTier(String tier) {
 		Tier = tier;
 	}
-	
-	
+	public String getCat3() {
+		return Cat3;
+	}
+	public void setCat3(String cat3) {
+		Cat3 = cat3;
+	}
 		
 }
