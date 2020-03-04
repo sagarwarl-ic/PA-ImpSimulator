@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 11/27/2019 12:00:50 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 3/4/2020 2:04:59 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -115,19 +115,25 @@ GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHE
 
 Count_CTE
 AS
+
 (
 SELECT COUNT(*) AS TotalRows FROM Data_Store_View where 
-    ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR (@CurrentTier is null and Current_Tier is null)) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR (@PricingPower is null and Pricing_Power is null )) 
-and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR (@StoreSensitivity is null and Store_Sensitivity is null ))  
+
+ (Current_Tier IN (select * from dbo.splitString(@CurrentTier,',')) OR (@CurrentTier is null and Current_Tier is null) OR (@CurrentTier is null and Current_Tier = Current_Tier))
+ and  
+ (Pricing_Power IN (select * from dbo.splitString(@PricingPower,',')) OR (@PricingPower is null and Pricing_Power is null) OR (@PricingPower is null and Pricing_Power = Pricing_Power))
+ and 
+ (Store_Sensitivity IN (select * from dbo.splitString(@StoreSensitivity,',')) OR (@StoreSensitivity is null and Store_Sensitivity is null) OR (@StoreSensitivity is null and Store_Sensitivity = Store_Sensitivity))
 )
 
 SELECT *
 FROM Data_Store_View
 CROSS JOIN Count_CTE  where 
-  ((Current_Tier = ISNULL(@CurrentTier,Current_Tier)) OR (@CurrentTier is null and Current_Tier is null)) 
-and  ((Pricing_Power = ISNULL(@PricingPower,Pricing_Power)) OR (@PricingPower is null and Pricing_Power is null )) 
-and  ((Store_Sensitivity = ISNULL(@StoreSensitivity,Store_Sensitivity)) OR (@StoreSensitivity is null and Store_Sensitivity is null ))  
+   (Current_Tier IN (select * from dbo.splitString(@CurrentTier,',')) OR (@CurrentTier is null and Current_Tier is null)OR (@CurrentTier is null and Current_Tier = Current_Tier)) 
+   and 
+   (Pricing_Power IN (select * from dbo.splitString(@PricingPower,',')) OR (@PricingPower is null and Pricing_Power is null) OR (@PricingPower is null and Pricing_Power = Pricing_Power))
+   and 
+   (Store_Sensitivity IN (select * from dbo.splitString(@StoreSensitivity,',')) OR (@StoreSensitivity is null and Store_Sensitivity is null) OR (@StoreSensitivity is null and Store_Sensitivity = Store_Sensitivity))
 order by 
 CASE WHEN @SortField = 'Store_Code' AND  @Direction = 'DESC' THEN [Store_Code] END DESC,
 CASE WHEN @SortField = 'Store_Code' AND  @Direction != 'DESC' THEN [Store_Code] END,
