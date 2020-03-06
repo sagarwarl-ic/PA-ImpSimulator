@@ -49,6 +49,22 @@ public class StoreTierVo {
 		Original_Sales = original_Sales;
 		Quantity = quantity;
 	}
+	
+	
+	
+
+	public StoreTierVo(Integer store_Code,String proposed_Tier,String current_Tier,String store_Sensitivity,
+			String pricing_Power ) {
+		super();
+		Store_Sensitivity = store_Sensitivity;
+		Current_Tier = current_Tier;
+		Pricing_Power = pricing_Power;
+		Proposed_Tier = proposed_Tier;
+		Store_Code = store_Code;
+	}
+
+
+
 
 	public String getStore_Sensitivity() {
 		return Store_Sensitivity;

@@ -155,6 +155,21 @@ public class MenuPricingVo {
 		Total_Impact_Percent = total_Impact_Percent;
 	}
 
+	
+
+	public MenuPricingVo(String cat1, String cat2, String cat3,
+			String product_ID, String proposed_Tier,Double current_Price,String product_Price_Sensitivity
+			) {
+		super();
+		Cat1 = cat1;
+		Cat2 = cat2;
+		Cat3 = cat3;
+		Product_ID = product_ID;
+		Product_Price_Sensitivity = product_Price_Sensitivity;
+		Proposed_Tier = proposed_Tier;
+		Current_Price = current_Price;
+	}
+
 
 
 	/*public String getTier_Change() {
