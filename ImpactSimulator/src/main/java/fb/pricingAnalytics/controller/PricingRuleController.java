@@ -75,7 +75,7 @@ public class PricingRuleController {
 	}
 	
 	@RequestMapping(value="/rules",method=RequestMethod.GET)
-	public ResponseEntity<?> getScenarioPricingRules(HttpServletRequest request,@RequestParam("scenarioid") BigInteger scenarioid){
+	public ResponseEntity<?> getScenarioPricingRules(HttpServletRequest request,@RequestParam("scenarioId") BigInteger scenarioid){
 		logger.debug("PricingRuleController getScenarioPricingRules function starts :::");
 		PricingRulesListResponse response = new PricingRulesListResponse();
 		
