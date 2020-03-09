@@ -8,6 +8,7 @@ public class ApplyRuleRequest {
 	private BigInteger scenarioId;
 	private boolean isApplied;
 	private BigInteger projectId;
+	private boolean isDeleted;
 	
 	
 	public BigInteger getRuleId() {
@@ -33,6 +34,12 @@ public class ApplyRuleRequest {
 	}
 	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
+	}
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
 	
 	

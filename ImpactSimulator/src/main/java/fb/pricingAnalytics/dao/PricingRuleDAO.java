@@ -22,6 +22,8 @@ public interface PricingRuleDAO {
 
 	public List<ApplyRulesStatusResponse> applyRules(int brandId,List<ApplyRuleRequest> rulesApplicable,String userName)throws SQLException,Exception;
 
+	public List<ApplyRulesStatusResponse> deleteRules(int brandId,List<ApplyRuleRequest> deleteRules, String userName);
+
 	
 
 	//public ProjectPricingRulesResponse getPricingRulesForProject(BigInteger projectId,int brandId);

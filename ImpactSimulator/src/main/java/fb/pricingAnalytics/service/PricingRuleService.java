@@ -18,6 +18,8 @@ public interface PricingRuleService {
 
 	public ApplyRulesStatusListResponse applyPricingRules(int brandId,List<ApplyRuleRequest> applyRules, String userName)throws SQLException,Exception;
 
+	public ApplyRulesStatusListResponse deletePricingRules(int brandId,List<ApplyRuleRequest> applyRules, String userName)throws SQLException,Exception;
+
 	//public ProjectPricingRulesResponse getPricingRulesForProject(BigInteger projectId,	int brandId)throws SQLException,Exception;
 	
 

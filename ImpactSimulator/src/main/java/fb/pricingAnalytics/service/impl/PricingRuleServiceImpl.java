@@ -18,7 +18,6 @@ import fb.pricingAnalytics.response.ApplyRulesStatusListResponse;
 import fb.pricingAnalytics.response.ApplyRulesStatusResponse;
 import fb.pricingAnalytics.response.PricingRulesListResponse;
 import fb.pricingAnalytics.service.PricingRuleService;
-import fb.pricingAnalytics.utils.FBRestResponse;
 
 
 @Service
@@ -57,6 +56,18 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 		responseList.addAll(applyrulesResponse);
 		response.getApplyRulesStatusResponse().addAll(responseList);
 		
+		return response;
+	}
+
+	@Transactional
+	@Override
+	public ApplyRulesStatusListResponse deletePricingRules(int brandId,List<ApplyRuleRequest> deleteRules, String userName)throws SQLException, Exception {
+		
+		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
+		List<ApplyRulesStatusResponse> responseList = new ArrayList<ApplyRulesStatusResponse>();
+		List<ApplyRulesStatusResponse> revertRulesResponse = pricingRuleDao.deleteRules(brandId,deleteRules,userName);
+		responseList.addAll(revertRulesResponse);
+		response.getApplyRulesStatusResponse().addAll(responseList);
 		return response;
 	}
 
