@@ -230,7 +230,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				updateStoreInfoRequest.setBrandId(brandId); 
 				updateStoreInfoRequest.setProject_Id(ruleRequest.getProjectId());
 				updateStoreInfoRequest.setScenario_Id(ruleRequest.getScenarioId());
-				updateStoreInfoRequest.setProposedTier(storeTierVo.getProposed_Tier());
+				updateStoreInfoRequest.setProposedTier(pricingRule.getTierUpdate());
 				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
 					updateStoreInfoRequest.setProposedTier(storeTierVo.getCurrent_Tier());
 				}
