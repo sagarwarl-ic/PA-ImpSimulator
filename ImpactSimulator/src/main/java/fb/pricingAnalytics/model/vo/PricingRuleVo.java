@@ -16,8 +16,9 @@ public class PricingRuleVo {
 	private String tierUpdate;
 	private double priceChange;
 	private PricingRuleData ruleData;
+	private String ruleName;
 	
-	public PricingRuleVo(BigInteger ruleId, BigInteger scenarioId, int brandId,
+	public PricingRuleVo(BigInteger ruleId,String ruleName,BigInteger scenarioId, int brandId,
 			boolean isApplied, boolean isDeleted, Date createdOn,
 			String createdBy, String ruleType, String tierUpdate,
 			double priceChange, PricingRuleData ruleData) {
@@ -33,6 +34,7 @@ public class PricingRuleVo {
 		this.tierUpdate = tierUpdate;
 		this.priceChange = priceChange;
 		this.ruleData = ruleData;
+		this.ruleName = ruleName;
 	}
 
 	public BigInteger getRuleId() {
@@ -121,6 +123,14 @@ public class PricingRuleVo {
 
 	public void setRuleData(PricingRuleData ruleData) {
 		this.ruleData = ruleData;
+	}
+
+	public String getRuleName() {
+		return ruleName;
+	}
+
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
 	}
 	
 
