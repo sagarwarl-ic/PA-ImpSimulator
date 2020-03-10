@@ -256,7 +256,8 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
 				menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
 				menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
-				menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
+				//menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
+				menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
 				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
 				}
