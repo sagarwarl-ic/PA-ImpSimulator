@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,8 @@ public class PricingRuleController {
 		
 	}
 	
-	@RequestMapping(value="/rules/{scenarioid}",method=RequestMethod.GET)
-	public ResponseEntity<?> getScenarioPricingRules(HttpServletRequest request,@PathVariable("scenarioid") BigInteger scenarioid){
+	@RequestMapping(value="/rules",method=RequestMethod.GET)
+	public ResponseEntity<?> getScenarioPricingRules(HttpServletRequest request,@RequestParam("scenarioId") BigInteger scenarioid){
 		logger.debug("PricingRuleController getScenarioPricingRules function starts :::");
 		PricingRulesListResponse response = new PricingRulesListResponse();
 		
@@ -109,6 +110,32 @@ public class PricingRuleController {
 		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
 		try{
 			response = pricingRuleService.applyPricingRules(brandId,applyRules,userName);
+			response.setMessage("success");
+			response.setSuccessFlag(true);
+		}catch(Exception ex){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "exception occured"),
+				    HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApplyRulesStatusListResponse>(response, HttpStatus.OK);
+		
+	}
+	
+	
+	@RequestMapping(value="/deleteRules",method=RequestMethod.POST)
+	public ResponseEntity<?> deletePricingRules(HttpServletRequest request,@RequestBody List<ApplyRuleRequest> applyRules){
+		
+		logger.debug("PricingRuleController applyPricingRules function starts :::");
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		int brandId = Integer.valueOf(userAuth.getBrandId());
+		String userName = userAuth.getUserName();
+		logger.info("Brand Id ::: "+ brandId +" UserName  ::: "+userName);
+		if(null == applyRules || applyRules.isEmpty()){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ApplyRuleRequest object is not present"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
+		try{
+			response = pricingRuleService.deletePricingRules(brandId,applyRules,userName);
 			response.setMessage("success");
 			response.setSuccessFlag(true);
 		}catch(Exception ex){

@@ -6,17 +6,20 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.StoredProcedureQuery;
 
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.dao.PricingRuleDAO;
@@ -36,12 +39,6 @@ import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.response.PricingRulesListResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
 import fb.pricingAnalytics.utils.FBRestResponse;
-
-import org.hamcrest.collection.IsEmptyCollection;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Repository
@@ -232,7 +229,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				updateStoreInfoRequest.setProject_Id(ruleRequest.getProjectId());
 				updateStoreInfoRequest.setScenario_Id(ruleRequest.getScenarioId());
 				updateStoreInfoRequest.setProposedTier(storeTierVo.getProposed_Tier());
-				if(!ruleRequest.isApplied()){
+				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
 					updateStoreInfoRequest.setProposedTier(storeTierVo.getCurrent_Tier());
 				}
 				updateStoreInfoRequest.setStoreCode(storeTierVo.getStore_Code());
@@ -242,6 +239,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		}catch(Exception ex){
 			logger.info("Excption occured while updating Menu Tier Price");
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"Exception occured while applying rule to data");
+		}
+		if(!ruleRequest.isApplied()){
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule reverted successfully ");
 		}
 		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule applied successfully to data");
 	}
@@ -257,7 +257,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
 				menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
 				menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
-				if(!ruleRequest.isApplied()){
+				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
 				}
 				menuTierPriceUpdateReq.setTier(menuPricingVo.getProposed_Tier());
@@ -266,6 +266,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		}catch(Exception ex){
 			logger.info("Excption occured while updating Menu Tier Price");
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"Exception occured while applying rule to data");
+		}
+		if(!ruleRequest.isApplied()){
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule reverted successfully ");
 		}
 		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule applied successfully to data");
 		
@@ -410,6 +413,45 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		}
 		
 		return StoreTierResponse;
+	}
+
+	@Override
+	public List<ApplyRulesStatusResponse> deleteRules(int brandId,List<ApplyRuleRequest> deleteRules, String userName) {
+		
+		List<ApplyRulesStatusResponse> applyRulesResponseList = new ArrayList<ApplyRulesStatusResponse>();
+		
+		try {
+				applyRulesResponseList  = revertRules(brandId, deleteRules, userName);
+		} catch (Exception e) {
+			logger.info("Excption occured while reverting rule ");
+			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),false,"Exception occured while deleting rule "));
+			return applyRulesResponseList;
+		}
+		if(!applyRulesResponseList.isEmpty() && applyRulesResponseList.get(0).isRuleApplied()){
+			
+			ApplyRuleRequest applyRuleRequest = deleteRules.get(0);
+				
+				try{
+					StringBuilder sb =  new StringBuilder("UPDATE ScenarioPricingRule SET IsDeleted=:is_Deleted where BrandId=:brand_Id and RuleId=:rule_Id and ScenarioId=:scenario_Id");
+					Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+					query.setParameter("brand_Id", brandId);
+					query.setParameter("scenario_Id", applyRuleRequest.getScenarioId());
+					query.setParameter("is_Deleted", applyRuleRequest.isDeleted());
+					query.setParameter("rule_Id", applyRuleRequest.getRuleId());
+					query.executeUpdate();
+				}catch(Exception ex){
+					applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),false,"Exception occured while deleting rule "));
+					return applyRulesResponseList;
+					
+				}
+	
+		}else if(applyRulesResponseList.isEmpty()){
+			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),false,"There is no data to be reverted"));
+			return applyRulesResponseList;
+		}
+		List<ApplyRulesStatusResponse> applyRulesResponseSuccessList = new ArrayList<ApplyRulesStatusResponse>();
+		applyRulesResponseSuccessList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),true,"Rule deleted successfully"));
+		return applyRulesResponseSuccessList;
 	}
 	
 	
