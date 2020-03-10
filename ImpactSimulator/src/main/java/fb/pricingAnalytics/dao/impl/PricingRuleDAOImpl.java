@@ -72,6 +72,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			pricingRule.setRuleType(pricingRuleRequest.getType());
 			pricingRule.setTierUpdate(pricingRuleRequest.getTierUpdate());
 			pricingRule.setPriceChange(null);
+			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
 			if(null != pricingRuleRequest.getPriceChange()){
 				pricingRule.setPriceChange(pricingRuleRequest.getPriceChange().floatValue());
 			}
@@ -205,6 +206,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			}else{
 				PricingRuleData ruleData = new ObjectMapper().readValue(pricingRule.getRuleData(),PricingRuleData.class);
 				StoreTierResponse responseList = getStoreTierRecordsForRule(ruleData.getStoreTier(),ruleRequest,brandId);
+
 				if(responseList.getCount() == 0){
 					response= new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"There are no records present for the associated rule type criteria");
 				}else{
@@ -357,8 +359,8 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	
 	private StoreTierResponse getStoreTierRecordsForRule(StoreTier storeTier,ApplyRuleRequest ruleRequest, int brandId) {
 		
-		StoreTierResponse StoreTierResponse = new StoreTierResponse();
-		StoreTierResponse.setCount(0);
+		StoreTierResponse response = new StoreTierResponse();
+		response.setCount(0);
 		
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProcForSearch]");
@@ -395,7 +397,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.registerStoredProcedureParameter(7, BigInteger.class , ParameterMode.IN);
 		query.setParameter(7, ruleRequest.getScenarioId());
 		query.registerStoredProcedureParameter(8, BigInteger.class , ParameterMode.IN);
-		query.setParameter(8, ruleRequest.getScenarioId());
+		query.setParameter(8, ruleRequest.getProjectId());
 		query.registerStoredProcedureParameter(9, Integer.class , ParameterMode.IN);
 		query.setParameter(9, brandId);
 		
@@ -403,17 +405,18 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		
 		List<Object[]> rows = query.getResultList();
 		
+		
 		if(rows!=null&&rows.size()>0){
 			List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
 			for (Object[] row : rows) {
 				result.add(new StoreTierVo((Integer)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4]));
 			}
-			Integer count = (Integer)(rows.get(0))[6];
-			StoreTierResponse.setCount(count);
-			StoreTierResponse.setStoreTier(result);
+			Integer count = (Integer)(rows.get(0))[5];
+			response.setCount(count);
+			response.setStoreTier(result);
 		}
 		
-		return StoreTierResponse;
+		return response;
 	}
 
 	@Override
