@@ -14,14 +14,14 @@ public class PricingRuleVo {
 	private String createdBy;
 	private String ruleType;
 	private String tierUpdate;
-	private double priceChange;
+	private Float priceChange;
 	private PricingRuleData ruleData;
 	private String ruleName;
 	
 	public PricingRuleVo(BigInteger ruleId,String ruleName,BigInteger scenarioId, int brandId,
 			boolean isApplied, boolean isDeleted, Date createdOn,
 			String createdBy, String ruleType, String tierUpdate,
-			double priceChange, PricingRuleData ruleData) {
+			Float priceChange, PricingRuleData ruleData) {
 		super();
 		this.ruleId = ruleId;
 		this.scenarioId = scenarioId;
@@ -109,11 +109,11 @@ public class PricingRuleVo {
 		this.tierUpdate = tierUpdate;
 	}
 
-	public double getPriceChange() {
+	public Float getPriceChange() {
 		return priceChange;
 	}
 
-	public void setPriceChange(double priceChange) {
+	public void setPriceChange(Float priceChange) {
 		this.priceChange = priceChange;
 	}
 
