@@ -122,20 +122,20 @@ public class PricingRuleController {
 	
 	
 	@RequestMapping(value="/deleteRules",method=RequestMethod.POST)
-	public ResponseEntity<?> deletePricingRules(HttpServletRequest request,@RequestBody List<ApplyRuleRequest> applyRules){
+	public ResponseEntity<?> deletePricingRules(HttpServletRequest request,@RequestBody List<ApplyRuleRequest> deleteRules){
 		
 		logger.debug("PricingRuleController applyPricingRules function starts :::");
 		UserAuth userAuth=AuthUtils.getUserAuthData(request);
 		int brandId = Integer.valueOf(userAuth.getBrandId());
 		String userName = userAuth.getUserName();
 		logger.info("Brand Id ::: "+ brandId +" UserName  ::: "+userName);
-		if(null == applyRules || applyRules.isEmpty()){
+		if(null == deleteRules || deleteRules.isEmpty()){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ApplyRuleRequest object is not present"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
 		try{
-			response = pricingRuleService.deletePricingRules(brandId,applyRules,userName);
+			response = pricingRuleService.deletePricingRules(brandId,deleteRules,userName);
 			response.setMessage("success");
 			response.setSuccessFlag(true);
 		}catch(Exception ex){
