@@ -202,6 +202,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 					response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"There are no records present for the associated rule criteria");
 				}else{
 					response = updateMenuTierPrice(ruleRequest,brandId,responseList,pricingRule,userName);
+					logger.info("update rulescenariopricing table");
+					if(response.isRuleApplied()){
+						updateScenarioPricing(ruleRequest,brandId);
+					}
 				}
 			}else{
 				PricingRuleData ruleData = new ObjectMapper().readValue(pricingRule.getRuleData(),PricingRuleData.class);
@@ -211,6 +215,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 					response= new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"There are no records present for the associated rule type criteria");
 				}else{
 					response = updateStoreTier(ruleRequest,brandId,responseList,pricingRule,userName);
+					logger.info("update rulescenariopricing table");
+					if(response.isRuleApplied()){
+						updateScenarioPricing(ruleRequest,brandId);
+					}
 				}
 			}
 		}catch(Exception ex){
@@ -220,6 +228,8 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	}
 
 	
+
+
 
 	private ApplyRulesStatusResponse updateStoreTier(ApplyRuleRequest ruleRequest, int brandId,StoreTierResponse responseList, ScenarioPricingRule pricingRule,
 			String userName) {
@@ -458,5 +468,17 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		return applyRulesResponseSuccessList;
 	}
 	
+	
+	private void updateScenarioPricing(ApplyRuleRequest applyRuleRequest, int brandId) {
+			
+				StringBuilder sb =  new StringBuilder("UPDATE ScenarioPricingRule SET IsApplied=:is_Applied where BrandId=:brand_Id and RuleId=:rule_Id and ScenarioId=:scenario_Id");
+				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+				query.setParameter("brand_Id", brandId);
+				query.setParameter("scenario_Id", applyRuleRequest.getScenarioId());
+				query.setParameter("is_Applied", applyRuleRequest.isApplied());
+				query.setParameter("rule_Id", applyRuleRequest.getRuleId());
+				query.executeUpdate();
+			
+	}
 	
 }
