@@ -5,12 +5,21 @@ import java.math.BigInteger;
 public class ApplyRulesStatusResponse {
 	
 	private BigInteger ruleId;
+	private String ruleName;
 	private boolean ruleApplied;
 	private String message;
 	
 	
+	public ApplyRulesStatusResponse(BigInteger ruleId, String ruleName,boolean ruleApplied,
+			String message) {
+		super();
+		this.ruleId = ruleId;
+		this.ruleName = ruleName;
+		this.ruleApplied = ruleApplied;
+		this.message = message;
+	}
 	
-
+	
 	public ApplyRulesStatusResponse(BigInteger ruleId, boolean ruleApplied,
 			String message) {
 		super();
@@ -18,6 +27,8 @@ public class ApplyRulesStatusResponse {
 		this.ruleApplied = ruleApplied;
 		this.message = message;
 	}
+
+	
 	public BigInteger getRuleId() {
 		return ruleId;
 	}
@@ -35,6 +46,12 @@ public class ApplyRulesStatusResponse {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	public String getRuleName() {
+		return ruleName;
+	}
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
 	}
 	
 }

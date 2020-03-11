@@ -199,7 +199,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				PricingRuleData ruleData = new ObjectMapper().readValue(pricingRule.getRuleData(),PricingRuleData.class);
 				MenuPricingResponse responseList = getMenuItemRecordsForRule(ruleData.getMenuItem(),ruleRequest,brandId);
 				if(responseList.getCount() == 0){
-					response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"There are no records present for the associated rule criteria");
+					response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"There are no records present for the associated rule criteria");
 				}else{
 					response = updateMenuTierPrice(ruleRequest,brandId,responseList,pricingRule,userName);
 					logger.info("update rulescenariopricing table");
@@ -212,7 +212,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				StoreTierResponse responseList = getStoreTierRecordsForRule(ruleData.getStoreTier(),ruleRequest,brandId);
 
 				if(responseList.getCount() == 0){
-					response= new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"There are no records present for the associated rule type criteria");
+					response= new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"There are no records present for the associated rule type criteria");
 				}else{
 					response = updateStoreTier(ruleRequest,brandId,responseList,pricingRule,userName);
 					logger.info("update rulescenariopricing table");
@@ -222,7 +222,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				}
 			}
 		}catch(Exception ex){
-			response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"Exception occured while processing the Rule");
+			response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while processing the Rule");
 		}
 		return response;
 	}
@@ -250,12 +250,12 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			
 		}catch(Exception ex){
 			logger.info("Excption occured while updating Menu Tier Price");
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"Exception occured while applying rule to data");
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
 		}
 		if(!ruleRequest.isApplied()){
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule reverted successfully ");
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
 		}
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule applied successfully to data");
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
 	}
 
 	private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleRequest, int brandId, MenuPricingResponse responseList,ScenarioPricingRule pricingRule,
@@ -278,12 +278,12 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			}
 		}catch(Exception ex){
 			logger.info("Excption occured while updating Menu Tier Price");
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),false,"Exception occured while applying rule to data");
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
 		}
 		if(!ruleRequest.isApplied()){
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule reverted successfully ");
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
 		}
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),true,"Rule applied successfully to data");
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
 		
 	}
 
