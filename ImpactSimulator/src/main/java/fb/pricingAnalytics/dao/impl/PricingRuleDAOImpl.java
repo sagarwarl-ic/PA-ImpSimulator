@@ -438,7 +438,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				applyRulesResponseList  = revertRules(brandId, deleteRules, userName);
 		} catch (Exception e) {
 			logger.info("Excption occured while reverting rule ");
-			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),false,"Exception occured while deleting rule "));
+			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),false,"Exception occured while deleting rule "));
 			return applyRulesResponseList;
 		}
 		if(!applyRulesResponseList.isEmpty() && applyRulesResponseList.get(0).isRuleApplied()){
@@ -454,17 +454,17 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 					query.setParameter("rule_Id", applyRuleRequest.getRuleId());
 					query.executeUpdate();
 				}catch(Exception ex){
-					applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),false,"Exception occured while deleting rule "));
+					applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),false,"Exception occured while deleting rule "));
 					return applyRulesResponseList;
 					
 				}
 	
 		}else if(applyRulesResponseList.isEmpty()){
-			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),false,"There is no data to be reverted"));
+			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),false,"There is no data to be reverted"));
 			return applyRulesResponseList;
 		}
 		List<ApplyRulesStatusResponse> applyRulesResponseSuccessList = new ArrayList<ApplyRulesStatusResponse>();
-		applyRulesResponseSuccessList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),true,"Rule deleted successfully"));
+		applyRulesResponseSuccessList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),true,"Rule deleted successfully"));
 		return applyRulesResponseSuccessList;
 	}
 	
