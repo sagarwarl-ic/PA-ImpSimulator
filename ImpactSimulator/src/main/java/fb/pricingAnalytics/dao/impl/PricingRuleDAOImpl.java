@@ -441,10 +441,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),false,"Exception occured while deleting rule "));
 			return applyRulesResponseList;
 		}
-		if(!applyRulesResponseList.isEmpty() && applyRulesResponseList.get(0).isRuleApplied()){
+		
 			
 			ApplyRuleRequest applyRuleRequest = deleteRules.get(0);
-				
 				try{
 					StringBuilder sb =  new StringBuilder("UPDATE ScenarioPricingRule SET IsDeleted=:is_Deleted where BrandId=:brand_Id and RuleId=:rule_Id and ScenarioId=:scenario_Id");
 					Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
@@ -456,13 +455,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				}catch(Exception ex){
 					applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),false,"Exception occured while deleting rule "));
 					return applyRulesResponseList;
-					
 				}
 	
-		}else if(applyRulesResponseList.isEmpty()){
-			applyRulesResponseList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),false,"There is no data to be reverted"));
-			return applyRulesResponseList;
-		}
+	
 		List<ApplyRulesStatusResponse> applyRulesResponseSuccessList = new ArrayList<ApplyRulesStatusResponse>();
 		applyRulesResponseSuccessList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),true,"Rule deleted successfully"));
 		return applyRulesResponseSuccessList;
