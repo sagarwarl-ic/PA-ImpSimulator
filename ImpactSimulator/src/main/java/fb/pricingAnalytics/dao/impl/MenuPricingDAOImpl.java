@@ -253,10 +253,15 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		if(rows!=null&&rows.size()>0){
 			List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
 			for (Object[] row : rows) {
+			   /* result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
+			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));*/
+			    
+			    
 			    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
-			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
+			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12],(Integer)row[13],(Double)row[14],(Double)row[15],
+			    		(Double)row[16],(Double)row[17],(Double)row[18]));
 			}
-			Integer count = (Integer)(rows.get(0))[13];
+			Integer count = (Integer)(rows.get(0))[19];
 			response.setCount(count);
 			response.setStoreTier(result);
 		}
