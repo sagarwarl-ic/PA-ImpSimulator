@@ -73,6 +73,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			pricingRule.setTierUpdate(pricingRuleRequest.getTierUpdate());
 			pricingRule.setPriceChange(null);
 			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
+			pricingRule.setPriceChangeByPercentage(pricingRuleRequest.getPriceChangeByPercentage());
 			if(null != pricingRuleRequest.getPriceChange()){
 				pricingRule.setPriceChange(pricingRuleRequest.getPriceChange().floatValue());
 			}
@@ -269,6 +270,13 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
 				menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
 				//menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
+				if(pricingRule.isPriceChangeByPercentage()){
+					Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
+					Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
+					menuTierPriceUpdateReq.setPrice(newPrice);
+				}else{
+					menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
+				}
 				menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
 				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));

@@ -51,6 +51,9 @@ public class ScenarioPricingRule {
 	
 	@Column(name="PriceChange")
 	private Float priceChange;
+	
+	@Column(name="IsPriceChangeByPercentage")
+	private boolean isPriceChangeByPercentage;
 
 	public BigInteger getRuleId() {
 		return ruleId;
@@ -146,6 +149,14 @@ public class ScenarioPricingRule {
 
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
+	}
+
+	public boolean isPriceChangeByPercentage() {
+		return isPriceChangeByPercentage;
+	}
+
+	public void setPriceChangeByPercentage(boolean isPriceChangeByPercentage) {
+		this.isPriceChangeByPercentage = isPriceChangeByPercentage;
 	}
 	
 

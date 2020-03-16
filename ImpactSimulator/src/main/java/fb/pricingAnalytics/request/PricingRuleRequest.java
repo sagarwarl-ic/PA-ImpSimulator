@@ -15,6 +15,9 @@ public class PricingRuleRequest {
 	@JsonIgnore
 	private String tierUpdate;
 	
+	@JsonIgnore
+	private boolean priceChangeByPercentage;
+	
 	private MenuItem menuItem;
 	
 	private StoreTier storeTier;
@@ -74,6 +77,13 @@ public class PricingRuleRequest {
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
 	}
+	public boolean getPriceChangeByPercentage() {
+		return priceChangeByPercentage;
+	}
+	public void setPriceChangeByPercentage(boolean priceChangeByPercentage) {
+		this.priceChangeByPercentage = priceChangeByPercentage;
+	}
+	
 	
 
 }
