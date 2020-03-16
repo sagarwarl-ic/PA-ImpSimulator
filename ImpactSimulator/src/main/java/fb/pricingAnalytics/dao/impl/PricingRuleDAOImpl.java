@@ -107,7 +107,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				PricingRuleData ruleData = new ObjectMapper().readValue(pricingRule.getRuleData(),PricingRuleData.class);
 				result.add(new PricingRuleVo(pricingRule.getRuleId(),pricingRule.getRuleName(),pricingRule.getScenarioId(),pricingRule.getBrandId(),
 						pricingRule.isApplied(),pricingRule.isDeleted(),pricingRule.getCreatedOn(),pricingRule.getCreatedBy(),
-						pricingRule.getRuleType(),pricingRule.getTierUpdate(),pricingRule.getPriceChange(),ruleData));
+						pricingRule.getRuleType(),pricingRule.getTierUpdate(),pricingRule.getPriceChange(),ruleData,pricingRule.isPriceChangeByPercentage()));
 			}
 			response.setCount_PricingRules(rows.size());
 			response.setPricingRules(result);
