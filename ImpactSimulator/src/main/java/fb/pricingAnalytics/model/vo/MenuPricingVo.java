@@ -72,7 +72,7 @@ public class MenuPricingVo {
 	private Double Total_Impact_Percent;
 	
 	
-	
+	private Boolean Is_Changed;
 	
 	
 	/*public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
@@ -133,7 +133,7 @@ public class MenuPricingVo {
 			Double sales_Impact, Double new_Sales,
 			Double sales_Impact_Percentage, BigDecimal original_Sales,
 			Double price_Change_Percent, Double price_Change, Double new_Price,
-			Double current_Price, BigInteger quantity_TY,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
+			Double current_Price, BigInteger quantity_TY,Boolean is_Changed,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
 		super();
 		Cat1 = cat1;
 		Cat2 = cat2;
@@ -153,6 +153,7 @@ public class MenuPricingVo {
 		Quantity_TY = quantity_TY;
 		Total_Sales_Gross = total_Sales_Gross;
 		Total_Impact_Percent = total_Impact_Percent;
+		Is_Changed = is_Changed;
 	}
 
 	
@@ -303,6 +304,13 @@ public class MenuPricingVo {
 
 	public void setTotal_Impact_Percent(Double total_Impact_Percent) {
 		Total_Impact_Percent = total_Impact_Percent;
+	}
+
+	public Boolean getIs_Changed() {
+		return Is_Changed;
+	}
+	public void setIs_Changed(Boolean is_Changed) {
+		Is_Changed = is_Changed;
 	}
 	
 	

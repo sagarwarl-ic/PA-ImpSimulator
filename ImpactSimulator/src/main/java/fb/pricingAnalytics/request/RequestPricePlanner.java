@@ -10,6 +10,7 @@ public class RequestPricePlanner {
 	private BigInteger scenario_Id;
 	private BigInteger project_Id;
 	private Integer brandId;
+	private Boolean changed; 
 	
 	public SearchPricePlanner getSearch() {
 		return search;
@@ -47,5 +48,13 @@ public class RequestPricePlanner {
 	public void setBrandId(Integer brandId) {
 		this.brandId = brandId;
 	}
+	public Boolean getChanged() {
+		return changed;
+	}
+	public void setChanged(Boolean changed) {
+		this.changed = changed;
+	}
+	
+	
 	
 }
