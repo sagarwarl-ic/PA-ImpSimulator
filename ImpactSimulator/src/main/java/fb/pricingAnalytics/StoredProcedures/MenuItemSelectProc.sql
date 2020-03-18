@@ -21,7 +21,8 @@ ALTER   PROCEDURE [dbo].[MenuitemSelectProc] @startRowIndex int=0,
 @SortField VARCHAR(100)='Product_ID', @Direction VARCHAR(100)='ASC',
 @Scenario_Id bigint =0,
 @Project_Id bigint=0,
-@BrandId int=0
+@BrandId int=0,
+@IsChanged Bit=null
 AS
 BEGIN
 WITH Data_Menu_Item
@@ -70,12 +71,14 @@ AS Price_Change_Percent,
 ROUND((MIN([Custom SQL Query].[New_Price]) - MIN([Custom SQL Query].[Current_Price_product])),2) AS Price_Change,
 MIN([Custom SQL Query].[New_Price]) AS [New_Price],
 MIN([Custom SQL Query].[Current_Price_product]) AS [Current_Price],
-SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS [Quantity_TY]
+SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS [Quantity_TY],
+[Custom SQL Query].isChanged
 FROM (
 select a.*,
 IST_Product_Tier_Info.Tier ,
 IST_Product_Tier_Info.[Scenario_Id] as Scenario_Id_Product,
 IST_Product_Tier_Info.[Price] AS [New_Price],
+IST_Product_Tier_Info.isChanged,
 IST_Product_Tier_Info.[Current_Price] as Current_Price_product
 from
 (
@@ -124,7 +127,8 @@ GROUP BY
 (CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'ELASTIC') THEN 'High' WHEN
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'INELASTIC') THEN 'Low' WHEN
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Moderate' ELSE 'NA' END),
-[Custom SQL Query].[Proposed_Tier]) t0
+[Custom SQL Query].[Proposed_Tier],
+[Custom SQL Query].isChanged) t0
 
 
 CROSS JOIN (
@@ -148,6 +152,7 @@ AND (Cat2 IN (select * from dbo.splitString(@Cat2,',')) OR (@Cat2 is null and Ca
 AND (Cat3 IN (select * from dbo.splitString(@Cat3,',')) OR (@Cat3 is null and Cat3 is null) OR (@Cat3 is null and Cat3 = Cat3))
 AND (Proposed_Tier IN (select * from dbo.splitString(@Tier,',')) OR (@Tier is null and Proposed_Tier is null) OR (@Tier is null and Proposed_Tier = Proposed_Tier))
 AND (Product_Price_Sensitivity IN (select * from dbo.splitString(@ProductPriceSensitivity,',')) OR (@ProductPriceSensitivity is null and Product_Price_Sensitivity is null) OR (@ProductPriceSensitivity  is null and Product_Price_Sensitivity = Product_Price_Sensitivity))
+AND (( @IsChanged is not null and isChanged= @IsChanged) OR (@IsChanged is null and isChanged is null) OR (@IsChanged is null and isChanged = isChanged))
 
 
 )
@@ -158,7 +163,9 @@ AND (Cat2 IN (select * from dbo.splitString(@Cat2,',')) OR (@Cat2 is null and Ca
 AND (Cat3 IN (select * from dbo.splitString(@Cat3,',')) OR (@Cat3 is null and Cat3 is null) OR (@Cat3 is null and Cat3 = Cat3))
 AND (Proposed_Tier IN (select * from dbo.splitString(@Tier,',')) OR (@Tier is null and Proposed_Tier is null) OR (@Tier is null and Proposed_Tier = Proposed_Tier))
 AND (Product_Price_Sensitivity IN (select * from dbo.splitString(@ProductPriceSensitivity,',')) OR (@ProductPriceSensitivity is null and Product_Price_Sensitivity is null) OR (@ProductPriceSensitivity  is null and Product_Price_Sensitivity = Product_Price_Sensitivity))
-  order by  
+AND (( @IsChanged is not null and isChanged= @IsChanged) OR (@IsChanged is null and isChanged is null) OR (@IsChanged is null and isChanged = isChanged))
+
+order by  
 CASE WHEN @SortField = 'Product_ID' AND  @Direction = 'DESC' THEN [Product_ID] END DESC,
 CASE WHEN @SortField = 'Product_ID' AND  @Direction != 'DESC' THEN [Product_ID] END,
 CASE WHEN @SortField = 'Product_Name' AND  @Direction = 'DESC' THEN [Product_Name] END DESC,
