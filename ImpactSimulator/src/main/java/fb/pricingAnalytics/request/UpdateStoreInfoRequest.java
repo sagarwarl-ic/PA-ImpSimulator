@@ -9,8 +9,15 @@ public class UpdateStoreInfoRequest {
 	private BigInteger project_Id;
 	private BigInteger scenario_Id;
 	private Integer brandId;
+	private boolean changed;
 	
 	
+	public boolean getChanged() {
+		return changed;
+	}
+	public void setChanged(boolean changed) {
+		this.changed = changed;
+	}
 	public Integer getStoreCode() {
 		return storeCode;
 	}
@@ -42,8 +49,6 @@ public class UpdateStoreInfoRequest {
 	public void setBrandId(Integer brandId) {
 		this.brandId = brandId;
 	}
-	
-	
 	
 
 }
