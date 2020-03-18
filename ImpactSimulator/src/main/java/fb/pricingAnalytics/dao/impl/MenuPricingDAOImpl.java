@@ -129,6 +129,14 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	
 			query.registerStoredProcedureParameter(11, Integer.class , ParameterMode.IN);
 			query.setParameter(11, requestPricePlanner.getBrandId());
+			
+			if(requestPricePlanner.getChanged()!=null ){
+				query.registerStoredProcedureParameter(12, Boolean.class , ParameterMode.IN);
+				query.setParameter(12, requestPricePlanner.getChanged());
+			}else{
+				query.registerStoredProcedureParameter(12, Boolean.class , ParameterMode.IN);
+				query.setParameter(12, null);
+			}
 	
 		
 		query.execute();
@@ -146,10 +154,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				
 				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 			    		(Double)row[7],(Double)row[8],(Double)row[9],(BigDecimal)row[10],(Double)row[11],(Double)row[12],
-			    		(Double)row[13],(Double)row[14],(BigInteger)row[15],(BigDecimal)row[16],(Double)row[17]));
+			    		(Double)row[13],(Double)row[14],(BigInteger)row[15],(Boolean)row[16],(BigDecimal)row[17],(Double)row[18]));
 			  
 			}
-			Integer count = (Integer)(rows.get(0))[18];
+			Integer count = (Integer)(rows.get(0))[19];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
@@ -246,6 +254,14 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 				query.registerStoredProcedureParameter(10, Integer.class , ParameterMode.IN);
 				query.setParameter(10, requestPricePlanner.getBrandId());
+				
+				if(requestPricePlanner.getChanged()!=null ){
+					query.registerStoredProcedureParameter(11, Boolean.class , ParameterMode.IN);
+					query.setParameter(11, requestPricePlanner.getChanged());
+				}else{
+					query.registerStoredProcedureParameter(11, Boolean.class , ParameterMode.IN);
+					query.setParameter(11, null);
+				}
 			
 		
 
@@ -260,9 +276,9 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			    
 			    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
 			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12],(Integer)row[13],(Double)row[14],(Double)row[15],
-			    		(Double)row[16],(Double)row[17],(Double)row[18]));
+			    		(Double)row[16],(Double)row[17],(Double)row[18],(Boolean)row[19]));
 			}
-			Integer count = (Integer)(rows.get(0))[19];
+			Integer count = (Integer)(rows.get(0))[20];
 			response.setCount(count);
 			response.setStoreTier(result);
 		}

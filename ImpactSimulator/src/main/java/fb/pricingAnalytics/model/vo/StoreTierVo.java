@@ -43,6 +43,8 @@ public class StoreTierVo {
 	
 	private Double Net_Sales_Impact_Percentage;
 	
+	private Boolean Is_Changed;
+	
 	
 	public StoreTierVo(String store_Sensitivity, String tier_Change,
 			String current_Tier, String market_Name, String pricing_Power,
@@ -52,7 +54,7 @@ public class StoreTierVo {
 			BigInteger quantity,Integer original_Transaction,
 			Double new_Transaction, Double transaction_Impact,
 			Double transaction_Risk, Double net_Sales_Impact,
-			Double net_Sales_Impact_Percentage) {
+			Double net_Sales_Impact_Percentage,Boolean is_Changed) {
 		super();
 		Store_Sensitivity = store_Sensitivity;
 		Tier_Change = tier_Change;
@@ -73,6 +75,7 @@ public class StoreTierVo {
 		Transaction_Risk = transaction_Risk;
 		Net_Sales_Impact = net_Sales_Impact;
 		Net_Sales_Impact_Percentage = net_Sales_Impact_Percentage;
+		Is_Changed = is_Changed;
 	}
 
 
@@ -270,6 +273,14 @@ public class StoreTierVo {
 
 	public void setNet_Sales_Impact_Percentage(Double net_Sales_Impact_Percentage) {
 		Net_Sales_Impact_Percentage = net_Sales_Impact_Percentage;
+	}
+
+	public Boolean getIs_Changed() {
+		return Is_Changed;
+	}
+	
+	public void setIs_Changed(Boolean is_Changed) {
+		Is_Changed = is_Changed;
 	}
 	
 
