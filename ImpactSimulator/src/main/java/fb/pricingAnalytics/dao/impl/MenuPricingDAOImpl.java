@@ -160,7 +160,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	@Override
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
-		StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
+		StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
 		
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("price",requestMenuTier.getPrice());	
@@ -171,6 +171,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.setParameter("project_Id",requestMenuTier.getProject_Id());	
 		query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
 		query.setParameter("brand_Id", requestMenuTier.getBrandId());
+		query.setParameter("isChanged", true);
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
 	}
