@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProcForSearch]    Script Date: 3/4/2020 2:04:28 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProcForSearch]    Script Date: 3/18/2020 6:01:48 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
