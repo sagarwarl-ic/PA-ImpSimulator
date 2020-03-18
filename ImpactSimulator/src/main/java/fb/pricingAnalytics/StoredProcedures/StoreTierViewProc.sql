@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 3/4/2020 2:04:59 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProc]    Script Date: 3/18/2020 1:47:34 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -11,7 +11,7 @@ GO
 -- Description:	<Description,,>
 -- =============================================
 
-ALTER   PROCEDURE  [dbo].[StoreTierViewProc]  @startRowIndex int=0 ,
+ALTER     PROCEDURE  [dbo].[StoreTierViewProc]  @startRowIndex int=0 ,
 	@pageSize int=100,@CurrentTier VARCHAR(100) = null,
 	@StoreSensitivity VARCHAR(100)=null,@PricingPower VARCHAR(100)=null,
 	@SortField VARCHAR(100)='Store_Code', @Direction VARCHAR(100)='ASC',
@@ -26,12 +26,13 @@ AS
 
 
 SELECT
-(CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END) AS Store_Sensitivity,
+(CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate'
+ END) AS Store_Sensitivity,
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END) AS Tier_Change,
 [Custom SQL Query].[Current_Tier] AS [Current_Tier],
 [Custom SQL Query].[Market_Name] AS [Market_Name],
 
-	(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'HIGH') THEN 'High' WHEN
+(CASE WHEN (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'HIGH') THEN 'High' WHEN
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'LOW') THEN 'Low' WHEN
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'MID') THEN 'Moderate' ELSE 'NA' END)
 AS [Pricing_Power],
@@ -54,13 +55,62 @@ END
 as Sales_Impact_Percentage ,
 
 SUM([Custom SQL Query].[Sales_Gross_TY]) AS Original_Sales,
-SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS Quantity
+SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS Quantity,
+
+Min([Custom SQL Query].[Transaction_TY]) as Original_Transaction,
+
+Round(((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
+CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
+ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
+(ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
+* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+(CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
+/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END)),0) as New_Transaction,
+Round((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
+CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
+ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
+(ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
+* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+(CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
+/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))),0) as Transaction_Impact,
+
+Round(((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
+CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
+ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
+(ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
+* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+(CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
+/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY])))/
+(Min([Custom SQL Query].[Transaction_TY])))*100,2) as Transaction_Risk,
+
+Round(sum([Custom SQL Query].[Sales_Impact_Calc]) + ((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
+CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
+ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
+(ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
+* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+(CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
+/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
+ - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
+SUM([Custom SQL Query].[Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))),0) as Net_Sales_Impact,
+
+Round(((sum([Custom SQL Query].[Sales_Impact_Calc]) + ((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
+CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
+ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
+(ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
+* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+(CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
+/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
+ - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
+SUM([Custom SQL Query].[Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))))/sum([Custom SQL Query].[Sales_Gross_TY]))*100,2)  as Net_Sales_Impact_Percentage
+
 
 FROM (
 select a.*,
 IST_Product_Tier_Info.Tier ,
 IST_Product_Tier_Info.[Scenario_Id] as Scenario_Id_Product,
-IST_Product_Tier_Info.[Price] AS [New_Price] from
+IST_Product_Tier_Info.[Price] AS [New_Price],
+((IST_Product_Tier_Info.[Price] - a.[Current_Price]) * (a.[Quantity_TY])) AS Sales_Impact_Calc
+from
 (
 SELECT
 [IST_Store_Product_Info].BrandId,
@@ -74,8 +124,7 @@ SELECT
 [IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
-[IST_Store_Product_Info].[Sales_Gross_LY] AS [Sales_Gross_LY],
-[IST_Store_Product_Info].[Quantity_LY] AS [Quantity_LY],
+[IST_Store_Product_Info].[Transaction_TY] AS [Transaction_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
 [IST_Store_Product_Info].[Store_Name] AS [Store_Name],
 [IST_Store_Product_Info].[Market_Name] AS [Market_Name],
@@ -84,18 +133,17 @@ SELECT
 [IST_Store_Product_Info].[Store_Sensitivity] AS [Store_Sensitivity],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
-[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store],
-(CASE WHEN ([IST_Store_Product_Info].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([IST_Store_Product_Info].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END)  AS [Store_Sensitivity_text]
+[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store]
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
-where  [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Info].BrandId=@BrandId  and [IST_Store_Product_Info].Project_Id=@Project_Id 
-and IST_Store_Info.Scenario_ID =@Scenario_Id 
+where [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Info].BrandId=@BrandId and [IST_Store_Product_Info].Project_Id=@Project_Id
+and IST_Store_Info.Scenario_ID =@Scenario_Id
 
 ) as a LEFT JOIN [dbo].[IST_Product_Tier_Info] AS IST_Product_Tier_Info ON (a.BrandId=IST_Product_Tier_Info.BrandId and a.Project_Id=IST_Product_Tier_Info.Project_Id
 and a.Product_ID = IST_Product_Tier_Info.Product_ID and a.Proposed_Tier=IST_Product_Tier_Info.Tier and a.Scenario_ID_Store=IST_Product_Tier_Info.[Scenario_Id])
-) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id 
-and Scenario_ID_Store =@Scenario_Id 
+) [Custom SQL Query] where BrandId=@BrandId and Project_Id =@Project_Id
+and Scenario_ID_Store =@Scenario_Id
 GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHEN ([Custom SQL Query].[Store_Sensitivity] <= -1) THEN 'High' ELSE 'Moderate' END),
 (CASE WHEN ([Custom SQL Query].[Current_Tier] = [Custom SQL Query].[Proposed_Tier]) THEN 'N' ELSE 'Y' END),
 [Custom SQL Query].[Current_Tier],
@@ -105,8 +153,8 @@ GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHE
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Pricing_Power]))) = 'MID') THEN 'Moderate' ELSE 'NA' END),
 [Custom SQL Query].[Proposed_Tier],
 [Custom SQL Query].[Store_Code],
-[Custom SQL Query].[Store_Name]
-
+[Custom SQL Query].[Store_Name],
+[Custom SQL Query].[Store_Sensitivity]
 
 
 
