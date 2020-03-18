@@ -11,18 +11,20 @@ GO
 -- Description:	<Description,,>
 -- =============================================
 
-ALTER     PROCEDURE  [dbo].[StoreTierViewProc]  @startRowIndex int=0 ,
+ALter     PROCEDURE  [dbo].[StoreTierViewProc]  @startRowIndex int=0 ,
 	@pageSize int=100,@CurrentTier VARCHAR(100) = null,
 	@StoreSensitivity VARCHAR(100)=null,@PricingPower VARCHAR(100)=null,
 	@SortField VARCHAR(100)='Store_Code', @Direction VARCHAR(100)='ASC',
 	@Scenario_Id bigint =0,
 	@Project_Id bigint=0,
-	@BrandId int=0
+	@BrandId int=0,
+	@IsChanged Bit=null
 AS
 BEGIN
 WITH Data_Store_View
 AS
 (
+
 
 
 SELECT
@@ -101,7 +103,8 @@ ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Tra
 (CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
 / sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
  - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))))/sum([Custom SQL Query].[Sales_Gross_TY]))*100,2)  as Net_Sales_Impact_Percentage
+SUM([Custom SQL Query].[Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))))/sum([Custom SQL Query].[Sales_Gross_TY]))*100,2)  as Net_Sales_Impact_Percentage,
+[Custom SQL Query].isChanged
 
 
 FROM (
@@ -133,7 +136,8 @@ SELECT
 [IST_Store_Product_Info].[Store_Sensitivity] AS [Store_Sensitivity],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
-[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store]
+[IST_Store_Info].[Scenario_ID] AS [Scenario_ID_Store],
+[IST_Store_Info].isChanged
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 LEFT JOIN [dbo].[IST_Store_Info] [IST_Store_Info] ON ([IST_Store_Product_Info].BrandId = [IST_Store_Info].BrandId and
 [IST_Store_Product_Info].Project_Id=[IST_Store_Info].Project_Id and [IST_Store_Product_Info].[Store_Code] = [IST_Store_Info].[Store_Code])
@@ -154,7 +158,9 @@ GROUP BY (CASE WHEN ([Custom SQL Query].[Store_Sensitivity] >= 0) THEN 'Low' WHE
 [Custom SQL Query].[Proposed_Tier],
 [Custom SQL Query].[Store_Code],
 [Custom SQL Query].[Store_Name],
-[Custom SQL Query].[Store_Sensitivity]
+[Custom SQL Query].[Store_Sensitivity],
+[Custom SQL Query].isChanged
+
 
 
 
@@ -172,6 +178,8 @@ SELECT COUNT(*) AS TotalRows FROM Data_Store_View where
  (Pricing_Power IN (select * from dbo.splitString(@PricingPower,',')) OR (@PricingPower is null and Pricing_Power is null) OR (@PricingPower is null and Pricing_Power = Pricing_Power))
  and 
  (Store_Sensitivity IN (select * from dbo.splitString(@StoreSensitivity,',')) OR (@StoreSensitivity is null and Store_Sensitivity is null) OR (@StoreSensitivity is null and Store_Sensitivity = Store_Sensitivity))
+ and
+ (isChanged= ISNULL(@IsChanged, isChanged ))
 )
 
 SELECT *
@@ -182,6 +190,8 @@ CROSS JOIN Count_CTE  where
    (Pricing_Power IN (select * from dbo.splitString(@PricingPower,',')) OR (@PricingPower is null and Pricing_Power is null) OR (@PricingPower is null and Pricing_Power = Pricing_Power))
    and 
    (Store_Sensitivity IN (select * from dbo.splitString(@StoreSensitivity,',')) OR (@StoreSensitivity is null and Store_Sensitivity is null) OR (@StoreSensitivity is null and Store_Sensitivity = Store_Sensitivity))
+   and
+ (isChanged= ISNULL(@IsChanged, isChanged ))
 order by 
 CASE WHEN @SortField = 'Store_Code' AND  @Direction = 'DESC' THEN [Store_Code] END DESC,
 CASE WHEN @SortField = 'Store_Code' AND  @Direction != 'DESC' THEN [Store_Code] END,
