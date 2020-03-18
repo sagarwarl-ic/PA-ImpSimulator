@@ -11,6 +11,7 @@ public class RequestMenuTierPriceUpdate {
 	private BigInteger project_Id;
 	private BigInteger scenario_Id;
 	private Integer brandId;
+	private boolean changed;
 	
 	public String getProductId() {
 		return productId;
@@ -51,5 +52,11 @@ public class RequestMenuTierPriceUpdate {
 		this.brandId = brandId;
 	}
 
+	public boolean getChanged() {
+		return changed;
+	}
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 
+	}
 }

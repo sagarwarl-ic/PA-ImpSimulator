@@ -171,7 +171,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.setParameter("project_Id",requestMenuTier.getProject_Id());	
 		query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
 		query.setParameter("brand_Id", requestMenuTier.getBrandId());
-		query.setParameter("isChanged", true);
+		query.setParameter("isChanged", requestMenuTier.getChanged());
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
 	}
@@ -279,7 +279,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("proposed_Tier",updateStoreInfoRequest.getProposedTier());	
 		query.setParameter("store_Code",updateStoreInfoRequest.getStoreCode());
-		query.setParameter("isChanged", true);
+		query.setParameter("isChanged",updateStoreInfoRequest.getChanged());
 		query.setParameter("updatedOn", Date.from(Instant.now()));
 		query.setParameter("updatedBy", userName);
 		query.setParameter("project_Id",updateStoreInfoRequest.getProject_Id());	
@@ -572,7 +572,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 				query.setParameter("proposed_Tier",updateStoreTierRequest.getProposedTier());	
 				query.setParameter("store_Code",updateStoreTierRequest.getStoreCode());
-				query.setParameter("isChanged", true);
+				query.setParameter("isChanged", updateStoreTierRequest.getChanged());
 				query.setParameter("updatedOn", Date.from(Instant.now()));
 				query.setParameter("updatedBy", userName);
 				query.setParameter("project_Id",updateStoreTierRequest.getProject_Id());	
@@ -592,7 +592,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			int tenantId, String userName) throws SQLException, Exception {
 		try{
 			for(RequestMenuTierPriceUpdate priceUpdateRequest : menuTierPriceUpdateReq){
-				StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
+				StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
 				
 				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 				query.setParameter("price",priceUpdateRequest.getPrice());	
@@ -603,6 +603,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				query.setParameter("project_Id",priceUpdateRequest.getProject_Id());	
 				query.setParameter("scenario_Id", priceUpdateRequest.getScenario_Id());
 				query.setParameter("brand_Id", tenantId);
+				query.setParameter("isChanged", priceUpdateRequest.getChanged());
 				query.executeUpdate();
 			}
 		}catch(Exception ex){
