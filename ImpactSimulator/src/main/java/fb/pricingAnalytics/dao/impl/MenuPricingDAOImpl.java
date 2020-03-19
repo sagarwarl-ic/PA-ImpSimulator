@@ -3,6 +3,7 @@ package fb.pricingAnalytics.dao.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +38,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	@PersistenceContext
 	EntityManager entityManager;
+	
 	
 	
 	@Override 
@@ -141,6 +143,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
+		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows!=null&&rows.size()>0){
 			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
 			for (Object[] row : rows) {
@@ -153,8 +156,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			    		(Double)row[13],(Double)row[14],(BigInteger)row[15]));*/
 				
 				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
-			    		(Double)row[7],(Double)row[8],(Double)row[9],(BigDecimal)row[10],(Double)row[11],(Double)row[12],
-			    		(Double)row[13],(Double)row[14],(BigInteger)row[15],(Boolean)row[16],(BigDecimal)row[17],(Double)row[18]));
+			    		(Double)row[7],null==(Double)row[8]?null:f.format((Double)row[8]),(Double)row[9],null==(BigDecimal)row[10]?null:f.format((BigDecimal)row[10]),(Double)row[11],(Double)row[12],
+			    		(Double)row[13],(Double)row[14],null==(BigInteger)row[15]?null:f.format((BigInteger)row[15]),(Boolean)row[16],(BigDecimal)row[17],(Double)row[18]));
 			  
 			}
 			Integer count = (Integer)(rows.get(0))[19];
@@ -267,6 +270,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 		query.execute();
 		List<Object[]> rows = query.getResultList();
+		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows!=null&&rows.size()>0){
 			List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
 			for (Object[] row : rows) {
@@ -275,7 +279,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			    
 			    
 			    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
-			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12],(Integer)row[13],(Double)row[14],(Double)row[15],
+			    		null == (Double)row[8] ? null : f.format((Double)row[8]),null == (Double)row[9] ? null : f.format((Double)row[9]),(Double)row[10],null==(BigDecimal)row[11] ? null : f.format((BigDecimal)row[11]),(BigInteger)row[12],(Integer)row[13],(Double)row[14],(Double)row[15],
 			    		(Double)row[16],(Double)row[17],(Double)row[18],(Boolean)row[19]));
 			}
 			Integer count = (Integer)(rows.get(0))[20];
@@ -316,11 +320,11 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 		query.execute();
 		List<Object[]> rows = query.getResultList();
-		
+		DecimalFormat f = new DecimalFormat("###,###");
 		List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
 		for (Object[] row : rows) {
 		    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
-		    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
+		    		null == (Double)row[8] ? null : f.format((Double)row[8]),null == (Double)row[9] ? null : f.format((Double)row[9]),(Double)row[10],null==(BigDecimal)row[11] ? null : f.format((BigDecimal)row[11]),(BigInteger)row[12]));
 		}
 		return result;
 	}
@@ -342,18 +346,18 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
-		
+		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows.size()>0){
 			List<OverAllImpactsVo> result = new ArrayList<OverAllImpactsVo>(rows.size());
 			for (Object[] row : rows) {
 			    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
 			    
-			    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,((long)((Double)row[1] * 1e4)) / 1e4,
+			    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,f.format(((long)((Double)row[1] * 1e4)) / 1e4),
 			    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
 			}
 			return (OverAllImpactsVo) result.get(0);
 		}else{
-			return new OverAllImpactsVo((double)0, (double)0, (double)0, (double)0);
+			return new OverAllImpactsVo((double)0, String.valueOf(0), (double)0, (double)0);
 		}
 		
 	}

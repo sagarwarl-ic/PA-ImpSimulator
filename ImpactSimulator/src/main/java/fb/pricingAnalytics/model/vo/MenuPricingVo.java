@@ -38,13 +38,13 @@ public class MenuPricingVo {
 	private Double Sales_Impact;
 	
 	//@SerializedName("newSales")
-	private Double New_Sales;
+	private String New_Sales;
 	
 	//@SerializedName("salesImpactPercentage")
 	private Double Sales_Impact_Percentage;
 	
 	//@SerializedName("originalSales")
-	private BigDecimal Original_Sales;
+	private String Original_Sales;
 	
 	//@SerializedName("priceChangePercent")
 	private Double Price_Change_Percent;
@@ -62,7 +62,7 @@ public class MenuPricingVo {
 	private Double Current_Price;
 	
 	//@SerializedName("quantityTY")
-	private BigInteger Quantity_TY;
+	private String Quantity_TY;
 	
 	//@SerializedName("salesImpact")
 	private BigDecimal Total_Sales_Gross;
@@ -130,10 +130,10 @@ public class MenuPricingVo {
 	public MenuPricingVo(String cat1, String cat2, String cat3,
 			String product_ID, String product_Name,
 			String product_Price_Sensitivity, String proposed_Tier,
-			Double sales_Impact, Double new_Sales,
-			Double sales_Impact_Percentage, BigDecimal original_Sales,
+			Double sales_Impact, String new_Sales,
+			Double sales_Impact_Percentage, String original_Sales,
 			Double price_Change_Percent, Double price_Change, Double new_Price,
-			Double current_Price, BigInteger quantity_TY,Boolean is_Changed,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
+			Double current_Price, String quantity_TY,Boolean is_Changed,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
 		super();
 		Cat1 = cat1;
 		Cat2 = cat2;
@@ -233,24 +233,14 @@ public class MenuPricingVo {
 	public void setSales_Impact(Double sales_Impact) {
 		Sales_Impact = sales_Impact;
 	}
-	public Double getNew_Sales() {
-		return New_Sales;
-	}
-	public void setNew_Sales(Double new_Sales) {
-		New_Sales = new_Sales;
-	}
+	
 	public Double getSales_Impact_Percentage() {
 		return Sales_Impact_Percentage;
 	}
 	public void setSales_Impact_Percentage(Double sales_Impact_Percentage) {
 		Sales_Impact_Percentage = sales_Impact_Percentage;
 	}
-	public BigDecimal getOriginal_Sales() {
-		return Original_Sales;
-	}
-	public void setOriginal_Sales(BigDecimal original_Sales) {
-		Original_Sales = original_Sales;
-	}
+	
 	public Double getPrice_Change_Percent() {
 		return Price_Change_Percent;
 	}
@@ -275,12 +265,7 @@ public class MenuPricingVo {
 	public void setProduct_Price(Double product_Price) {
 		Product_Price = product_Price;
 	}
-	public BigInteger getQuantity_TY() {
-		return Quantity_TY;
-	}
-	public void setQuantity_TY(BigInteger quantity_TY) {
-		Quantity_TY = quantity_TY;
-	}
+	
 
 	public Double getCurrent_Price() {
 		return Current_Price;
@@ -311,6 +296,42 @@ public class MenuPricingVo {
 	}
 	public void setIs_Changed(Boolean is_Changed) {
 		Is_Changed = is_Changed;
+	}
+
+
+
+	public String getNew_Sales() {
+		return New_Sales;
+	}
+
+
+
+	public void setNew_Sales(String new_Sales) {
+		New_Sales = new_Sales;
+	}
+
+
+
+	public String getOriginal_Sales() {
+		return Original_Sales;
+	}
+
+
+
+	public void setOriginal_Sales(String original_Sales) {
+		Original_Sales = original_Sales;
+	}
+
+
+
+	public String getQuantity_TY() {
+		return Quantity_TY;
+	}
+
+
+
+	public void setQuantity_TY(String quantity_TY) {
+		Quantity_TY = quantity_TY;
 	}
 	
 	
