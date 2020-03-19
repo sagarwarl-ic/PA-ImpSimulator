@@ -21,13 +21,13 @@ public class StoreTierVo {
 	
 	private String Store_Name;
 	
-	private Double Sales_Impact;
+	private String Sales_Impact;
 	
-	private Double New_Sales;
+	private String New_Sales;
 	
 	private Double Sales_Impact_Percentage;
 	
-	private BigDecimal Original_Sales;
+	private String Original_Sales;
 	
 	private BigInteger Quantity;
 	
@@ -49,8 +49,8 @@ public class StoreTierVo {
 	public StoreTierVo(String store_Sensitivity, String tier_Change,
 			String current_Tier, String market_Name, String pricing_Power,
 			String proposed_Tier, Integer store_Code, String store_Name,
-			Double sales_Impact, Double new_Sales,
-			Double sales_Impact_Percentage, BigDecimal original_Sales,
+			String sales_Impact, String new_Sales,
+			Double sales_Impact_Percentage, String original_Sales,
 			BigInteger quantity,Integer original_Transaction,
 			Double new_Transaction, Double transaction_Impact,
 			Double transaction_Risk, Double net_Sales_Impact,
@@ -82,8 +82,8 @@ public class StoreTierVo {
 	
 
 	public StoreTierVo(String store_Sensitivity, String tier_Change, String current_Tier, String market_Name, String pricing_Power,
-			String proposed_Tier, Integer store_Code, String store_Name, Double sales_Impact, Double new_Sales,
-			Double sales_Impact_Percentage, BigDecimal original_Sales, BigInteger quantity) {
+			String proposed_Tier, Integer store_Code, String store_Name, String sales_Impact, String new_Sales,
+			Double sales_Impact_Percentage, String original_Sales, BigInteger quantity) {
 		super();
 		Store_Sensitivity = store_Sensitivity;
 		Tier_Change = tier_Change;
@@ -184,22 +184,7 @@ public class StoreTierVo {
 		Store_Name = store_Name;
 	}
 
-	public Double getSales_Impact() {
-		return Sales_Impact;
-	}
-
-	public void setSales_Impact(Double sales_Impact) {
-		Sales_Impact = sales_Impact;
-	}
-
-	public Double getNew_Sales() {
-		return New_Sales;
-	}
-
-	public void setNew_Sales(Double new_Sales) {
-		New_Sales = new_Sales;
-	}
-
+	
 	public Double getSales_Impact_Percentage() {
 		return Sales_Impact_Percentage;
 	}
@@ -208,13 +193,49 @@ public class StoreTierVo {
 		Sales_Impact_Percentage = sales_Impact_Percentage;
 	}
 
-	public BigDecimal getOriginal_Sales() {
+	
+
+	public String getSales_Impact() {
+		return Sales_Impact;
+	}
+
+
+
+
+	public void setSales_Impact(String sales_Impact) {
+		Sales_Impact = sales_Impact;
+	}
+
+
+
+
+	public String getNew_Sales() {
+		return New_Sales;
+	}
+
+
+
+
+	public void setNew_Sales(String new_Sales) {
+		New_Sales = new_Sales;
+	}
+
+
+
+
+	public String getOriginal_Sales() {
 		return Original_Sales;
 	}
 
-	public void setOriginal_Sales(BigDecimal original_Sales) {
+
+
+
+	public void setOriginal_Sales(String original_Sales) {
 		Original_Sales = original_Sales;
 	}
+
+
+
 
 	public BigInteger getQuantity() {
 		return Quantity;
