@@ -23,6 +23,7 @@ import fb.pricingAnalytics.model.vo.PricePlannerVo;
 import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
+import fb.pricingAnalytics.response.DataEntryResponse;
 import fb.pricingAnalytics.response.PricePlannerResponse;
 import fb.pricingAnalytics.response.ProjectListResponse;
 import fb.pricingAnalytics.service.PricePlannerService;
@@ -354,5 +355,29 @@ public class PricePlannerController {
 		}
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Scenario Deleted Successfully"),
 			    HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value="/dataEntry",method=RequestMethod.GET)
+	public ResponseEntity<?> getDataEntry(HttpServletRequest request,@RequestParam("dataEntryId") BigInteger dataEntryId){
+		logger.info("start getDataEntry method of PricePlannerController starts");
+		if(null == dataEntryId){
+				return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Data Entry Id is required"),
+					    HttpStatus.BAD_REQUEST);
+		}
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String brandId = userAuth.getBrandId();
+		DataEntryResponse response = new DataEntryResponse();
+		try{
+			response = pricePlannerService.getDataEntry(dataEntryId);
+		}catch(Exception e){
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		
+		return new ResponseEntity<DataEntryResponse>(response,HttpStatus.OK);
 	}
 }

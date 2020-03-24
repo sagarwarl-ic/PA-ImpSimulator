@@ -20,10 +20,12 @@ import org.springframework.stereotype.Repository;
 import fb.pricingAnalytics.dao.PricePlannerDAO;
 import fb.pricingAnalytics.model.Project;
 import fb.pricingAnalytics.model.Scenario;
+import fb.pricingAnalytics.model.vo.DataEntryVo;
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
 import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
+import fb.pricingAnalytics.response.DataEntryResponse;
 
 @Repository
 public class PricePlannerDAOImpl implements PricePlannerDAO {
@@ -270,6 +272,24 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 			logger.info("Exception occured while copying Scenario data from Store_Product_Info to IST_Store_Info and IST_Product_Tier_Info ... ");
 		}
 		
+	}
+
+	@Override
+	public DataEntryResponse getDataEntry(BigInteger dataEntryId)throws SQLException, Exception {
+		
+		DataEntryResponse response = new DataEntryResponse();
+	
+		StringBuilder sb = new StringBuilder("SELECT NEW fb.pricingAnalytics.model.vo.DataEntryVo(DE.id,DE.quantity_And_Sales_Min_Date,DE.quantity_and_Sales_Max_Date,DE.product_List_Min_Date,DE.product_List_Max_Date,"
+				+ "DE.current_Avg_Price_Min_Date,DE.current_Avg_Price_Max_Date) FROM DataEntry DE where DE.id=:data_Entry_Id");
+		
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("data_Entry_Id",dataEntryId);
+		List<DataEntryVo> resultObjects  = query.list();
+		if(null != resultObjects && !resultObjects.isEmpty()){
+			response.setDataEntry(resultObjects.get(0));
+		}
+		return response;
+	
 	}
 
 }
