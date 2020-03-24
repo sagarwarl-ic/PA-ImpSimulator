@@ -4,7 +4,7 @@ public class OverAllImpactsVo {
 
 	private Double transaction_Risk;
 	
-	private Double sales_Impact;
+	private String sales_Impact;
 	
 	private Double sales_Impact_Percent;
 	
@@ -12,7 +12,7 @@ public class OverAllImpactsVo {
 	
 	
 
-	public OverAllImpactsVo(Double transaction_Risk, Double sales_Impact,
+	public OverAllImpactsVo(Double transaction_Risk, String sales_Impact,
 			Double sales_Impact_Percent, Double net_Impact_Percent) {
 		super();
 		this.transaction_Risk = transaction_Risk;
@@ -29,11 +29,11 @@ public class OverAllImpactsVo {
 		this.transaction_Risk = transaction_Risk;
 	}
 
-	public Double getSales_Impact() {
+	public String getSales_Impact() {
 		return sales_Impact;
 	}
 
-	public void setSales_Impact(Double sales_Impact) {
+	public void setSales_Impact(String sales_Impact) {
 		this.sales_Impact = sales_Impact;
 	}
 

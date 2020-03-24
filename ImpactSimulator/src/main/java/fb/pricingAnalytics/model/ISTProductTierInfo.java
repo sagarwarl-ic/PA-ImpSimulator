@@ -59,6 +59,9 @@ public class ISTProductTierInfo implements Serializable {
 	@Column(name="UpdatedBy")
 	private String updatedBy;
 	
+	@Column(name="Current_Price")
+	private float currentPrice;
+	
 	
 	public BigInteger getIstPrdTierId() {
 		return istPrdTierId;
@@ -167,11 +170,20 @@ public class ISTProductTierInfo implements Serializable {
 		this.projectId = projectId;
 	}
 
+	
+	public float getCurrentPrice() {
+		return currentPrice;
+	}
+
+	public void setCurrentPrice(float currentPrice) {
+		this.currentPrice = currentPrice;
+	}
+
 	@Override
 	public String toString() {
 		return "ISTProductTierInfo [productId=" + productId + ", tier=" + tier + ", price=" + price + ", scenarioId="
 				+ scenarioId + ", comment=" + comment + ", isChanged=" + isChanged + ", createdOn=" + createdOn
-				+ ", createdBy=" + createdBy + ", updatedOn=" + updatedOn + ", updatedBy=" + updatedBy + "]";
+				+ ", createdBy=" + createdBy + ", updatedOn=" + updatedOn + ", updatedBy=" + updatedBy + ",currentPrice=" + currentPrice + "]";
 	}
 	
 	

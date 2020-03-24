@@ -31,6 +31,8 @@ public class PricePlannerVo {
 	private Date scenarioUpdatedOn;
 	@JsonIgnore
 	private String scenarioUpdatedBy;
+	@JsonIgnore
+	private boolean scenarioDeleted;
 	
 	private List<ScenarioVo> scenarioList;
 	
@@ -81,6 +83,33 @@ public class PricePlannerVo {
 		}
 		this.scenarioUpdatedBy = scenarioUpdatedBy;
 	}
+	
+	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, boolean deleted, Date createdOn, String createdBy,
+			Date updatedOn, String updatedBy, BigInteger scenarioId, String scenarioName, Date scenarioCreatedOn, String scenarioCreatedBy,
+			Date scenarioUpdatedOn, String scenarioUpdatedBy,boolean scenarioDeleted) {
+		super();
+		this.id = id;
+		this.brandId = brandId;
+		this.name = name;
+		this.status = status;
+		this.deleted = deleted;
+		this.createdOn = createdOn;
+		this.createdBy = createdBy;
+		this.updatedOn = updatedOn;
+		this.updatedBy = updatedBy;
+		this.scenarioId = scenarioId;
+		this.scenarioName = scenarioName;
+		if(scenarioCreatedOn!=null) {
+		this.scenarioCreatedOn = scenarioCreatedOn;
+		}
+		this.scenarioCreatedBy = scenarioCreatedBy;
+		if(scenarioUpdatedOn!=null) {
+		this.scenarioUpdatedOn = scenarioUpdatedOn;
+		}
+		this.scenarioUpdatedBy = scenarioUpdatedBy;
+		this.scenarioDeleted = scenarioDeleted;
+	}
+	
 
 
 	public BigInteger getId() {
@@ -210,6 +239,16 @@ public class PricePlannerVo {
 
 	public void setScenarioList(List<ScenarioVo> scenarioList) {
 		this.scenarioList = scenarioList;
+	}
+
+
+	public boolean getScenarioDeleted() {
+		return scenarioDeleted;
+	}
+
+
+	public void setScenarioDeleted(boolean scenarioDeleted) {
+		this.scenarioDeleted = scenarioDeleted;
 	}
 	
 

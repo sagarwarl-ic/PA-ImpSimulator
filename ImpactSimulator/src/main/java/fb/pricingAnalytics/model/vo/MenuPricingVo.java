@@ -38,13 +38,13 @@ public class MenuPricingVo {
 	private Double Sales_Impact;
 	
 	//@SerializedName("newSales")
-	private Double New_Sales;
+	private String New_Sales;
 	
 	//@SerializedName("salesImpactPercentage")
 	private Double Sales_Impact_Percentage;
 	
 	//@SerializedName("originalSales")
-	private BigDecimal Original_Sales;
+	private String Original_Sales;
 	
 	//@SerializedName("priceChangePercent")
 	private Double Price_Change_Percent;
@@ -62,10 +62,17 @@ public class MenuPricingVo {
 	private Double Current_Price;
 	
 	//@SerializedName("quantityTY")
-	private BigInteger Quantity_TY;
+	private String Quantity_TY;
+	
+	//@SerializedName("salesImpact")
+	private BigDecimal Total_Sales_Gross;
 	
 	
+	//@SerializedName("salesImpactPercentage")
+	private Double Total_Impact_Percent;
 	
+	
+	private Boolean Is_Changed;
 	
 	
 	/*public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
@@ -94,7 +101,7 @@ public class MenuPricingVo {
 	}*/
 	
 	
-	public MenuPricingVo(String cat1, String cat2, String cat3,
+	/*public MenuPricingVo(String cat1, String cat2, String cat3,
 			String product_ID, String product_Name,
 			String product_Price_Sensitivity, String proposed_Tier,
 			Double sales_Impact, Double new_Sales,
@@ -118,7 +125,52 @@ public class MenuPricingVo {
 		New_Price = new_Price;
 		Current_Price = current_Price;
 		Quantity_TY = quantity_TY;
+	}*/
+	
+	public MenuPricingVo(String cat1, String cat2, String cat3,
+			String product_ID, String product_Name,
+			String product_Price_Sensitivity, String proposed_Tier,
+			Double sales_Impact, String new_Sales,
+			Double sales_Impact_Percentage, String original_Sales,
+			Double price_Change_Percent, Double price_Change, Double new_Price,
+			Double current_Price, String quantity_TY,Boolean is_Changed,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
+		super();
+		Cat1 = cat1;
+		Cat2 = cat2;
+		Cat3 = cat3;
+		Product_ID = product_ID;
+		Product_Name = product_Name;
+		Product_Price_Sensitivity = product_Price_Sensitivity;
+		Proposed_Tier = proposed_Tier;
+		Sales_Impact = sales_Impact;
+		New_Sales = new_Sales;
+		Sales_Impact_Percentage = sales_Impact_Percentage;
+		Original_Sales = original_Sales;
+		Price_Change_Percent = price_Change_Percent;
+		Price_Change = price_Change;
+		New_Price = new_Price;
+		Current_Price = current_Price;
+		Quantity_TY = quantity_TY;
+		Total_Sales_Gross = total_Sales_Gross;
+		Total_Impact_Percent = total_Impact_Percent;
+		Is_Changed = is_Changed;
 	}
+
+	
+
+	public MenuPricingVo(String cat1, String cat2, String cat3,
+			String product_ID, String proposed_Tier,Double current_Price,String product_Price_Sensitivity
+			) {
+		super();
+		Cat1 = cat1;
+		Cat2 = cat2;
+		Cat3 = cat3;
+		Product_ID = product_ID;
+		Product_Price_Sensitivity = product_Price_Sensitivity;
+		Proposed_Tier = proposed_Tier;
+		Current_Price = current_Price;
+	}
+
 
 
 	/*public String getTier_Change() {
@@ -181,24 +233,14 @@ public class MenuPricingVo {
 	public void setSales_Impact(Double sales_Impact) {
 		Sales_Impact = sales_Impact;
 	}
-	public Double getNew_Sales() {
-		return New_Sales;
-	}
-	public void setNew_Sales(Double new_Sales) {
-		New_Sales = new_Sales;
-	}
+	
 	public Double getSales_Impact_Percentage() {
 		return Sales_Impact_Percentage;
 	}
 	public void setSales_Impact_Percentage(Double sales_Impact_Percentage) {
 		Sales_Impact_Percentage = sales_Impact_Percentage;
 	}
-	public BigDecimal getOriginal_Sales() {
-		return Original_Sales;
-	}
-	public void setOriginal_Sales(BigDecimal original_Sales) {
-		Original_Sales = original_Sales;
-	}
+	
 	public Double getPrice_Change_Percent() {
 		return Price_Change_Percent;
 	}
@@ -223,22 +265,75 @@ public class MenuPricingVo {
 	public void setProduct_Price(Double product_Price) {
 		Product_Price = product_Price;
 	}
-	public BigInteger getQuantity_TY() {
-		return Quantity_TY;
-	}
-	public void setQuantity_TY(BigInteger quantity_TY) {
-		Quantity_TY = quantity_TY;
-	}
-
+	
 
 	public Double getCurrent_Price() {
 		return Current_Price;
 	}
 
-
 	public void setCurrent_Price(Double current_Price) {
 		Current_Price = current_Price;
 	}
+
+	public BigDecimal getTotal_Sales_Gross() {
+		return Total_Sales_Gross;
+	}
+
+	public void setTotal_Sales_Gross(BigDecimal total_Sales_Gross) {
+		Total_Sales_Gross = total_Sales_Gross;
+	}
+
+	public Double getTotal_Impact_Percent() {
+		return Total_Impact_Percent;
+	}
+
+	public void setTotal_Impact_Percent(Double total_Impact_Percent) {
+		Total_Impact_Percent = total_Impact_Percent;
+	}
+
+	public Boolean getIs_Changed() {
+		return Is_Changed;
+	}
+	public void setIs_Changed(Boolean is_Changed) {
+		Is_Changed = is_Changed;
+	}
+
+
+
+	public String getNew_Sales() {
+		return New_Sales;
+	}
+
+
+
+	public void setNew_Sales(String new_Sales) {
+		New_Sales = new_Sales;
+	}
+
+
+
+	public String getOriginal_Sales() {
+		return Original_Sales;
+	}
+
+
+
+	public void setOriginal_Sales(String original_Sales) {
+		Original_Sales = original_Sales;
+	}
+
+
+
+	public String getQuantity_TY() {
+		return Quantity_TY;
+	}
+
+
+
+	public void setQuantity_TY(String quantity_TY) {
+		Quantity_TY = quantity_TY;
+	}
+	
 	
 
 }

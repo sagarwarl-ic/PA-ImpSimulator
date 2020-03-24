@@ -3,6 +3,7 @@ package fb.pricingAnalytics.dao.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	EntityManager entityManager;
 	
 	
+	
 	@Override 
 	public MenuPricingResponse getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
 		MenuPricingResponse response = new MenuPricingResponse();
@@ -66,12 +68,18 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			}else{
 				query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
 				query.setParameter(3, null);
-			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getTier()!=null){
+			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getCat3()!=null){
 				query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
-				query.setParameter(4, requestPricePlanner.getSearch().getTier());
+				query.setParameter(4, requestPricePlanner.getSearch().getCat3());
 			}else{
 				query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
 				query.setParameter(4, null);
+			}if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getTier()!=null){
+				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+				query.setParameter(5, requestPricePlanner.getSearch().getTier());
+			}else{
+				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
+				query.setParameter(5, null);
 			}/*if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getTier_Change()!=null){
 				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
 				query.setParameter(5, requestPricePlanner.getSearch().getTier_Change());
@@ -87,46 +95,55 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			}*/
 		
 			if(requestPricePlanner.getSearch()!=null && requestPricePlanner.getSearch().getProduct_Price_Sensitivity()!=null){
-				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
-				query.setParameter(5, requestPricePlanner.getSearch().getProduct_Price_Sensitivity());
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, requestPricePlanner.getSearch().getProduct_Price_Sensitivity());
 			}else{
-				query.registerStoredProcedureParameter(5, String.class , ParameterMode.IN);
-				query.setParameter(5, null);
+				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+				query.setParameter(6, null);
 			}
 			
 	
 			if(requestPricePlanner.getSort()!=null && requestPricePlanner.getSort().getField()!=null){
-					query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
-					query.setParameter(6, requestPricePlanner.getSort().getField());
+					query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
+					query.setParameter(7, requestPricePlanner.getSort().getField());
 			}else {
-				query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
-				query.setParameter(6, "Product_Name");
+				query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
+				query.setParameter(7, "Product_Name");
 			}
 			
 			
 			if(requestPricePlanner.getSort()!=null && requestPricePlanner.getSort().getDirection()!=null){
-				query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
-				query.setParameter(7, requestPricePlanner.getSort().getDirection());
+				query.registerStoredProcedureParameter(8, String.class , ParameterMode.IN);
+				query.setParameter(8, requestPricePlanner.getSort().getDirection());
 			}else {
-				query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
-				query.setParameter(7, "ASC");
+				query.registerStoredProcedureParameter(8, String.class , ParameterMode.IN);
+				query.setParameter(8, "ASC");
 			}
 		
 		
-			query.registerStoredProcedureParameter(8, BigInteger.class , ParameterMode.IN);
-			query.setParameter(8, requestPricePlanner.getScenario_Id());
+			query.registerStoredProcedureParameter(9, BigInteger.class , ParameterMode.IN);
+			query.setParameter(9, requestPricePlanner.getScenario_Id());
 		
 	
-			query.registerStoredProcedureParameter(9, BigInteger.class , ParameterMode.IN);
-			query.setParameter(9, requestPricePlanner.getProject_Id());
+			query.registerStoredProcedureParameter(10, BigInteger.class , ParameterMode.IN);
+			query.setParameter(10, requestPricePlanner.getProject_Id());
 	
 	
-			query.registerStoredProcedureParameter(10, Integer.class , ParameterMode.IN);
-			query.setParameter(10, requestPricePlanner.getBrandId());
+			query.registerStoredProcedureParameter(11, Integer.class , ParameterMode.IN);
+			query.setParameter(11, requestPricePlanner.getBrandId());
+			
+			if(requestPricePlanner.getChanged()!=null ){
+				query.registerStoredProcedureParameter(12, Boolean.class , ParameterMode.IN);
+				query.setParameter(12, requestPricePlanner.getChanged());
+			}else{
+				query.registerStoredProcedureParameter(12, Boolean.class , ParameterMode.IN);
+				query.setParameter(12, null);
+			}
 	
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
+		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows!=null&&rows.size()>0){
 			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
 			for (Object[] row : rows) {
@@ -134,12 +151,16 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			    		(String)row[7],(String)row[8],(Double)row[9],(Double)row[10],(Double)row[11],(BigDecimal)row[12],(Double)row[13],(Double)row[14],
 			    		(Double)row[15],(Double)row[16],(BigInteger)row[17]));*/
 				
-				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
+				/*result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 			    		(Double)row[7],(Double)row[8],(Double)row[9],(BigDecimal)row[10],(Double)row[11],(Double)row[12],
-			    		(Double)row[13],(Double)row[14],(BigInteger)row[15]));
+			    		(Double)row[13],(Double)row[14],(BigInteger)row[15]));*/
+				
+				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
+			    		(Double)row[7],null==(Double)row[8]?null:f.format((Double)row[8]),(Double)row[9],null==(BigDecimal)row[10]?null:f.format((BigDecimal)row[10]),(Double)row[11],(Double)row[12],
+			    		(Double)row[13],(Double)row[14],null==(BigInteger)row[15]?null:f.format((BigInteger)row[15]),(Boolean)row[16],(BigDecimal)row[17],(Double)row[18]));
 			  
 			}
-			Integer count = (Integer)(rows.get(0))[16];
+			Integer count = (Integer)(rows.get(0))[19];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
@@ -150,7 +171,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	@Override
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
-		StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
+		StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
 		
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("price",requestMenuTier.getPrice());	
@@ -161,6 +182,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.setParameter("project_Id",requestMenuTier.getProject_Id());	
 		query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
 		query.setParameter("brand_Id", requestMenuTier.getBrandId());
+		query.setParameter("isChanged", requestMenuTier.getChanged());
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
 	}
@@ -235,18 +257,32 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 				query.registerStoredProcedureParameter(10, Integer.class , ParameterMode.IN);
 				query.setParameter(10, requestPricePlanner.getBrandId());
+				
+				if(requestPricePlanner.getChanged()!=null ){
+					query.registerStoredProcedureParameter(11, Boolean.class , ParameterMode.IN);
+					query.setParameter(11, requestPricePlanner.getChanged());
+				}else{
+					query.registerStoredProcedureParameter(11, Boolean.class , ParameterMode.IN);
+					query.setParameter(11, null);
+				}
 			
 		
 
 		query.execute();
 		List<Object[]> rows = query.getResultList();
+		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows!=null&&rows.size()>0){
 			List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
 			for (Object[] row : rows) {
+			   /* result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
+			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));*/
+			    
+			    
 			    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
-			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
+			    		null == (Double)row[8] ? null : f.format((Double)row[8]),null == (Double)row[9] ? null : f.format((Double)row[9]),(Double)row[10],null==(BigDecimal)row[11] ? null : f.format((BigDecimal)row[11]),(BigInteger)row[12],(Integer)row[13],(Double)row[14],(Double)row[15],
+			    		(Double)row[16],(Double)row[17],(Double)row[18],(Boolean)row[19]));
 			}
-			Integer count = (Integer)(rows.get(0))[13];
+			Integer count = (Integer)(rows.get(0))[20];
 			response.setCount(count);
 			response.setStoreTier(result);
 		}
@@ -263,7 +299,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("proposed_Tier",updateStoreInfoRequest.getProposedTier());	
 		query.setParameter("store_Code",updateStoreInfoRequest.getStoreCode());
-		query.setParameter("isChanged", true);
+		query.setParameter("isChanged",updateStoreInfoRequest.getChanged());
 		query.setParameter("updatedOn", Date.from(Instant.now()));
 		query.setParameter("updatedBy", userName);
 		query.setParameter("project_Id",updateStoreInfoRequest.getProject_Id());	
@@ -284,11 +320,11 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 		query.execute();
 		List<Object[]> rows = query.getResultList();
-		
+		DecimalFormat f = new DecimalFormat("###,###");
 		List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
 		for (Object[] row : rows) {
 		    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
-		    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));
+		    		null == (Double)row[8] ? null : f.format((Double)row[8]),null == (Double)row[9] ? null : f.format((Double)row[9]),(Double)row[10],null==(BigDecimal)row[11] ? null : f.format((BigDecimal)row[11]),(BigInteger)row[12]));
 		}
 		return result;
 	}
@@ -310,18 +346,18 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
-		
+		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows.size()>0){
 			List<OverAllImpactsVo> result = new ArrayList<OverAllImpactsVo>(rows.size());
 			for (Object[] row : rows) {
 			    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
 			    
-			    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,((long)((Double)row[1] * 1e4)) / 1e4,
+			    result.add(new OverAllImpactsVo(((long)((Double)row[0] * 1e4)) / 1e4,f.format(((long)((Double)row[1] * 1e4)) / 1e4),
 			    		((long)((Double)row[2] * 1e4)) / 1e4,((long)((Double)row[3] * 1e4)) / 1e4));
 			}
 			return (OverAllImpactsVo) result.get(0);
 		}else{
-			return new OverAllImpactsVo((double)0, (double)0, (double)0, (double)0);
+			return new OverAllImpactsVo((double)0, String.valueOf(0), (double)0, (double)0);
 		}
 		
 	}
@@ -544,4 +580,56 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		return rows;
 
 	}
+
+
+	@Override
+	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName,int tenantId)throws SQLException, Exception {
+		
+		try{
+			for(UpdateStoreInfoRequest updateStoreTierRequest : updateStoreInfoRequest){
+				StringBuilder sb =  new StringBuilder ("update IST_Store_Info set  Proposed_Tier=:proposed_Tier,isChanged=:isChanged,"
+						+ "CreatedOn=createdOn,UpdatedOn=:updatedOn,UpdatedBy=:updatedBy where BrandId=:brand_Id and Project_Id =:project_Id and Scenario_Id=:scenario_Id and Store_Code =:store_Code");
+				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+				query.setParameter("proposed_Tier",updateStoreTierRequest.getProposedTier());	
+				query.setParameter("store_Code",updateStoreTierRequest.getStoreCode());
+				query.setParameter("isChanged", updateStoreTierRequest.getChanged());
+				query.setParameter("updatedOn", Date.from(Instant.now()));
+				query.setParameter("updatedBy", userName);
+				query.setParameter("project_Id",updateStoreTierRequest.getProject_Id());	
+				query.setParameter("scenario_Id", updateStoreTierRequest.getScenario_Id());
+				query.setParameter("brand_Id", tenantId);
+				query.executeUpdate();
+			}
+		}catch(Exception ex){
+			return new FBRestResponse(false, "Exception occured while updating the stores");
+		}
+		return new FBRestResponse(true, "Store Tier for all the provided stores Updated Successfully"); 
+	}
+
+
+	@Override
+	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,
+			int tenantId, String userName) throws SQLException, Exception {
+		try{
+			for(RequestMenuTierPriceUpdate priceUpdateRequest : menuTierPriceUpdateReq){
+				StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
+				
+				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+				query.setParameter("price",priceUpdateRequest.getPrice());	
+				query.setParameter("product_id",priceUpdateRequest.getProductId());
+				query.setParameter("tier",priceUpdateRequest.getTier());	
+				query.setParameter("lastUpdated_date",Date.from(Instant.now()));
+				query.setParameter("lastUpdated_by",userName);	
+				query.setParameter("project_Id",priceUpdateRequest.getProject_Id());	
+				query.setParameter("scenario_Id", priceUpdateRequest.getScenario_Id());
+				query.setParameter("brand_Id", tenantId);
+				query.setParameter("isChanged", priceUpdateRequest.getChanged());
+				query.executeUpdate();
+			}
+		}catch(Exception ex){
+			return new FBRestResponse(false, "Exception occured while updating tier price");
+		}
+		return new FBRestResponse(true, "Tier Price Updated Successfully");
+	}
+	
 }
