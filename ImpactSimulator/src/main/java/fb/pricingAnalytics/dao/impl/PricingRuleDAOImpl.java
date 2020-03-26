@@ -287,24 +287,30 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 					if(pricingRule.isPriceChangeByPercentage()){
 						Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
 						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						if(newPrice != menuPricingVo.getNew_Price()){
+						if(!(Double.compare(newPrice, menuPricingVo.getNew_Price())==0)){
 							continue;
 						}
 					}else{
-						if(menuPricingVo.getNew_Price()!=menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange()){
+						Double newPrice = menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange();
+						if(!(Double.compare(menuPricingVo.getNew_Price(), newPrice)==0)){
 							continue;
 						}
 					}
 					isChanged = false;
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
 				}
-				if(menuPricingVo.getCurrent_Price()== menuPricingVo.getNew_Price() && ruleRequest.isApplied() && !ruleRequest.isDeleted()){
-					if(pricingRule.isPriceChangeByPercentage()){
-						Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
-						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						menuTierPriceUpdateReq.setPrice(newPrice);
+				if(ruleRequest.isApplied() && !ruleRequest.isDeleted()){
+					if(Double.compare(menuPricingVo.getCurrent_Price(), menuPricingVo.getNew_Price())==0){
+						if(pricingRule.isPriceChangeByPercentage()){
+							Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
+							Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
+							menuTierPriceUpdateReq.setPrice(newPrice);
+						}else{
+							menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
+						}
 					}else{
-						menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
+						logger.info("Skipping from updation as the price is changed manually");
+						continue;
 					}
 				}
 				//menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
@@ -393,9 +399,11 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		if(rows!=null&&rows.size()>0){
 			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
 			for (Object[] row : rows) {
-				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4], (Double)row[5],(String)row[6]));
+				//result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6], (Double)row[5],(String)row[6]));
+				result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],(String)row[8],(Double)row[10],
+						(Double)row[11]));
 			}
-			Integer count = (Integer)(rows.get(0))[7];
+			Integer count = (Integer)(rows.get(0))[12];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}

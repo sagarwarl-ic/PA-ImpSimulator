@@ -171,6 +171,20 @@ public class MenuPricingVo {
 		Current_Price = current_Price;
 	}
 
+	
+	public MenuPricingVo(String cat1, String cat2, String cat3,
+			String product_ID, String proposed_Tier,String product_Price_Sensitivity,Double new_Price,Double current_Price
+			) {
+		super();
+		Cat1 = cat1;
+		Cat2 = cat2;
+		Cat3 = cat3;
+		Product_ID = product_ID;
+		Proposed_Tier = proposed_Tier;
+		Product_Price_Sensitivity = product_Price_Sensitivity;
+		New_Price = new_Price;
+		Current_Price = current_Price;
+	}
 
 
 	/*public String getTier_Change() {
