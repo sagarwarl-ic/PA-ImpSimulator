@@ -9,6 +9,7 @@ public class RequestPricePlanner {
 	private PagingPricePlanner paging;
 	private BigInteger scenario_Id;
 	private BigInteger project_Id;
+	private BigInteger dataEntry_Id;
 	private Integer brandId;
 	private Boolean changed; 
 	
@@ -42,8 +43,15 @@ public class RequestPricePlanner {
 	public void setProject_Id(BigInteger project_Id) {
 		this.project_Id = project_Id;
 	}
+	
 	public Integer getBrandId() {
 		return brandId;
+	}
+	public BigInteger getDataEntry_Id() {
+		return dataEntry_Id;
+	}
+	public void setDataEntry_Id(BigInteger dataEntry_Id) {
+		this.dataEntry_Id = dataEntry_Id;
 	}
 	public void setBrandId(Integer brandId) {
 		this.brandId = brandId;

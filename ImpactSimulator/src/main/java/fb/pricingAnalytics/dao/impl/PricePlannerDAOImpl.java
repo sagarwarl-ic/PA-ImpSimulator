@@ -36,7 +36,10 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	EntityManager entityManager;
 
 	@Override
-	public BigInteger createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
+	public Project createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
+		
+		
+		BigInteger dataEntryId = getDataEntryId(brandId);
 
 		logger.debug("PricePlannerDAOImpl createProject function starts ::: ");
 		Project project = new Project();
@@ -49,14 +52,35 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		project.setUpdatedOn(Date.from(Instant.now()));
 		project.setStatus(projectRequest.getStatusId());
 		project.setProjectName(projectRequest.getProjectName());
-		
+		project.setDataEntryId(dataEntryId);
 		logger.info("Hibernate will save the project object ::: "+project.toString());
 		
 		session.save(project);
 		
-		return project.getProjectId();
+		return project;
 	
 		
+	}
+
+	private BigInteger getDataEntryId(String brandId) {
+		
+		StringBuilder sb = new StringBuilder ("SELECT  max(id) from DataEntry where brandId =:brand_id");
+		
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_id",Integer.parseInt(brandId));
+		List resultObjects  = query.list();
+		return (BigInteger) resultObjects.get(0);
+	}
+	
+	private BigInteger getDataEntryIdFromProjectId(String brandId,BigInteger projectId) {
+		
+		StringBuilder sb = new StringBuilder ("SELECT  dataEntryId from Project where brandId =:brand_id and projectId=:project_id");
+		
+		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+		query.setParameter("brand_id",Integer.parseInt(brandId));
+		query.setParameter("project_id",projectId);
+		List resultObjects  = query.list();
+		return (BigInteger) resultObjects.get(0);
 	}
 
 	@Override
@@ -156,8 +180,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 
 	@Override
 	public List<PricePlannerVo> getProject(String brandId, BigInteger projectId) throws SQLException, Exception {
-		StringBuilder sb = new StringBuilder ("SELECT NEW fb.pricingAnalytics.model.vo.PricePlannerVo(PR.projectId, PR.brandId, PR.projectName, PR.status, PR.deleted, PR.createdOn, PR.createdBy, PR.updatedOn, PR.updatedBy, "
-				+ "SC.scenarioId, SC.scenarioName, SC.createdOn, SC.createdBy, SC.updatedOn, SC.updatedBy, SC.deleted)"
+		StringBuilder sb = new StringBuilder ("SELECT NEW fb.pricingAnalytics.model.vo.PricePlannerVo(PR.projectId, PR.brandId, PR.projectName, PR.status, PR.deleted, PR.createdOn, PR.createdBy, PR.updatedOn, PR.updatedBy,PR.dataEntryId,"
+				+ " SC.scenarioId, SC.scenarioName, SC.createdOn, SC.createdBy, SC.updatedOn, SC.updatedBy, SC.deleted)"
 				+ " FROM Project PR LEFT JOIN Scenario SC ON SC.projectId = PR.projectId WHERE PR.projectId= :project_id AND PR.brandId =: brand_id ");
 		
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
@@ -168,16 +192,16 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	public void copyProjectData(BigInteger projectId, String brandId,String userName) {
+	public void copyProjectData(BigInteger dataEntryId, String brandId,String userName) {
 	
 		try{
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyProjectData]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyProjectData_NEW]");
 	
 		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 		query.setParameter(0, Integer.valueOf(brandId));
 		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
-		query.setParameter(1, projectId);
+		query.setParameter(1, dataEntryId);
 		query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
 		query.setParameter(2, userName);
 		query.execute();
@@ -196,9 +220,9 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		
 		try{
 			
-		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, projectId);
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyScenarioData]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyScenarioData_NEW]");
 		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 		query.setParameter(0, Integer.valueOf(brandId));
 		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
@@ -207,6 +231,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		query.setParameter(2, scenarioId);
 		query.registerStoredProcedureParameter(3, String.class , ParameterMode.IN);
 		query.setParameter(3, userName);
+		query.registerStoredProcedureParameter(4, BigInteger.class , ParameterMode.IN);
+		query.setParameter(4, dataEntryId);
 		query.execute();
 		/*List<Object[]> rows = query.getResultList();
 		if(rows.size() > 0){
@@ -220,7 +246,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	@Override
 	public List<ProjectVo> getProjectList(String brandId) throws SQLException,Exception {
 		StringBuilder sb = new StringBuilder("SELECT NEW fb.pricingAnalytics.model.vo.ProjectVo(PR.projectId,PR.brandId,PR.projectName,PR.status,"
-				+ "PR.comment,PR.deleted,PR.createdOn,PR.createdBy,PR.updatedOn,PR.updatedBy) FROM Project PR where PR.brandId =:brand_id and PR.deleted=0 order by PR.updatedOn DESC");
+				+ "PR.comment,PR.deleted,PR.createdOn,PR.createdBy,PR.updatedOn,PR.updatedBy,PR.dataEntryId) FROM Project PR where PR.brandId =:brand_id and PR.deleted=0 order by PR.updatedOn DESC");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_id",Integer.parseInt(brandId));
 		System.out.println("Query : "+query);
@@ -255,8 +281,10 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 			String brandId, String userName) throws SQLException, Exception {
 		
 		try{
+			BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, projectId);
+			
 			StoredProcedureQuery query = entityManager
-					.createStoredProcedureQuery("[ImpactSimulator].[dbo].[DuplicateScenarioData]");
+					.createStoredProcedureQuery("[ImpactSimulator].[dbo].[DuplicateScenarioData_NEW]");
 			query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 			query.setParameter(0, Integer.valueOf(brandId));
 			query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
@@ -267,6 +295,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 			query.setParameter(3, existingScenarioId);
 			query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
 			query.setParameter(4, userName);
+			query.registerStoredProcedureParameter(5, BigInteger.class , ParameterMode.IN);
+			query.setParameter(5, dataEntryId);
 			query.execute();
 		}catch(Exception ex){
 			logger.info("Exception occured while copying Scenario data from Store_Product_Info to IST_Store_Info and IST_Product_Tier_Info ... ");
@@ -275,15 +305,16 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	public DataEntryResponse getDataEntry(BigInteger dataEntryId)throws SQLException, Exception {
+	public DataEntryResponse getDataEntry(BigInteger dataEntryId,int brandId)throws SQLException, Exception {
 		
 		DataEntryResponse response = new DataEntryResponse();
 	
 		StringBuilder sb = new StringBuilder("SELECT NEW fb.pricingAnalytics.model.vo.DataEntryVo(DE.id,DE.quantity_And_Sales_Min_Date,DE.quantity_and_Sales_Max_Date,DE.product_List_Min_Date,DE.product_List_Max_Date,"
-				+ "DE.current_Avg_Price_Min_Date,DE.current_Avg_Price_Max_Date) FROM DataEntry DE where DE.id=:data_Entry_Id");
+				+ "DE.current_Avg_Price_Min_Date,DE.current_Avg_Price_Max_Date) FROM DataEntry DE where DE.id=:data_Entry_Id and DE.brandId=:brand_Id");
 		
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("data_Entry_Id",dataEntryId);
+		query.setParameter("brand_Id",brandId);
 		List<DataEntryVo> resultObjects  = query.list();
 		if(null != resultObjects && !resultObjects.isEmpty()){
 			response.setDataEntry(resultObjects.get(0));

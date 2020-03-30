@@ -57,7 +57,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		
@@ -131,7 +131,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -201,7 +201,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -234,11 +234,12 @@ public class MenuPricingController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
+		
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
+		/*if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
 					HttpStatus.BAD_REQUEST);
-		}
+		}*/
 		@SuppressWarnings("unchecked")
 		StoreDistributionResponse response = new StoreDistributionResponse();
 		try {
@@ -271,7 +272,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -307,7 +308,7 @@ public class MenuPricingController {
 		requestPricePlanner.setBrandId(tenantId);
 
 		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		

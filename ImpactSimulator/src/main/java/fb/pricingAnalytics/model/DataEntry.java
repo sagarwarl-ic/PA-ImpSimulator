@@ -18,6 +18,9 @@ public class DataEntry {
 	@Column(name="Id")
 	private BigInteger id;
 	
+	@Column(name="BrandId")
+	private int brandId;
+	
 	@Column(name="Quantity_and_Sales_Min_Date")
 	private Date quantity_And_Sales_Min_Date;
 	
