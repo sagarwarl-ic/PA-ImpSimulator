@@ -13,11 +13,12 @@ public class PricePlannerVo {
 	private Integer brandId;
 	private String name;
 	private Integer status;
-	private boolean deleted;
+	private Boolean deleted;
 	private Date createdOn;
 	private String createdBy;
 	private Date updatedOn;
 	private String updatedBy;
+	private BigInteger dataEntryId;
 	
 	@JsonIgnore
 	private BigInteger scenarioId;
@@ -32,20 +33,18 @@ public class PricePlannerVo {
 	@JsonIgnore
 	private String scenarioUpdatedBy;
 	@JsonIgnore
-	private boolean scenarioDeleted;
+	private Boolean scenarioDeleted;
 	
+
 	private List<ScenarioVo> scenarioList;
 	
 	public PricePlannerVo() {
 		super();
 	}
 
-	
-	
-
 
 	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, boolean deleted, Date createdOn, String createdBy,
-			Date updatedOn, String updatedBy) {
+			Date updatedOn, String updatedBy,BigInteger dataEntryId) {
 		super();
 		this.id = id;
 		this.brandId = brandId;
@@ -56,6 +55,7 @@ public class PricePlannerVo {
 		this.createdBy = createdBy;
 		this.updatedOn = updatedOn;
 		this.updatedBy = updatedBy;
+		this.dataEntryId = dataEntryId;
 	}
 
 
@@ -85,8 +85,8 @@ public class PricePlannerVo {
 	}
 	
 	public PricePlannerVo(BigInteger id, Integer brandId, String name, Integer status, boolean deleted, Date createdOn, String createdBy,
-			Date updatedOn, String updatedBy, BigInteger scenarioId, String scenarioName, Date scenarioCreatedOn, String scenarioCreatedBy,
-			Date scenarioUpdatedOn, String scenarioUpdatedBy,boolean scenarioDeleted) {
+			Date updatedOn, String updatedBy, BigInteger dataEntryId,BigInteger scenarioId, String scenarioName, Date scenarioCreatedOn, String scenarioCreatedBy,
+			Date scenarioUpdatedOn, String scenarioUpdatedBy,Boolean scenarioDeleted) {
 		super();
 		this.id = id;
 		this.brandId = brandId;
@@ -97,17 +97,29 @@ public class PricePlannerVo {
 		this.createdBy = createdBy;
 		this.updatedOn = updatedOn;
 		this.updatedBy = updatedBy;
-		this.scenarioId = scenarioId;
-		this.scenarioName = scenarioName;
+		if(scenarioId!=null){
+			this.scenarioId = scenarioId;
+		}
+		if(scenarioName != null){
+			this.scenarioName = scenarioName;
+		}
 		if(scenarioCreatedOn!=null) {
-		this.scenarioCreatedOn = scenarioCreatedOn;
+			this.scenarioCreatedOn = scenarioCreatedOn;
 		}
-		this.scenarioCreatedBy = scenarioCreatedBy;
+		if(scenarioCreatedBy != null){
+			this.scenarioCreatedBy = scenarioCreatedBy;
+		}
 		if(scenarioUpdatedOn!=null) {
-		this.scenarioUpdatedOn = scenarioUpdatedOn;
+			this.scenarioUpdatedOn = scenarioUpdatedOn;
 		}
-		this.scenarioUpdatedBy = scenarioUpdatedBy;
-		this.scenarioDeleted = scenarioDeleted;
+		if(scenarioUpdatedBy != null){
+			this.scenarioUpdatedBy = scenarioUpdatedBy;
+		}
+		if(scenarioDeleted != null){
+			this.scenarioDeleted = scenarioDeleted;
+		}
+		
+		this.dataEntryId = dataEntryId;
 	}
 	
 
@@ -144,11 +156,11 @@ public class PricePlannerVo {
 		this.status = status;
 	}	
 
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return deleted;
 	}
 
-	public void setDeleted(boolean deleted) {
+	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
 
@@ -242,16 +254,23 @@ public class PricePlannerVo {
 	}
 
 
-	public boolean getScenarioDeleted() {
+	public Boolean getScenarioDeleted() {
 		return scenarioDeleted;
 	}
 
 
-	public void setScenarioDeleted(boolean scenarioDeleted) {
+	public void setScenarioDeleted(Boolean scenarioDeleted) {
 		this.scenarioDeleted = scenarioDeleted;
 	}
 	
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
+	}
 
+
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
+	}
 
 
 }

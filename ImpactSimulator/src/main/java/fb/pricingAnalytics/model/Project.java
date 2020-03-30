@@ -44,10 +44,21 @@ public class Project {
 	
 	@Column(name="UpdatedBy")
 	private String updatedBy;
+	
+	@Column(name="DataEntryId")
+	private BigInteger dataEntryId;
 
 	public BigInteger getProjectId() {
 		return projectId;
 	}
+
+	/*public BigInteger getId() {
+		return id;
+	}
+
+	public void setId(BigInteger id) {
+		this.id = id;
+	}*/
 
 	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
@@ -134,9 +145,17 @@ public class Project {
 		this.updatedBy = updatedBy;
 	}
 
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
+	}
+
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
+	}
+
 	@Override
 	public String toString() {
-		return "Project [ProjectId=" + projectId + ", brandId=" + brandId + ", projectName=" + projectName + ", status=" + status
+		return "Project [ brandId=" + brandId + ", projectName=" + projectName + ", status=" + status
 				+ ", deleted=" + deleted + ", createdOn=" + createdOn + ", createdBy=" + createdBy + ", updatedOn="
 				+ updatedOn + ", updatedBy=" + updatedBy + "]";
 	}

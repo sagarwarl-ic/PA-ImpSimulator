@@ -63,6 +63,20 @@ public class ISTProductTierInfo implements Serializable {
 	private float currentPrice;
 	
 	
+	@Column(name="DataEntryId")
+	private BigInteger dataEntryId;
+	
+	
+	
+	
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
+	}
+
 	public BigInteger getIstPrdTierId() {
 		return istPrdTierId;
 	}
@@ -161,16 +175,14 @@ public class ISTProductTierInfo implements Serializable {
 	}
 
 	
-
-	public BigInteger getProjectId() {
-		return projectId;
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
 	}
 
-	public void setProjectId(BigInteger projectId) {
-		this.projectId = projectId;
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
 	}
 
-	
 	public float getCurrentPrice() {
 		return currentPrice;
 	}
@@ -181,10 +193,16 @@ public class ISTProductTierInfo implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ISTProductTierInfo [productId=" + productId + ", tier=" + tier + ", price=" + price + ", scenarioId="
-				+ scenarioId + ", comment=" + comment + ", isChanged=" + isChanged + ", createdOn=" + createdOn
-				+ ", createdBy=" + createdBy + ", updatedOn=" + updatedOn + ", updatedBy=" + updatedBy + ",currentPrice=" + currentPrice + "]";
+		return "ISTProductTierInfo [istPrdTierId=" + istPrdTierId
+				+ ", brandId=" + brandId + ", productId=" + productId
+				+ ", tier=" + tier + ", price=" + price + ", projectId="
+				+ projectId + ", scenarioId=" + scenarioId + ", comment="
+				+ comment + ", isChanged=" + isChanged + ", createdOn="
+				+ createdOn + ", createdBy=" + createdBy + ", updatedOn="
+				+ updatedOn + ", updatedBy=" + updatedBy + ", currentPrice="
+				+ currentPrice + ", dataEntryId=" + dataEntryId + "]";
 	}
+
 	
 	
 }

@@ -24,9 +24,13 @@ public class IST_Store_Product_Info implements Serializable {
 	@Column(name="BrandId")
 	private int brandId;
 	
-	@Id
+	/*@Id
 	@Column(name="Project_Id")
-	private BigInteger projectId;
+	private BigInteger projectId;*/
+	
+	@Id
+	@Column(name="DataEntryId")
+	private BigInteger dataEntryId;
 	
 	@Id
 	@Column(name="Store_Code")
@@ -119,16 +123,25 @@ public class IST_Store_Product_Info implements Serializable {
 		this.brandId = brandId;
 	}
 
-	public BigInteger getProjectId() {
+	/*public BigInteger getProjectId() {
 		return projectId;
 	}
 
 	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
-	}
+	}*/
+	
 
 	public Integer getStoreCode() {
 		return storeCode;
+	}
+
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
+	}
+
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
 	}
 
 	public void setStoreCode(Integer storeCode) {

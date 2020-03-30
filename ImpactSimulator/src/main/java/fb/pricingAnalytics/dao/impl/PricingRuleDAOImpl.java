@@ -331,11 +331,14 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 
 	private MenuPricingResponse getMenuItemRecordsForRule(MenuItem menuItem,ApplyRuleRequest ruleRequest, int brandId) {
 		
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, ruleRequest.getProjectId());
+		
 		MenuPricingResponse response = new MenuPricingResponse();
 		response.setCount(0);
 		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[MenuitemSelectProcForSearch]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[MenuitemSelectProcForSearch_NEW]");
 		
 		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 		query.setParameter(0, 0);
@@ -392,6 +395,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.registerStoredProcedureParameter(11, Integer.class , ParameterMode.IN);
 		query.setParameter(11, brandId);
 		
+		query.registerStoredProcedureParameter(12, BigInteger.class , ParameterMode.IN);
+		query.setParameter(12, dataEntryId);
+		
 		query.execute();
 		
 		List<Object[]> rows = query.getResultList();
@@ -413,11 +419,13 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	
 	private StoreTierResponse getStoreTierRecordsForRule(StoreTier storeTier,ApplyRuleRequest ruleRequest, int brandId) {
 		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, ruleRequest.getProjectId());
+		
 		StoreTierResponse response = new StoreTierResponse();
 		response.setCount(0);
 		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProcForSearch]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProcForSearch_NEW]");
 		
 		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 		query.setParameter(0, 0);
@@ -454,6 +462,8 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.setParameter(8, ruleRequest.getProjectId());
 		query.registerStoredProcedureParameter(9, Integer.class , ParameterMode.IN);
 		query.setParameter(9, brandId);
+		query.registerStoredProcedureParameter(10, BigInteger.class , ParameterMode.IN);
+		query.setParameter(10, dataEntryId);
 		
 		query.execute();
 		
@@ -559,6 +569,25 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.setParameter("isChanged", isChanged);
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
+	}
+	
+private BigInteger getDataEntryIdFromProjectId(Integer brandId,BigInteger projectId) {
+		
+		BigInteger dataEntryId= new BigInteger("0");
+		try{
+			
+			StringBuilder sb = new StringBuilder ("SELECT  dataEntryId from Project where brandId =:brand_id and projectId=:project_id");
+			
+			Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+			query.setParameter("brand_id",brandId);
+			query.setParameter("project_id",projectId);
+			List resultObjects  = query.list();
+			dataEntryId = (BigInteger) resultObjects.get(0);
+		}
+		catch(Exception ex){
+			
+		}
+		return dataEntryId;
 	}
 	
 }

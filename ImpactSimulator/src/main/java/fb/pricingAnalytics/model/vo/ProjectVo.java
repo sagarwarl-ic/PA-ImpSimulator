@@ -15,10 +15,11 @@ public class ProjectVo {
 	private String createdBy;
 	private Date updatedOn;
 	private String updatedBy;
+	private BigInteger dataEntryId;
 	
 	public ProjectVo(BigInteger projectId, Integer brandId, String name,
 			Integer status, String comment, boolean deleted, Date createdOn,
-			String createdBy, Date updatedOn, String updatedBy) {
+			String createdBy, Date updatedOn, String updatedBy,BigInteger dataEntryId) {
 		super();
 		this.projectId = projectId;
 		this.brandId = brandId;
@@ -30,6 +31,7 @@ public class ProjectVo {
 		this.createdBy = createdBy;
 		this.updatedOn = updatedOn;
 		this.updatedBy = updatedBy;
+		this.dataEntryId = dataEntryId;
 	}
 
 	public BigInteger getProjectId() {
@@ -110,6 +112,14 @@ public class ProjectVo {
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
+	}
+
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
 	}
 	
 	

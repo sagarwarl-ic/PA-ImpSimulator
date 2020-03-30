@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fb.pricingAnalytics.dao.PricePlannerDAO;
+import fb.pricingAnalytics.model.Project;
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
 import fb.pricingAnalytics.model.vo.ProjectVo;
 import fb.pricingAnalytics.model.vo.ScenarioVo;
@@ -27,7 +28,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 
 	@Transactional
 	@Override
-	public BigInteger createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
+	public Project createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
 		
 		return pricePlannerDAO.createProject(projectRequest, brandId, userName);
 		
@@ -78,7 +79,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 				scenarioList.add(scenario);
 				}
 			}
-			PricePlannerVo pricePlannerRequestObj = new PricePlannerVo(projectList.get(0).getId(),projectList.get(0).getBrandId(),projectList.get(0).getName(),projectList.get(0).getStatus(),projectList.get(0).isDeleted(),projectList.get(0).getCreatedOn(),projectList.get(0).getCreatedBy(),projectList.get(0).getUpdatedOn(),projectList.get(0).getUpdatedBy());
+			PricePlannerVo pricePlannerRequestObj = new PricePlannerVo(projectList.get(0).getId(),projectList.get(0).getBrandId(),projectList.get(0).getName(),projectList.get(0).getStatus(),projectList.get(0).isDeleted(),projectList.get(0).getCreatedOn(),projectList.get(0).getCreatedBy(),projectList.get(0).getUpdatedOn(),projectList.get(0).getUpdatedBy(),projectList.get(0).getDataEntryId());
 			pricePlannerRequestObj.setScenarioList(scenarioList);
 			return pricePlannerRequestObj;
 		}
@@ -124,8 +125,8 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public DataEntryResponse getDataEntry(BigInteger dataEntryId)throws SQLException, Exception {
-		return pricePlannerDAO.getDataEntry(dataEntryId);
+	public DataEntryResponse getDataEntry(BigInteger dataEntryId,int brandId)throws SQLException, Exception {
+		return pricePlannerDAO.getDataEntry(dataEntryId,brandId);
 	}
 
 }
