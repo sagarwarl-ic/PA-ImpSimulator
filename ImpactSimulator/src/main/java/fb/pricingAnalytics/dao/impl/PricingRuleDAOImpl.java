@@ -406,10 +406,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
 			for (Object[] row : rows) {
 				//result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6], (Double)row[5],(String)row[6]));
-				result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],(String)row[8],(Double)row[10],
-						(Double)row[11]));
+				result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],(String)row[9],(Double)row[11],
+						(Double)row[12]));
 			}
-			Integer count = (Integer)(rows.get(0))[12];
+			Integer count = (Integer)(rows.get(0))[13];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
