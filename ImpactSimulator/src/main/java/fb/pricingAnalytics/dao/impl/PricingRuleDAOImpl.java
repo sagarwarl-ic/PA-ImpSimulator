@@ -287,24 +287,30 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 					if(pricingRule.isPriceChangeByPercentage()){
 						Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
 						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						if(newPrice != menuPricingVo.getNew_Price()){
+						if(!(Double.compare(newPrice, menuPricingVo.getNew_Price())==0)){
 							continue;
 						}
 					}else{
-						if(menuPricingVo.getNew_Price()!=menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange()){
+						Double newPrice = menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange();
+						if(!(Double.compare(menuPricingVo.getNew_Price(), newPrice)==0)){
 							continue;
 						}
 					}
 					isChanged = false;
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
 				}
-				if(menuPricingVo.getCurrent_Price()== menuPricingVo.getNew_Price() && ruleRequest.isApplied() && !ruleRequest.isDeleted()){
-					if(pricingRule.isPriceChangeByPercentage()){
-						Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
-						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						menuTierPriceUpdateReq.setPrice(newPrice);
+				if(ruleRequest.isApplied() && !ruleRequest.isDeleted()){
+					if(Double.compare(menuPricingVo.getCurrent_Price(), menuPricingVo.getNew_Price())==0){
+						if(pricingRule.isPriceChangeByPercentage()){
+							Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
+							Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
+							menuTierPriceUpdateReq.setPrice(newPrice);
+						}else{
+							menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
+						}
 					}else{
-						menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
+						logger.info("Skipping from updation as the price is changed manually");
+						continue;
 					}
 				}
 				//menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
@@ -325,11 +331,14 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 
 	private MenuPricingResponse getMenuItemRecordsForRule(MenuItem menuItem,ApplyRuleRequest ruleRequest, int brandId) {
 		
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, ruleRequest.getProjectId());
+		
 		MenuPricingResponse response = new MenuPricingResponse();
 		response.setCount(0);
 		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[MenuitemSelectProcForSearch]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[MenuitemSelectProcForSearch_NEW]");
 		
 		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 		query.setParameter(0, 0);
@@ -386,6 +395,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.registerStoredProcedureParameter(11, Integer.class , ParameterMode.IN);
 		query.setParameter(11, brandId);
 		
+		query.registerStoredProcedureParameter(12, BigInteger.class , ParameterMode.IN);
+		query.setParameter(12, dataEntryId);
+		
 		query.execute();
 		
 		List<Object[]> rows = query.getResultList();
@@ -393,9 +405,11 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		if(rows!=null&&rows.size()>0){
 			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
 			for (Object[] row : rows) {
-				result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4], (Double)row[5],(String)row[6]));
+				//result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6], (Double)row[5],(String)row[6]));
+				result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],(String)row[9],(Double)row[11],
+						(Double)row[12]));
 			}
-			Integer count = (Integer)(rows.get(0))[7];
+			Integer count = (Integer)(rows.get(0))[13];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
@@ -405,11 +419,13 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	
 	private StoreTierResponse getStoreTierRecordsForRule(StoreTier storeTier,ApplyRuleRequest ruleRequest, int brandId) {
 		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, ruleRequest.getProjectId());
+		
 		StoreTierResponse response = new StoreTierResponse();
 		response.setCount(0);
 		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProcForSearch]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProcForSearch_NEW]");
 		
 		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
 		query.setParameter(0, 0);
@@ -446,6 +462,8 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.setParameter(8, ruleRequest.getProjectId());
 		query.registerStoredProcedureParameter(9, Integer.class , ParameterMode.IN);
 		query.setParameter(9, brandId);
+		query.registerStoredProcedureParameter(10, BigInteger.class , ParameterMode.IN);
+		query.setParameter(10, dataEntryId);
 		
 		query.execute();
 		
@@ -551,6 +569,25 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		query.setParameter("isChanged", isChanged);
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
+	}
+	
+private BigInteger getDataEntryIdFromProjectId(Integer brandId,BigInteger projectId) {
+		
+		BigInteger dataEntryId= new BigInteger("0");
+		try{
+			
+			StringBuilder sb = new StringBuilder ("SELECT  dataEntryId from Project where brandId =:brand_id and projectId=:project_id");
+			
+			Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+			query.setParameter("brand_id",brandId);
+			query.setParameter("project_id",projectId);
+			List resultObjects  = query.list();
+			dataEntryId = (BigInteger) resultObjects.get(0);
+		}
+		catch(Exception ex){
+			
+		}
+		return dataEntryId;
 	}
 	
 }

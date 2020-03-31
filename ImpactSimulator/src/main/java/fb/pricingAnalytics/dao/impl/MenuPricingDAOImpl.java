@@ -18,6 +18,8 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import com.microsoft.azure.storage.core.Logger;
+
 import fb.pricingAnalytics.dao.MenuPricingDAO;
 import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
@@ -43,9 +45,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	
 	@Override 
 	public MenuPricingResponse getMenuPricing( RequestPricePlanner requestPricePlanner)  throws SQLException,Exception{
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
+		
 		MenuPricingResponse response = new MenuPricingResponse();
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[MenuitemSelectProc]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[MenuitemSelectProc_NEW]");
 		if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
 			if(requestPricePlanner.getPaging().getPageNo()>0&&requestPricePlanner.getPaging().getPageSize()>0){
 				query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
@@ -139,7 +144,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				query.registerStoredProcedureParameter(12, Boolean.class , ParameterMode.IN);
 				query.setParameter(12, null);
 			}
-	
+			query.registerStoredProcedureParameter(13, BigInteger.class , ParameterMode.IN);
+			query.setParameter(13, dataEntryId);
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
@@ -191,10 +197,13 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	@Override
 	public StoreTierResponse getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
 		
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
+		
 		StoreTierResponse response = new StoreTierResponse();
 		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProc]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[StoreTierViewProc_NEW]");
 		
 		
 				if(requestPricePlanner!=null&&requestPricePlanner.getPaging()!=null){
@@ -244,27 +253,31 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 					query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
 					query.setParameter(6, requestPricePlanner.getSort().getDirection());
 				}else{
-					query.registerStoredProcedureParameter(7, String.class , ParameterMode.IN);
-					query.setParameter(7, "ASC");
+					query.registerStoredProcedureParameter(6, String.class , ParameterMode.IN);
+					query.setParameter(6, "ASC");
 				}
-				query.registerStoredProcedureParameter(8, BigInteger.class , ParameterMode.IN);
-				query.setParameter(8, requestPricePlanner.getScenario_Id());
+				query.registerStoredProcedureParameter(7, BigInteger.class , ParameterMode.IN);
+				query.setParameter(7, requestPricePlanner.getScenario_Id());
 			
 		
-				query.registerStoredProcedureParameter(9, BigInteger.class , ParameterMode.IN);
-				query.setParameter(9, requestPricePlanner.getProject_Id());
+				query.registerStoredProcedureParameter(8, BigInteger.class , ParameterMode.IN);
+				query.setParameter(8, requestPricePlanner.getProject_Id());
 		
 		
-				query.registerStoredProcedureParameter(10, Integer.class , ParameterMode.IN);
-				query.setParameter(10, requestPricePlanner.getBrandId());
+				query.registerStoredProcedureParameter(9, Integer.class , ParameterMode.IN);
+				query.setParameter(9, requestPricePlanner.getBrandId());
 				
 				if(requestPricePlanner.getChanged()!=null ){
-					query.registerStoredProcedureParameter(11, Boolean.class , ParameterMode.IN);
-					query.setParameter(11, requestPricePlanner.getChanged());
+					query.registerStoredProcedureParameter(10, Boolean.class , ParameterMode.IN);
+					query.setParameter(10, requestPricePlanner.getChanged());
 				}else{
-					query.registerStoredProcedureParameter(11, Boolean.class , ParameterMode.IN);
-					query.setParameter(11, null);
+					query.registerStoredProcedureParameter(10, Boolean.class , ParameterMode.IN);
+					query.setParameter(10, null);
 				}
+				
+				query.registerStoredProcedureParameter(11, BigInteger.class , ParameterMode.IN);
+				query.setParameter(11, dataEntryId);
+		
 			
 		
 
@@ -332,8 +345,11 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	@Override
 	public OverAllImpactsVo getOverAllImpacts(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
+		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetOverallImpacts]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetOverallImpacts_NEW]");
 		
 		query.registerStoredProcedureParameter(0, BigInteger.class , ParameterMode.IN);
 		query.setParameter(0, requestPricePlanner.getScenario_Id());
@@ -343,6 +359,9 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 		query.registerStoredProcedureParameter(2, Integer.class , ParameterMode.IN);
 		query.setParameter(2, requestPricePlanner.getBrandId());
+		
+		query.registerStoredProcedureParameter(3, BigInteger.class , ParameterMode.IN);
+		query.setParameter(3, dataEntryId);
 		
 		query.execute();
 		List<Object[]> rows = query.getResultList();
@@ -366,11 +385,15 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	@Override
 	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)	throws SQLException, Exception {
 		
+		//BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
+		
+		BigInteger dataEntryId = new BigInteger("1");
+		
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetStoreDistribution]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetStoreDistribution_NEW]");
 
 		query.registerStoredProcedureParameter(0, BigInteger.class , ParameterMode.IN);
-		query.setParameter(0, requestPricePlanner.getProject_Id());
+		query.setParameter(0, dataEntryId);
 
 		query.registerStoredProcedureParameter(1, Integer.class , ParameterMode.IN);
 		query.setParameter(1, requestPricePlanner.getBrandId());
@@ -391,11 +414,13 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	@Override
 	public List<MenuItemDistributionVo> getMenuItemDistribution(RequestPricePlanner requestPricePlanner)throws SQLException, Exception {
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
 		StoredProcedureQuery query = entityManager
-				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetMenuItemDistribution]");
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetMenuItemDistribution_NEW]");
 		
 		query.registerStoredProcedureParameter(0, BigInteger.class , ParameterMode.IN);
-		query.setParameter(0, requestPricePlanner.getProject_Id());
+		query.setParameter(0, dataEntryId);
 
 		query.registerStoredProcedureParameter(1, Integer.class , ParameterMode.IN);
 		query.setParameter(1, requestPricePlanner.getBrandId());
@@ -415,7 +440,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	
 	@Override
 	public FilterData getFilterData(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
+		
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
+		requestPricePlanner.setDataEntry_Id(dataEntryId);
+		
 		FilterData filterData = new FilterData();
+		
 		getCat1Data(filterData,requestPricePlanner);
 		getCat2Data(filterData,requestPricePlanner);
 		getCat3Data(filterData,requestPricePlanner);
@@ -435,12 +465,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	private void getTierChange(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
 		StringBuilder sb =  new StringBuilder("SELECT distinct "
-					+ "(CASE WHEN (spi.Current_Tier = si.proposedTier) THEN 'N' ELSE 'Y' END) AS Tier_Change FROM IST_Store_Product_Info spi LEFT JOIN IST_Store_Info si ON (spi.storeCode = si.storeCode and spi.brandId = si.brandId and spi.projectId = si.projectId)"
-					+ "where spi.brandId=:brand_Id and spi.projectId=:project_Id and spi.scenarioId=:scenario_Id");
+					+ "(CASE WHEN (spi.Current_Tier = si.proposedTier) THEN 'N' ELSE 'Y' END) AS Tier_Change FROM IST_Store_Product_Info spi LEFT JOIN IST_Store_Info si ON (spi.storeCode = si.storeCode and spi.brandId = si.brandId and spi.dataEntryId = si.dataEntryId)"
+					+ "where spi.brandId=:brand_Id and spi.dataEntryId=:dataEntry_Id and spi.scenarioId=:scenario_Id");
 			
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		query.setParameter("scenario_Id", requestPricePlanner.getScenario_Id());
 		List<Object> rows = query.list();
 		String[] tierChangeList = rows.stream().toArray(String[]::new);
@@ -451,10 +481,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	private void getStoreSentivity(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
 		//StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Mod' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
-		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Moderate' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id =:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (Store_Sensitivity >= 0) THEN 'Low' WHEN (Store_Sensitivity <= -1) THEN 'High' ELSE 'Moderate' END) AS Store_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] storeSentivityList = rows.stream().toArray(String[]::new);
 		filterData.setStore_Sensitivity(storeSentivityList);
@@ -465,10 +495,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 		/*StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Mod' ELSE Product_Price_Sensitivity END) AS Product_Price_Sensitivity "
 				+ "from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");*/
-		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Moderate' ELSE 'NA' END) AS Product_Price_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id =:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Moderate' ELSE 'NA' END) AS Product_Price_Sensitivity from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] prodcutPriceSensitivityList = rows.stream().toArray(String[]::new);
 		filterData.setProduct_Price_Sensitivity(prodcutPriceSensitivityList);
@@ -479,10 +509,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	private void getPricingPower(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
 		//StringBuilder sb =  new StringBuilder("select distinct Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
-		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Pricing_Power))) = 'HIGH') THEN 'High' WHEN(UPPER(LTRIM(RTRIM(Pricing_Power))) = 'LOW') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Pricing_Power))) = 'MID') THEN 'Moderate' ELSE 'NA' END) as Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id =:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct (CASE WHEN (UPPER(LTRIM(RTRIM(Pricing_Power))) = 'HIGH') THEN 'High' WHEN(UPPER(LTRIM(RTRIM(Pricing_Power))) = 'LOW') THEN 'Low' WHEN(UPPER(LTRIM(RTRIM(Pricing_Power))) = 'MID') THEN 'Moderate' ELSE 'NA' END) as Pricing_Power from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] pricingPowerList = rows.stream().toArray(String[]::new);
 		filterData.setPricing_Power(pricingPowerList);
@@ -492,10 +522,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getCurrentTier(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Current_Tier from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct Current_Tier from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] currentTiers = rows.stream().toArray(String[]::new);
 		filterData.setCurrent_Tier(currentTiers);
@@ -505,10 +535,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getCat3Data(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Cat3 from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct Cat3 from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] cat3 = rows.stream().toArray(String[]::new);
 		filterData.setCat3(cat3);
@@ -518,10 +548,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getCat2Data(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Cat2 from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct Cat2 from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] cat2 = rows.stream().toArray(String[]::new);
 		filterData.setCat2(cat2);
@@ -531,10 +561,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 	private void getCat1Data(FilterData filterData, RequestPricePlanner requestPricePlanner) {
 
-		StringBuilder sb =  new StringBuilder("select distinct Cat1 from IST_Store_Product_Info where BrandId=:brand_Id and Project_Id=:project_Id");
+		StringBuilder sb =  new StringBuilder("select distinct Cat1 from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id");
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
-		query.setParameter("project_Id", requestPricePlanner.getProject_Id());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
 		List<Object> rows = query.list();
 		String[] cat1 = rows.stream().toArray(String[]::new);
 		filterData.setCat1(cat1);
@@ -630,6 +660,25 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			return new FBRestResponse(false, "Exception occured while updating tier price");
 		}
 		return new FBRestResponse(true, "Tier Price Updated Successfully");
+	}
+	
+	private BigInteger getDataEntryIdFromProjectId(Integer brandId,BigInteger projectId) {
+		
+		BigInteger dataEntryId= new BigInteger("0");
+		try{
+			
+			StringBuilder sb = new StringBuilder ("SELECT  dataEntryId from Project where brandId =:brand_id and projectId=:project_id");
+			
+			Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+			query.setParameter("brand_id",brandId);
+			query.setParameter("project_id",projectId);
+			List resultObjects  = query.list();
+			dataEntryId = (BigInteger) resultObjects.get(0);
+		}
+		catch(Exception ex){
+			
+		}
+		return dataEntryId;
 	}
 	
 }

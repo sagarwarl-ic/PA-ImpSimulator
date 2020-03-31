@@ -26,6 +26,10 @@ public class IST_Store_Info implements Serializable {
 	private int brandId;
 	
 	@Id
+	@Column(name="Project_Id")
+	private BigInteger projectId;
+	
+	@Id
 	@Column(name="Store_Code")
 	private Integer storeCode;
 	
@@ -33,8 +37,8 @@ public class IST_Store_Info implements Serializable {
 	private String proposedTier;
 
 	@Id
-	@Column(name="Project_Id")
-	private BigInteger projectId;
+	@Column(name="DataEntryId")
+	private BigInteger dataEntryId;
 	
 	@Id
 	@Column(name="Scenario_Id")
@@ -141,12 +145,13 @@ public class IST_Store_Info implements Serializable {
 		this.updatedBy = updatedBy;
 	}
 
-	public BigInteger getProjectId() {
-		return projectId;
+	
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
 	}
 
-	public void setProjectId(BigInteger projectId) {
-		this.projectId = projectId;
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
 	}
 
 	public BigInteger getScenarioId() {
@@ -155,6 +160,14 @@ public class IST_Store_Info implements Serializable {
 
 	public void setScenarioId(BigInteger scenarioId) {
 		this.scenarioId = scenarioId;
+	}
+
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
 	}
 	
 	

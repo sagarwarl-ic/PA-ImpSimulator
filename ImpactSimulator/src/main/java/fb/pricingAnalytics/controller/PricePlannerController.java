@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fb.pricingAnalytics.model.Project;
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.PricePlannerVo;
 import fb.pricingAnalytics.model.vo.ProjectVo;
@@ -63,13 +64,13 @@ public class PricePlannerController {
 		logger.info("Brand Id ::: "+ brandId);
 			
 		try {
-				BigInteger projectId = pricePlannerService.createProject(projectRequest, brandId, userName);
-				if(null != projectId && projectId.intValue()<=0) {
+				Project project = pricePlannerService.createProject(projectRequest, brandId, userName);
+				if(null != project.getProjectId() && project.getProjectId().intValue()<=0) {
 					return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the table"),
 						    HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-				pricePlannerService.copyProjectData(projectId,brandId,userName);
-				response.setResult(projectId.intValue());
+				pricePlannerService.copyProjectData(project.getDataEntryId(),brandId,userName);
+				response.setResult(project.getProjectId().intValue());
 			}
 		catch(SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
@@ -90,10 +91,10 @@ public class PricePlannerController {
 	
 	@RequestMapping(value="/updateProject", method = RequestMethod.POST)
 	public ResponseEntity<?> updateProject(HttpServletRequest request,@RequestBody PricePlannerProjectRequest projectRequest) {
-		logger.debug("PricePlannerController updateScenario function starts :::");
+		logger.debug("PricePlannerController updateProject function starts :::");
 		int updatedRows = -1;
-		if(null == projectRequest|| projectRequest.getProjectId() == null){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Either the Request object or the Project Id is null"),
+		if(null == projectRequest|| projectRequest.getProjectId()== null){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Either the Request object or the DataEntry Id is null"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		
@@ -134,7 +135,7 @@ public class PricePlannerController {
 				    HttpStatus.BAD_REQUEST);
 		}
 		
-		logger.info("Project Id  ::: "+scenarioRequest.getProjectId() +" "+
+		logger.info("Project Id  ::: "+scenarioRequest.getProjectId()+" "+
 				"Scenario Name ::: "+scenarioRequest.getScenarioName() );
 		
 		UserAuth userAuth=AuthUtils.getUserAuthData(request);
@@ -366,10 +367,10 @@ public class PricePlannerController {
 					    HttpStatus.BAD_REQUEST);
 		}
 		UserAuth userAuth=AuthUtils.getUserAuthData(request);
-		String brandId = userAuth.getBrandId();
+		int brandId = Integer.valueOf(userAuth.getBrandId());
 		DataEntryResponse response = new DataEntryResponse();
 		try{
-			response = pricePlannerService.getDataEntry(dataEntryId);
+			response = pricePlannerService.getDataEntry(dataEntryId,brandId);
 		}catch(Exception e){
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();

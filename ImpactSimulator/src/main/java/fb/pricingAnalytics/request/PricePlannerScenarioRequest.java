@@ -6,6 +6,7 @@ public class PricePlannerScenarioRequest {
 	
 	private BigInteger scenarioId;
 	private BigInteger projectId;
+	private BigInteger dataEntryId;
 	private String scenarioName;
 	
 	
@@ -22,8 +23,15 @@ public class PricePlannerScenarioRequest {
 	public void setProjectId(BigInteger projectId) {
 		this.projectId = projectId;
 	}
+	
 	public String getScenarioName() {
 		return scenarioName;
+	}
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
+	}
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
 	}
 	public void setScenarioName(String scenarioName) {
 		this.scenarioName = scenarioName;
