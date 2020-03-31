@@ -129,4 +129,9 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 		return pricePlannerDAO.getDataEntry(dataEntryId,brandId);
 	}
 
+	@Override
+	public BigInteger getDataEntryIdInStoreProductInfo(int brandId) throws SQLException, Exception {
+		return pricePlannerDAO.getDataEntryIdInStoreProductInfo(brandId);
+	}
+
 }

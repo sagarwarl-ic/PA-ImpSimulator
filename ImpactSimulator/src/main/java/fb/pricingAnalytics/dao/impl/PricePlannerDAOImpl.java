@@ -323,4 +323,25 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	
 	}
 
+	@Override
+	public BigInteger getDataEntryIdInStoreProductInfo(int brandId) throws SQLException, Exception {
+		
+		
+		try{
+			
+			StringBuilder sb = new StringBuilder ("SELECT  max(dataEntryId) from IST_Store_Product_Info where brandId = :brand_id ");
+			
+			Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+			query.setParameter("brand_id",brandId);
+			List resultObjects  = query.list();
+			if(!resultObjects.isEmpty()){
+				return (BigInteger) resultObjects.get(0);
+			}
+		}catch(Exception ex){
+			logger.info("Exception Occured while fatching data entry id from dataentry table");
+		}
+		
+		return new BigInteger("0");
+	}
+
 }
