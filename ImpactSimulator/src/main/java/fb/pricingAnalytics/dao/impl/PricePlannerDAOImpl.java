@@ -333,9 +333,12 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 			
 			Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 			query.setParameter("brand_id",brandId);
+	
 			List resultObjects  = query.list();
 			if(!resultObjects.isEmpty()){
-				return (BigInteger) resultObjects.get(0);
+				if(null != resultObjects.get(0)){
+					return (BigInteger) resultObjects.get(0);
+				}
 			}
 		}catch(Exception ex){
 			logger.info("Exception Occured while fatching data entry id from dataentry table");
