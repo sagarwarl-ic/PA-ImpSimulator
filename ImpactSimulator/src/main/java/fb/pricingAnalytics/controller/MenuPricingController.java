@@ -125,7 +125,7 @@ public class MenuPricingController {
 		requestPricePlanner.setBrandId(tenantId);
 
 		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectID  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		

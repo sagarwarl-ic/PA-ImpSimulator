@@ -189,6 +189,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 				requestPricePlanner.getProject_Id());
 		requestPricePlanner.setDataEntry_Id(dataEntryId);
 		FilterDataHierarchy filterDataHierarchy = new fb.pricingAnalytics.model.vo.FilterDataHierarchy();
+		filterDataHierarchy.setDataEntryId(dataEntryId);
 		List<MenuFilterHierarchyData> menuFilterHierarchyData = getMenuHierarchyData(requestPricePlanner);
 
 		filterDataHierarchy.setMenuFilterHierarchyData(menuFilterHierarchyData);
