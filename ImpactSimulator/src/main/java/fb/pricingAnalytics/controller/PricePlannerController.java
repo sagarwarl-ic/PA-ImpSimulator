@@ -69,7 +69,10 @@ public class PricePlannerController {
 					return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the table"),
 						    HttpStatus.INTERNAL_SERVER_ERROR);
 				}
-				pricePlannerService.copyProjectData(project.getDataEntryId(),brandId,userName);
+				BigInteger latestDataEntryId = pricePlannerService.getDataEntryIdInStoreProductInfo(Integer.valueOf(brandId));
+				if((latestDataEntryId.intValue() < project.getDataEntryId().intValue())){
+					pricePlannerService.copyProjectData(project.getDataEntryId(),brandId,userName);
+				}
 				response.setResult(project.getProjectId().intValue());
 			}
 		catch(SQLException e) {
