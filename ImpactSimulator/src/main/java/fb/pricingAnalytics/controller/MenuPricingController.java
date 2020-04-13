@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import fb.pricingAnalytics.events.ImpactSimulatorEvent;
 import fb.pricingAnalytics.model.auth.UserAuth;
 import fb.pricingAnalytics.model.vo.FilterData;
+import fb.pricingAnalytics.model.vo.FilterDataHierarchy;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
 import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
+import fb.pricingAnalytics.response.FilterDataHierarchyResponse;
 import fb.pricingAnalytics.response.FilterDataIndividualResponse;
 import fb.pricingAnalytics.response.FilterDataResponse;
 import fb.pricingAnalytics.response.MenuItemDistributionResponse;
@@ -48,6 +50,141 @@ public class MenuPricingController {
 	MenuPricingService menuPricingService;
 
 
+	@RequestMapping(value = "/getFilterData", method = RequestMethod.POST)
+	public ResponseEntity<?> getFilterData(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+		logger.debug("MenuPricingController getFilterData function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
+		logger.info("tenantId = " + tenantId);
+		requestPricePlanner.setBrandId(tenantId);
+
+		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		@SuppressWarnings("unchecked")
+		FilterDataResponse response = new FilterDataResponse();
+		try {
+			FilterData filterData = menuPricingService.getFilterData(requestPricePlanner);
+			response.setFilterData(filterData);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<FilterDataResponse>(response, HttpStatus.OK);
+		
+	}
+
+	
+	
+	@RequestMapping(value = "/getIndividualFilterData/{filterParam}", method = RequestMethod.GET)
+	public ResponseEntity<?> getFilterData(HttpServletRequest request,@PathVariable("filterParam") String filterParam) {
+		logger.debug("MenuPricingController getFilterData function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		
+		@SuppressWarnings("unchecked")
+		FilterDataIndividualResponse response = new FilterDataIndividualResponse();
+		try {
+			List<Object> filterDataList = menuPricingService.getFilterData(filterParam);
+			response.setFilterData(filterDataList);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<FilterDataIndividualResponse>(response, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/getFilterDataHierarchy", method = RequestMethod.POST)
+	public ResponseEntity<?> getFilterDataHierarchy(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+		logger.debug("MenuPricingController getFilterDataHierarchy function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
+		logger.info("tenantId = " + tenantId);
+		requestPricePlanner.setBrandId(tenantId);
+
+		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		@SuppressWarnings("unchecked")
+		FilterDataHierarchyResponse response = new FilterDataHierarchyResponse();
+		try {
+			FilterDataHierarchy filterDataHierarchy = menuPricingService.getFilterDataHierarchy(requestPricePlanner);
+			response.setFilterDataHierarchy(filterDataHierarchy);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<FilterDataHierarchyResponse>(response, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/getMenuItemDistribution", method = RequestMethod.POST)
+	public ResponseEntity<?> getMenuItemDistribution (HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+
+		logger.debug("MenuPricingController getMenuItemDistribution function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
+		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+					HttpStatus.BAD_REQUEST);
+		}
+		@SuppressWarnings("unchecked")
+		MenuItemDistributionResponse response = new MenuItemDistributionResponse();
+		try {
+			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService.getMenuItemDistribution(requestPricePlanner);
+			response.setMenuItemDistributionVo(menuItemDistributionVo);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<MenuItemDistributionResponse>(response, HttpStatus.OK);
+
+	}
+	
 	@RequestMapping(value = "/getMenuPricing", method = RequestMethod.POST)
 	public ResponseEntity<?> getMenuPricing(HttpServletRequest request,	@RequestBody RequestPricePlanner requestPricePlanner) {
 
@@ -82,115 +219,7 @@ public class MenuPricingController {
 		return new ResponseEntity<MenuPricingResponse>(response, HttpStatus.OK);
 
 	}
-
 	
-	
-	@RequestMapping(value="/updateMenuTierPrice", method = RequestMethod.POST)
-	public ResponseEntity<?> updateMenuTierPrice(HttpServletRequest request,@RequestBody RequestMenuTierPriceUpdate requestMenuTier) {
-		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
-		int updatedRows = -1;
-		UserAuth userAuth=AuthUtils.getUserAuthData(request);
-		String userName = userAuth.getUserName();
-		String tenantId = userAuth.getBrandId();
-		logger.info("tenantId = " + tenantId);
-		requestMenuTier.setBrandId(Integer.valueOf(tenantId));
-		if(null == requestMenuTier || requestMenuTier.getProductId()== null || requestMenuTier.getTier() == null || 
-				requestMenuTier.getProject_Id()==null || requestMenuTier.getScenario_Id()==null){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
-				    HttpStatus.BAD_REQUEST);
-		}
-		
-		logger.info("Product Id  ::: "+requestMenuTier.getProductId()+" "+
-				"Tier  ::: "+requestMenuTier.getTier() +" "+
-				"Price ::: "+requestMenuTier.getPrice() );
-		
-		try {
-			updatedRows = menuPricingService.updateMenuTierPrice(requestMenuTier,userName);
-		}catch(Exception e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
-				    HttpStatus.BAD_REQUEST);
-		}
-		if(updatedRows<=0) {
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "No rows updated. Table does not contain the required record"),
-				    HttpStatus.BAD_REQUEST);
-		}else {
-			
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
-			    HttpStatus.OK);
-		}
-	}
-	
-	@RequestMapping(value = "/getStoreTierView", method = RequestMethod.POST)
-	public ResponseEntity<?> getStoreTierView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
-
-		logger.debug("MenuPricingController getMenuPricing function starts :::");
-		UserAuth userAuth = AuthUtils.getUserAuthData(request);
-		String tenantId = userAuth.getBrandId();
-		logger.info("tenantId = " + tenantId);
-		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
-					HttpStatus.BAD_REQUEST);
-		}
-		@SuppressWarnings("unchecked")
-		StoreTierResponse response = new StoreTierResponse();
-		try {
-			response = menuPricingService.getStoreTierView(requestPricePlanner);
-			//response.setStoreTier(list);
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
-					new FBRestResponse(false, "Exception Occured, Please check the log files"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		return new ResponseEntity<StoreTierResponse>(response, HttpStatus.OK);
-
-	}
-	
-	@RequestMapping(value = "/updateStoreTier", method = RequestMethod.POST)
-	public ResponseEntity<?> updateStoreTier(HttpServletRequest request, @RequestBody UpdateStoreInfoRequest updateStoreInfoRequest) {
-
-		logger.debug("MenuPricingController getMenuPricing function starts :::");
-		UserAuth userAuth = AuthUtils.getUserAuthData(request);
-		String tenantId = userAuth.getBrandId();
-		logger.info("tenantId = " + tenantId);
-		updateStoreInfoRequest.setBrandId(Integer.valueOf(tenantId));
-		FBRestResponse response = null;
-		
-		if(null == updateStoreInfoRequest || updateStoreInfoRequest.getStoreCode()== null || updateStoreInfoRequest.getProposedTier()== null || 
-				updateStoreInfoRequest.getProject_Id()==null || updateStoreInfoRequest.getScenario_Id()==null){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
-				    HttpStatus.BAD_REQUEST);
-		}
-		
-		
-		try {
-			response = menuPricingService.updateStoreTier(updateStoreInfoRequest,userAuth.getUserName());
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
-					new FBRestResponse(false, "Exception Occured, Please check the log files"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
-
-	}
 	
 	@RequestMapping(value = "/getOverAllImpacts", method = RequestMethod.POST)
 	public ResponseEntity<?> getOverAllImpacts(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
@@ -263,23 +292,24 @@ public class MenuPricingController {
 	}
 	
 	
-	@RequestMapping(value = "/getMenuItemDistribution", method = RequestMethod.POST)
-	public ResponseEntity<?> getMenuItemDistribution (HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+	
+	@RequestMapping(value = "/getStoreTierView", method = RequestMethod.POST)
+	public ResponseEntity<?> getStoreTierView(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
 
-		logger.debug("MenuPricingController getMenuItemDistribution function starts :::");
+		logger.debug("MenuPricingController getMenuPricing function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+		if(!validateInputRequest(requestPricePlanner)){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
-		MenuItemDistributionResponse response = new MenuItemDistributionResponse();
+		StoreTierResponse response = new StoreTierResponse();
 		try {
-			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService.getMenuItemDistribution(requestPricePlanner);
-			response.setMenuItemDistributionVo(menuItemDistributionVo);
+			response = menuPricingService.getStoreTierView(requestPricePlanner);
+			//response.setStoreTier(list);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
@@ -292,116 +322,38 @@ public class MenuPricingController {
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<MenuItemDistributionResponse>(response, HttpStatus.OK);
+
+		return new ResponseEntity<StoreTierResponse>(response, HttpStatus.OK);
 
 	}
-	
-	
-	
-	@RequestMapping(value = "/getFilterData", method = RequestMethod.POST)
-	public ResponseEntity<?> getFilterData(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
-		logger.debug("MenuPricingController getFilterData function starts :::");
-		UserAuth userAuth = AuthUtils.getUserAuthData(request);
-		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
-		logger.info("tenantId = " + tenantId);
-		requestPricePlanner.setBrandId(tenantId);
-
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
-					HttpStatus.BAD_REQUEST);
-		}
-		
-		@SuppressWarnings("unchecked")
-		FilterDataResponse response = new FilterDataResponse();
-		try {
-			FilterData filterData = menuPricingService.getFilterData(requestPricePlanner);
-			response.setFilterData(filterData);
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
-					new FBRestResponse(false, "Exception Occured, Please check the log files"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<FilterDataResponse>(response, HttpStatus.OK);
-		
-	}
-	
-	
-	@RequestMapping(value = "/getIndividualFilterData/{filterParam}", method = RequestMethod.GET)
-	public ResponseEntity<?> getFilterData(HttpServletRequest request,@PathVariable("filterParam") String filterParam) {
-		logger.debug("MenuPricingController getFilterData function starts :::");
-		UserAuth userAuth = AuthUtils.getUserAuthData(request);
-		String tenantId = userAuth.getBrandId();
-		logger.info("tenantId = " + tenantId);
-		
-		@SuppressWarnings("unchecked")
-		FilterDataIndividualResponse response = new FilterDataIndividualResponse();
-		try {
-			List<Object> filterDataList = menuPricingService.getFilterData(filterParam);
-			response.setFilterData(filterDataList);
-		} catch (SQLException e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e.fillInStackTrace());
-			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
-					new FBRestResponse(false, "Exception Occured, Please check the log files"),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<FilterDataIndividualResponse>(response, HttpStatus.OK);
-		
-	}
-	
-
-	
-	private boolean validateInputRequest(RequestPricePlanner requestPricePlanner) {
-		
-		if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()< 0 || requestPricePlanner.getScenario_Id()==null
-				|| requestPricePlanner.getScenario_Id().intValue() < 0){
-			return false;
-		}
-		return true;
-	}
-	
 	
 	@RequestMapping(value = "/postImpSimulatorEvent", method = RequestMethod.POST)
-	public ResponseEntity<?> postImpSimulatorEvent(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+	public ResponseEntity<?> postImpSimulatorEvent(HttpServletRequest request,
+			@RequestBody RequestPricePlanner requestPricePlanner) {
 		logger.debug("MenuPricingController postImpSimulatorEvent function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(tenantId);
 
-		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"),
-					HttpStatus.BAD_REQUEST);
+		if (!validateInputRequest(requestPricePlanner)) {
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		FBRestResponse response = new FBRestResponse();
 		try {
 			ImpactSimulatorEvent event = new ImpactSimulatorEvent();
 			event.setAction("impactsimulatorevent");
 			event.setBrandid(Integer.valueOf(userAuth.getBrandId()));
 			event.setUserid(Integer.valueOf(userAuth.getUserId()));
-			//event.setUsername(userAuth.getUserName());
+			// event.setUsername(userAuth.getUserName());
 			event.setProjectid(requestPricePlanner.getProject_Id());
 			event.setScenarioid(requestPricePlanner.getScenario_Id());
 			logger.info("start sending reportrequestevent to queue");
-			new FBAzureQueuePublisher().sendEventToQueue(event, userAuth,request);
+			new FBAzureQueuePublisher().sendEventToQueue(event, userAuth, request);
 			logger.info("finished sending reportrequestevent to queue");
-		
+
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
@@ -411,9 +363,77 @@ public class MenuPricingController {
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
 		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
-		
+
 	}
 	
+	@RequestMapping(value="/updateMenuTierPrice", method = RequestMethod.POST)
+	public ResponseEntity<?> updateMenuTierPrice(HttpServletRequest request,@RequestBody RequestMenuTierPriceUpdate requestMenuTier) {
+		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
+		int updatedRows = -1;
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String userName = userAuth.getUserName();
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		requestMenuTier.setBrandId(Integer.valueOf(tenantId));
+		if((null == requestMenuTier) || (requestMenuTier.getProductId()== null) || (requestMenuTier.getTier() == null) || 
+				(requestMenuTier.getProject_Id()==null) || (requestMenuTier.getScenario_Id()==null)){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		logger.info("Product Id  ::: "+requestMenuTier.getProductId()+" "+
+				"Tier  ::: "+requestMenuTier.getTier() +" "+
+				"Price ::: "+requestMenuTier.getPrice() );
+		
+		try {
+			updatedRows = menuPricingService.updateMenuTierPrice(requestMenuTier,userName);
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		if(updatedRows<=0) {
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "No rows updated. Table does not contain the required record"),
+				    HttpStatus.BAD_REQUEST);
+		}else {
+			
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
+			    HttpStatus.OK);
+		}
+	}
+	
+
+	
+	@RequestMapping(value="/updateMenuTierPrices", method = RequestMethod.POST)
+	public ResponseEntity<?> updateMenuTierPrices(HttpServletRequest request,@RequestBody List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq) {
+		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
+		
+		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+		String userName = userAuth.getUserName();
+		int tenantId = Integer.valueOf(userAuth.getBrandId());
+		logger.info("TenantId = " + tenantId);
+		logger.info("UserName = " + userName);
+		FBRestResponse response = null;
+		//requestMenuTier.setBrandId(Integer.valueOf(tenantId));
+		if((null == menuTierPriceUpdateReq) || menuTierPriceUpdateReq.isEmpty()){
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+				    HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			response = menuPricingService.updateMenuTierPrices(menuTierPriceUpdateReq,tenantId,userName);
+		}catch(Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+				    HttpStatus.BAD_REQUEST);
+		}
+	
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
+			    HttpStatus.OK);
+	
+	}
 	
 	
 	@RequestMapping(value = "/updateStores", method = RequestMethod.POST)
@@ -427,7 +447,7 @@ public class MenuPricingController {
 		logger.info("UserName = " + userName);
 		FBRestResponse response = null;
 		
-		if(null == updateStoreInfoRequest || updateStoreInfoRequest.isEmpty()){
+		if((null == updateStoreInfoRequest) || updateStoreInfoRequest.isEmpty()){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
@@ -452,34 +472,51 @@ public class MenuPricingController {
 	}
 	
 	
-	@RequestMapping(value="/updateMenuTierPrices", method = RequestMethod.POST)
-	public ResponseEntity<?> updateMenuTierPrices(HttpServletRequest request,@RequestBody List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq) {
-		logger.debug("MenuPricingController updateMenuTierPrice function starts :::");
-		
-		UserAuth userAuth=AuthUtils.getUserAuthData(request);
-		String userName = userAuth.getUserName();
-		int tenantId = Integer.valueOf(userAuth.getBrandId());
-		logger.info("TenantId = " + tenantId);
-		logger.info("UserName = " + userName);
+	
+	@RequestMapping(value = "/updateStoreTier", method = RequestMethod.POST)
+	public ResponseEntity<?> updateStoreTier(HttpServletRequest request, @RequestBody UpdateStoreInfoRequest updateStoreInfoRequest) {
+
+		logger.debug("MenuPricingController getMenuPricing function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		String tenantId = userAuth.getBrandId();
+		logger.info("tenantId = " + tenantId);
+		updateStoreInfoRequest.setBrandId(Integer.valueOf(tenantId));
 		FBRestResponse response = null;
-		//requestMenuTier.setBrandId(Integer.valueOf(tenantId));
-		if(null == menuTierPriceUpdateReq || menuTierPriceUpdateReq.isEmpty()){
+		
+		if((null == updateStoreInfoRequest) || (updateStoreInfoRequest.getStoreCode()== null) || (updateStoreInfoRequest.getProposedTier()== null) || 
+				(updateStoreInfoRequest.getProject_Id()==null) || (updateStoreInfoRequest.getScenario_Id()==null)){
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		
+		
 		try {
-			response = menuPricingService.updateMenuTierPrices(menuTierPriceUpdateReq,tenantId,userName);
-		}catch(Exception e) {
+			response = menuPricingService.updateStoreTier(updateStoreInfoRequest,userAuth.getUserName());
+		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
-				    HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<FBRestResponse>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+
+		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+
+	}
 	
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
-			    HttpStatus.OK);
 	
+	private boolean validateInputRequest(RequestPricePlanner requestPricePlanner) {
+		
+		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()< 0) || (requestPricePlanner.getScenario_Id()==null)
+				|| (requestPricePlanner.getScenario_Id().intValue() < 0)){
+			return false;
+		}
+		return true;
 	}
 	
 	
