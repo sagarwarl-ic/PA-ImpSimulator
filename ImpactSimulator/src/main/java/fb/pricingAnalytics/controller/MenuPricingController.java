@@ -265,10 +265,10 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		/*if(requestPricePlanner.getProject_Id()==null || requestPricePlanner.getProject_Id().intValue()<= 0 ){
+		if ((requestPricePlanner.getProject_Id() == null) || (requestPricePlanner.getProject_Id().intValue() <= 0)) {
 			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
 					HttpStatus.BAD_REQUEST);
-		}*/
+		}
 		@SuppressWarnings("unchecked")
 		StoreDistributionResponse response = new StoreDistributionResponse();
 		try {

@@ -464,9 +464,10 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	@Override
 	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)	throws SQLException, Exception {
 		
-		//BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(), requestPricePlanner.getProject_Id());
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(),
+				requestPricePlanner.getProject_Id());
 		
-		BigInteger dataEntryId = new BigInteger("1");
+		// BigInteger dataEntryId = new BigInteger("1");
 		
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[GetStoreDistribution_NEW]");
