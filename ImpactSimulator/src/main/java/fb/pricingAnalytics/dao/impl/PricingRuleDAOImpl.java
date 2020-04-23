@@ -2,6 +2,7 @@ package fb.pricingAnalytics.dao.impl;
 
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -146,7 +147,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			ScenarioPricingRule pricingRule = new ScenarioPricingRule();
 			
 			Session session =  entityManager.unwrap(Session.class);
-			
+			DecimalFormat df = new DecimalFormat("0.00");
 			pricingRule.setScenarioId(pricingRuleRequest.getScenarioId());
 			pricingRule.setBrandId(brandId);
 			pricingRule.setApplied(false);
@@ -159,7 +160,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
 			pricingRule.setPriceChangeByPercentage(pricingRuleRequest.getPriceChangeByPercentage());
 			if(null != pricingRuleRequest.getPriceChange()){
-				pricingRule.setPriceChange(pricingRuleRequest.getPriceChange().floatValue());
+				pricingRule
+						.setPriceChange(
+								((float) Math.round(pricingRuleRequest.getPriceChange().floatValue() * 100) / 100));
 			}
 			pricingRule.setRuleData(new ObjectMapper().writeValueAsString(pricingRuleRequest));
 			
