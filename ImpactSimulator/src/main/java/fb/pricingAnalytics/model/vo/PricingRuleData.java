@@ -11,14 +11,19 @@ public class PricingRuleData {
 	public MenuItem getMenuItem() {
 		return menuItem;
 	}
-	public void setMenuItem(MenuItem menuItem) {
-		this.menuItem = menuItem;
-	}
 	public StoreTier getStoreTier() {
 		return storeTier;
 	}
+	public void setMenuItem(MenuItem menuItem) {
+		this.menuItem = menuItem;
+	}
 	public void setStoreTier(StoreTier storeTier) {
 		this.storeTier = storeTier;
+	}
+
+	@Override
+	public String toString() {
+		return "PricingRuleData [menuItem=" + menuItem + ", storeTier=" + storeTier + "]";
 	}
 	
 	
