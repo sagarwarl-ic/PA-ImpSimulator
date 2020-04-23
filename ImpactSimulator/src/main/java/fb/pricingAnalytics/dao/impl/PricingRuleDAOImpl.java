@@ -160,9 +160,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
 			pricingRule.setPriceChangeByPercentage(pricingRuleRequest.getPriceChangeByPercentage());
 			if(null != pricingRuleRequest.getPriceChange()){
-				pricingRule
-						.setPriceChange(
-								((float) Math.round(pricingRuleRequest.getPriceChange().floatValue() * 100) / 100));
+				pricingRule.setPriceChange(pricingRuleRequest.getPriceChange());
 			}
 			pricingRule.setRuleData(new ObjectMapper().writeValueAsString(pricingRuleRequest));
 			
