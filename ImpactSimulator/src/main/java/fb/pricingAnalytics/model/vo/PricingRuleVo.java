@@ -5,24 +5,24 @@ import java.util.Date;
 
 public class PricingRuleVo {
 	
-	private BigInteger ruleId;
-	private BigInteger scenarioId;
 	private int brandId;
+	private String createdBy;
+	private Date createdOn;
 	private boolean isApplied;
 	private boolean isDeleted;
-	private Date createdOn;
-	private String createdBy;
-	private String ruleType;
-	private String tierUpdate;
-	private Float priceChange;
-	private PricingRuleData ruleData;
-	private String ruleName;
+	private Double priceChange;
 	private boolean priceChangeByPercentage;
+	private PricingRuleData ruleData;
+	private BigInteger ruleId;
+	private String ruleName;
+	private String ruleType;
+	private BigInteger scenarioId;
+	private String tierUpdate;
 	
 	public PricingRuleVo(BigInteger ruleId,String ruleName,BigInteger scenarioId, int brandId,
 			boolean isApplied, boolean isDeleted, Date createdOn,
 			String createdBy, String ruleType, String tierUpdate,
-			Float priceChange, PricingRuleData ruleData,boolean priceChangeByPercentage) {
+			Double priceChange, PricingRuleData ruleData, boolean priceChangeByPercentage) {
 		super();
 		this.ruleId = ruleId;
 		this.scenarioId = scenarioId;
@@ -39,108 +39,108 @@ public class PricingRuleVo {
 		this.priceChangeByPercentage = priceChangeByPercentage;
 	}
 
-	public BigInteger getRuleId() {
-		return ruleId;
-	}
-
-	public void setRuleId(BigInteger ruleId) {
-		this.ruleId = ruleId;
-	}
-
-	public BigInteger getScenarioId() {
-		return scenarioId;
-	}
-
-	public void setScenarioId(BigInteger scenarioId) {
-		this.scenarioId = scenarioId;
-	}
-
 	public int getBrandId() {
 		return brandId;
-	}
-
-	public void setBrandId(int brandId) {
-		this.brandId = brandId;
-	}
-
-	public boolean isApplied() {
-		return isApplied;
-	}
-
-	public void setApplied(boolean isApplied) {
-		this.isApplied = isApplied;
-	}
-
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
-	public Date getCreatedOn() {
-		return createdOn;
-	}
-
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
 	}
 
 	public String getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public Date getCreatedOn() {
+		return createdOn;
 	}
 
-	public String getRuleType() {
-		return ruleType;
-	}
-
-	public void setRuleType(String ruleType) {
-		this.ruleType = ruleType;
-	}
-
-	public String getTierUpdate() {
-		return tierUpdate;
-	}
-
-	public void setTierUpdate(String tierUpdate) {
-		this.tierUpdate = tierUpdate;
-	}
-
-	public Float getPriceChange() {
+	public Double getPriceChange() {
 		return priceChange;
-	}
-
-	public void setPriceChange(Float priceChange) {
-		this.priceChange = priceChange;
 	}
 
 	public PricingRuleData getRuleData() {
 		return ruleData;
 	}
 
-	public void setRuleData(PricingRuleData ruleData) {
-		this.ruleData = ruleData;
+	public BigInteger getRuleId() {
+		return ruleId;
 	}
 
 	public String getRuleName() {
 		return ruleName;
 	}
 
-	public void setRuleName(String ruleName) {
-		this.ruleName = ruleName;
+	public String getRuleType() {
+		return ruleType;
+	}
+
+	public BigInteger getScenarioId() {
+		return scenarioId;
+	}
+
+	public String getTierUpdate() {
+		return tierUpdate;
+	}
+
+	public boolean isApplied() {
+		return isApplied;
+	}
+
+	public boolean isDeleted() {
+		return isDeleted;
 	}
 
 	public boolean isPriceChangeByPercentage() {
 		return priceChangeByPercentage;
 	}
 
+	public void setApplied(boolean isApplied) {
+		this.isApplied = isApplied;
+	}
+
+	public void setBrandId(int brandId) {
+		this.brandId = brandId;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public void setPriceChange(Double priceChange) {
+		this.priceChange = priceChange;
+	}
+
 	public void setPriceChangeByPercentage(boolean priceChangeByPercentage) {
 		this.priceChangeByPercentage = priceChangeByPercentage;
+	}
+
+	public void setRuleData(PricingRuleData ruleData) {
+		this.ruleData = ruleData;
+	}
+
+	public void setRuleId(BigInteger ruleId) {
+		this.ruleId = ruleId;
+	}
+
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
+	}
+
+	public void setRuleType(String ruleType) {
+		this.ruleType = ruleType;
+	}
+
+	public void setScenarioId(BigInteger scenarioId) {
+		this.scenarioId = scenarioId;
+	}
+
+	public void setTierUpdate(String tierUpdate) {
+		this.tierUpdate = tierUpdate;
 	}
 	
 
