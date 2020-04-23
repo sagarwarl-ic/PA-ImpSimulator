@@ -8,7 +8,7 @@ public class PricingRuleRequest {
 	
 	private MenuItem menuItem;
 	@JsonIgnore
-	private Float priceChange;
+	private Double priceChange;
 	@JsonIgnore
 	private boolean priceChangeByPercentage;
 	@JsonIgnore
@@ -31,8 +31,7 @@ public class PricingRuleRequest {
 	public MenuItem getMenuItem() {
 		return menuItem;
 	}
-
-	public Float getPriceChange() {
+	public Double getPriceChange() {
 		return priceChange;
 	}
 	
@@ -60,8 +59,7 @@ public class PricingRuleRequest {
 	public void setMenuItem(MenuItem menuItem) {
 		this.menuItem = menuItem;
 	}
-
-	public void setPriceChange(Float priceChange) {
+	public void setPriceChange(Double priceChange) {
 		this.priceChange = priceChange;
 	}
 	public void setPriceChangeByPercentage(boolean priceChangeByPercentage) {
