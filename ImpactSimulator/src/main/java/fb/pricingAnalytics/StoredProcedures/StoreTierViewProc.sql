@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProc_NEW]    Script Date: 4/24/2020 2:19:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProc_NEW]    Script Date: 4/13/2020 10:45:13 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,10 +121,6 @@ SELECT
 [IST_Store_Product_Info].DataEntryId,
 [IST_Store_Product_Info].[Store_Code] AS [Store_Code],
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
-[IST_Store_Product_Info].[Product_Name] AS [Product_Name],
-[IST_Store_Product_Info].[Cat1] AS [Cat1],
-[IST_Store_Product_Info].[Cat2] AS [Cat2],
-[IST_Store_Product_Info].[Cat3] AS [Cat3],
 [IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
@@ -133,7 +129,6 @@ SELECT
 [IST_Store_Product_Info].[Store_Name] AS [Store_Name],
 [IST_Store_Product_Info].[Market_Name] AS [Market_Name],
 [IST_Store_Product_Info].[Pricing_Power] AS [Pricing_Power],
-[IST_Store_Product_Info].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
 [IST_Store_Product_Info].[Store_Sensitivity] AS [Store_Sensitivity],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
