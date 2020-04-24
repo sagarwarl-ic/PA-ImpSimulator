@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[CopyProjectData]    Script Date: 12/16/2019 1:29:19 AM ******/
+/****** Object:  StoredProcedure [dbo].[CopyProjectData_NEW]    Script Date: 4/24/2020 2:12:27 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -10,20 +10,20 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER   PROCEDURE [dbo].[CopyProjectData] 
+ALTER     PROCEDURE [dbo].[CopyProjectData_NEW] 
 
 @BrandId int ,
-@Project_Id bigint, 
+@DataEntryId bigint,
 @CreatedBy varchar(100)
+
 
 AS
 BEGIN
 
-
 INSERT INTO [dbo].[IST_Store_Product_Info]
 (
 BrandId,
-Project_Id,
+DataEntryId,
 Store_Code,
 Product_ID,
 Product_Name,
@@ -49,13 +49,13 @@ Product_Price_Sensitivity
 select 
 
 @BrandId,
-@Project_Id,
+@DataEntryId,
 Store_Product_Info.store_code as Store_Code,
 Store_Product_Info.product_id as Product_ID,
 Store_Product_Info.product_name as Product_Name,
-Store_Product_Info.cat1 as Cat1,
-Store_Product_Info.cat2 as Cat2,
-Store_Product_Info.cat3 as Cat3,
+Product_Tier_Info.cat1 as Cat1,
+Product_Tier_Info.cat2 as Cat2,
+Product_Tier_Info.cat3 as Cat3,
 Store_Product_Info.current_tier as Current_Tier,
 Store_Product_Info.sales_gross_ty as Sales_Gross_TY,
 Store_Product_Info.quantity_ty as Quantity_TY,
