@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[CompareScenario_NEW]    Script Date: 4/13/2020 10:33:01 AM ******/
+/****** Object:  StoredProcedure [dbo].[CompareScenario_NEW]    Script Date: 4/24/2020 1:38:51 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -49,15 +49,14 @@ SELECT
 [Custom SQL Query].[Store_Code] AS [Store_Code],
 SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) AS Sales_Impact,
 SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]) as New_Sales,
-SUM([Custom SQL Query].[Sales_Gross_TY]) AS Original_Sales,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]) as New_Sales,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]) AS Original_Sales,
 Min([Custom SQL Query].[Transaction_TY]) as Transaction_TY,
 SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS Quantity,
 [Custom SQL Query].BrandId,
 [Custom SQL Query].DataEntryId ,
 [Custom SQL Query].Project_Id ,
 [Custom SQL Query].Scenario_ID_Store,
-[Custom SQL Query].Scenario_Id_Product,
 [Scenario].Name
 
 FROM (
@@ -72,6 +71,7 @@ SELECT
 [IST_Store_Product_Info].[Store_Code] AS [Store_Code],
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
+[IST_Store_Product_Info].[Store_Sales_Gross_TY] AS [Store_Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Transaction_TY] AS [Transaction_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
@@ -107,7 +107,6 @@ GROUP BY
 [Custom SQL Query].DataEntryId,
 [Custom SQL Query].Project_Id,
 [Custom SQL Query].Scenario_ID_Store,
-[Custom SQL Query].Scenario_Id_Product,
 [Scenario].Name
 ) [Custom SQL Query]
 GROUP BY [Custom SQL Query].[Scenario_ID_Store],
