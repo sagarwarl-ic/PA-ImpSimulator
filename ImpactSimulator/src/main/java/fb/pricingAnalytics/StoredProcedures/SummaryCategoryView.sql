@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[SummaryCategoryView_NEW]    Script Date: 4/24/2020 2:20:59 AM ******/
+/****** Object:  StoredProcedure [dbo].[SummaryCategoryView_NEW]    Script Date: 4/13/2020 10:52:25 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -38,9 +38,6 @@ SELECT
 [IST_Store_Product_Info].DataEntryId,
 [IST_Store_Product_Info].[Store_Code] AS [Store_Code],
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
-[IST_Store_Product_Info].[Product_Name] AS [Product_Name],
-[IST_Store_Product_Info].[Cat1] AS [Cat1],
-[IST_Store_Product_Info].[Cat2] AS [Cat2],
 [IST_Store_Product_Info].[Cat3] AS [Cat3],
 [IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
@@ -74,9 +71,6 @@ SELECT [IST_Store_Product_Info].BrandId,
 [IST_Store_Product_Info].DataEntryId,
 [IST_Store_Product_Info].[Store_Code] AS [Store_Code],
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
-[IST_Store_Product_Info].[Product_Name] AS [Product_Name],
-[IST_Store_Product_Info].[Cat1] AS [Cat1],
-[IST_Store_Product_Info].[Cat2] AS [Cat2],
 [IST_Store_Product_Info].[Cat3] AS [Cat3],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
