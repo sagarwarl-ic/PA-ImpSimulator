@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[StoreTierViewProc_NEW]    Script Date: 4/13/2020 10:45:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[StoreTierViewProc_NEW]    Script Date: 4/24/2020 1:02:18 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -45,19 +45,19 @@ AS [Pricing_Power],
 ROUND(SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))),0) AS Sales_Impact,
 
 ROUND(SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]),0) as New_Sales,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]),0) as New_Sales,
 
 ROUND(((
-CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0
+CASE WHEN MIN([Custom SQL Query].[Store_Sales_Gross_TY]) = 0
 THEN NULL
 ELSE
 (SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY])))
-/ SUM([Custom SQL Query].[Sales_Gross_TY]))
+/ MIN([Custom SQL Query].[Store_Sales_Gross_TY]))
 END
 )*100),2)
 as Sales_Impact_Percentage ,
 
-ROUND(SUM([Custom SQL Query].[Sales_Gross_TY]),0) AS Original_Sales,
+ROUND(MIN([Custom SQL Query].[Store_Sales_Gross_TY]),0) AS Original_Sales,
 SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS Quantity,
 
 Min([Custom SQL Query].[Transaction_TY]) as Original_Transaction,
@@ -66,45 +66,45 @@ Round(((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN
 CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
 ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
 (ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
-* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+* ISNULL((CASE WHEN MIN([Custom SQL Query].[Store_Sales_Gross_TY]) = 0 THEN NULL ELSE 
 (CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
-/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END)),0) as New_Transaction,
+/ MIN([Custom SQL Query].[Store_Sales_Gross_TY])) END), 0)))) END)),0) as New_Transaction,
 Round((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
 CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
 ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
 (ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
-* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+* ISNULL((CASE WHEN MIN([Custom SQL Query].[Store_Sales_Gross_TY]) = 0 THEN NULL ELSE 
 (CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
-/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))),0) as Transaction_Impact,
+/ MIN([Custom SQL Query].[Store_Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))),0) as Transaction_Impact,
 
 Round(((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
 CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
 ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
 (ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
-* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+* ISNULL((CASE WHEN MIN([Custom SQL Query].[Store_Sales_Gross_TY]) = 0 THEN NULL ELSE 
 (CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
-/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY])))/
+/ MIN([Custom SQL Query].[Store_Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY])))/
 (Min([Custom SQL Query].[Transaction_TY])))*100,2) as Transaction_Risk,
 
 Round(sum([Custom SQL Query].[Sales_Impact_Calc]) + ((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
 CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
 ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
 (ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
-* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+* ISNULL((CASE WHEN MIN([Custom SQL Query].[Store_Sales_Gross_TY]) = 0 THEN NULL ELSE 
 (CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
-/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
+/ MIN([Custom SQL Query].[Store_Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
  - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))),0) as Net_Sales_Impact,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))),0) as Net_Sales_Impact,
 
 Round(((sum([Custom SQL Query].[Sales_Impact_Calc]) + ((((CASE WHEN (ISNULL([Custom SQL Query].[Store_Sensitivity], 0) > 0) THEN 
 CAST((Min([Custom SQL Query].[Transaction_TY])) as float)
 ELSE ((Min([Custom SQL Query].[Transaction_TY])) + ((Min([Custom SQL Query].[Transaction_TY])) * 
 (ISNULL([Custom SQL Query].[Store_Sensitivity], 0)
-* ISNULL((CASE WHEN SUM([Custom SQL Query].[Sales_Gross_TY]) = 0 THEN NULL ELSE 
+* ISNULL((CASE WHEN MIN([Custom SQL Query].[Store_Sales_Gross_TY]) = 0 THEN NULL ELSE 
 (CAST(sum([Custom SQL Query].[Sales_Impact_Calc]) as float)
-/ sum([Custom SQL Query].[Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
+/ MIN([Custom SQL Query].[Store_Sales_Gross_TY])) END), 0)))) END))-(Min([Custom SQL Query].[Transaction_TY]))) * ((SUM((([Custom SQL Query].[New_Price]
  - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))))/sum([Custom SQL Query].[Sales_Gross_TY]))*100,2)  as Net_Sales_Impact_Percentage,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]))/Min([Custom SQL Query].[Transaction_TY]))))/MIN([Custom SQL Query].[Store_Sales_Gross_TY]))*100,2)  as Net_Sales_Impact_Percentage,
 [Custom SQL Query].isChanged
 
 
@@ -123,6 +123,7 @@ SELECT
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
 [IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
+[IST_Store_Product_Info].[Store_Sales_Gross_TY] AS [Store_Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Transaction_TY] AS [Transaction_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
