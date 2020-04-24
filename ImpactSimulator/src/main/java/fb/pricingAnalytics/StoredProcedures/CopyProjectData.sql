@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[CopyProjectData_NEW]    Script Date: 4/24/2020 2:12:27 AM ******/
+/****** Object:  StoredProcedure [dbo].[CopyProjectData_NEW]    Script Date: 4/9/2020 10:26:30 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -33,11 +33,7 @@ Cat3,
 Current_Tier,
 Sales_Gross_TY,
 Quantity_TY,
-Sales_Gross_LY,
-Quantity_LY,
 Current_Price,
-Price_Change_Per,
-Sales_Impact,
 CreatedBy,
 Store_Sensitivity,
 Store_Name,
@@ -59,11 +55,7 @@ Product_Tier_Info.cat3 as Cat3,
 Store_Product_Info.current_tier as Current_Tier,
 Store_Product_Info.sales_gross_ty as Sales_Gross_TY,
 Store_Product_Info.quantity_ty as Quantity_TY,
-Store_Product_Info.sales_gross_ly as Sales_Gross_LY,
-Store_Product_Info.quantity_ly as Quantity_LY,
 Store_Product_Info.current_price as Current_Price,
-Store_Product_Info.price_change_per as Price_Change_Per,
-Store_Product_Info.sales_impact as Sales_Impact,
 @CreatedBy as CreatedBy,
 Store_Info.store_sensitivity as Store_Sensitivity,
 Store_Info.store_name as Store_Name,
