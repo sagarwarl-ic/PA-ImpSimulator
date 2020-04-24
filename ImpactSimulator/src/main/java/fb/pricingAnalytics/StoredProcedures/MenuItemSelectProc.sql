@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 4/13/2020 10:19:22 AM ******/
+/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 4/24/2020 2:43:01 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -131,10 +131,17 @@ GROUP BY
 
 CROSS JOIN (
 Select 
-ISNULL(SUM([IST_Store_Product_Info].[Sales_Gross_TY]), 0) AS Total_Sales_Gross
+ISNULL(SUM([Custom SQL Query].[Store_Sales_Gross_TY]), 0) AS Total_Sales_Gross
 
+from (
+
+select 
+[IST_Store_Product_Info].[Store_Code],
+Min([IST_Store_Product_Info].[Store_Sales_Gross_TY]) AS [Store_Sales_Gross_TY]
 FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 where [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Product_Info].DataEntryId=@DataEntryId
+group by 
+[IST_Store_Product_Info].[Store_Code] ) [Custom SQL Query] group by ()
 ) 
  [t1]
 ),
