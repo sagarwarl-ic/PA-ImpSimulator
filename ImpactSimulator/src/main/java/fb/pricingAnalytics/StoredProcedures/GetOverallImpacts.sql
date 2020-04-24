@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[GetOverallImpacts_NEW]    Script Date: 4/13/2020 10:40:33 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetOverallImpacts_NEW]    Script Date: 4/24/2020 2:32:26 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -40,8 +40,8 @@ SELECT
 [Custom SQL Query].[Store_Name] AS [Store_Name],
 SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) AS Sales_Impact,
 SUM((([Custom SQL Query].[New_Price] - [Custom SQL Query].[Current_Price]) * ([Custom SQL Query].[Quantity_TY]))) +
-SUM([Custom SQL Query].[Sales_Gross_TY]) as New_Sales,
-SUM([Custom SQL Query].[Sales_Gross_TY]) AS Original_Sales,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]) as New_Sales,
+MIN([Custom SQL Query].[Store_Sales_Gross_TY]) AS Original_Sales,
 Min([Custom SQL Query].[Transaction_TY]) as Transaction_TY,
 SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS Quantity
 
@@ -58,6 +58,7 @@ SELECT
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
 [IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
+[IST_Store_Product_Info].[Store_Sales_Gross_TY] AS [Store_Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Transaction_TY] AS [Transaction_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
