@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[CopyProjectData_NEW]    Script Date: 4/9/2020 10:26:30 AM ******/
+/****** Object:  StoredProcedure [dbo].[CopyProjectData_NEW]    Script Date: 4/24/2020 3:06:13 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -40,7 +40,8 @@ Store_Name,
 Market_Name,
 Pricing_power,
 Transaction_TY,
-Product_Price_Sensitivity
+Product_Price_Sensitivity,
+Store_Sales_Gross_TY
 )
 select 
 
@@ -62,7 +63,8 @@ Store_Info.store_name as Store_Name,
 Store_Info.market_name as Market_Name,
 Store_Info.pricing_power as Pricing_power,
 Store_Info.transaction_ty as Transaction_TY,
-Product_Tier_Info.Product_Price_Sensitivity 
+Product_Tier_Info.Product_Price_Sensitivity,
+Store_Info.sales_gross_ty as Store_Sales_Gross_TY
 
 FROM [dbo].[Store_Product_Info] Store_Product_Info left join [dbo].[Store_Info] Store_Info 
 
