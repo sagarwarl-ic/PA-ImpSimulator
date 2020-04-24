@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[GetOverallImpacts_NEW]    Script Date: 4/24/2020 2:15:00 AM ******/
+/****** Object:  StoredProcedure [dbo].[GetOverallImpacts_NEW]    Script Date: 4/13/2020 10:40:33 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -56,7 +56,6 @@ SELECT
 [IST_Store_Product_Info].DataEntryId,
 [IST_Store_Product_Info].[Store_Code] AS [Store_Code],
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
-[IST_Store_Product_Info].[Product_Name] AS [Product_Name],
 [IST_Store_Product_Info].[Current_Tier] AS [Current_Tier],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
