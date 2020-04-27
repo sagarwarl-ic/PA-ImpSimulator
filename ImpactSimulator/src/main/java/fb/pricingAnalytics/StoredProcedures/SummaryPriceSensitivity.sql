@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[SummaryPriceSensitivity_NEW]    Script Date: 4/13/2020 11:01:28 AM ******/
+/****** Object:  StoredProcedure [dbo].[SummaryPriceSensitivity_NEW]    Script Date: 4/24/2020 3:37:47 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -31,6 +31,7 @@ ROUND(t0.Sales_Impact,0) AS Sales_Impact,
 case when ([t0].Sales_Gross_TY) = 0 then NULL else
 ROUND(((([t0].Sales_Impact) / ([t0].Sales_Gross_TY) ) *100),2)
 END as Sales_Impact_Percent,
+[t1].Total_Sales_Gross,
 case when [t1].Total_Sales_Gross= 0 then NULL else
 ROUND((([t0].Sales_Impact / [t1].Total_Sales_Gross ) *100),2) END as Total_Impact_Percent
 FROM (
@@ -53,6 +54,7 @@ SELECT [IST_Store_Product_Info].BrandId,
 [IST_Store_Product_Info].[Store_Code] AS [Store_Code],
 [IST_Store_Product_Info].[Product_ID] AS [Product_ID],
 [IST_Store_Product_Info].[Sales_Gross_TY] AS [Sales_Gross_TY],
+[IST_Store_Product_Info].[Store_Sales_Gross_TY] AS [Store_Sales_Gross_TY],
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
 [IST_Store_Product_Info].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
@@ -89,13 +91,46 @@ GROUP BY
 
 CROSS JOIN (
 
-SELECT SUM(CAST(([IST_Store_Product_Info].[Quantity_TY]) AS FLOAT) ) AS Total_Quantity,
-ISNULL(SUM([IST_Store_Product_Info].[Sales_Gross_TY]), 0) AS Total_Sales_Gross
-FROM  [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
+Select 
+
+sum([Custom SQL Query].Total_Quantity) as Total_Quantity ,
+ISNULL(SUM([Custom SQL Query].[Store_Sales_Gross_TY]), 0) AS Total_Sales_Gross
+from (
+
+select 
+[IST_Store_Product_Info].[Store_Code],
+Min([IST_Store_Product_Info].[Store_Sales_Gross_TY]) AS [Store_Sales_Gross_TY],
+SUM(CAST(([IST_Store_Product_Info].[Quantity_TY]) AS FLOAT) ) AS Total_Quantity
+FROM [dbo].[IST_Store_Product_Info] [IST_Store_Product_Info]
 where [IST_Store_Product_Info].BrandId=@BrandId and [IST_Store_Product_Info].DataEntryId=@DataEntryId
-) [t1])
-Select * from Product_price_sensitivity
+group by 
+[IST_Store_Product_Info].[Store_Code] ) [Custom SQL Query] group by ()
+
+) [t1]
+
+)
+Select 
+Product_Price_Sensitivity,
+Quantity_Percent,
+Quantity,
+Original_Sales,
+New_Sales,
+Sales_Impact,
+Sales_Impact_Percent,
+Total_Impact_Percent
+from Product_price_sensitivity
 union all
-select 'Grand Total', round(sum(Quantity_Percent),2),round(sum(Quantity),0),round(sum(Original_Sales),0),round(sum(New_Sales),0),round(sum(Sales_Impact),0),round(sum(Sales_Impact_Percent),2),round(sum(Total_Impact_Percent),2) from Product_price_sensitivity;
+select 'Grand Total',
+round(sum(Quantity_Percent),2),
+round(sum(Quantity),0),
+round(sum(Original_Sales),0),
+round(sum(New_Sales),0),
+round(sum(Sales_Impact),0),
+round((sum(Sales_Impact)/sum(Original_Sales))*100,2),
+round((sum(Sales_Impact)/((Total_Sales_Gross)))*100,2)
+from Product_price_sensitivity
+group by Total_Sales_Gross;
+
+
 
 END;
