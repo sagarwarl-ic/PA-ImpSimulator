@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 4/24/2020 2:43:01 PM ******/
+/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 4/29/2020 2:15:16 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -180,7 +180,10 @@ CASE WHEN @SortField = 'Cat1' AND  @Direction != 'DESC' THEN [Cat1] END,
 CASE WHEN @SortField = 'Cat2' AND  @Direction = 'DESC' THEN [Cat2] END DESC,
 CASE WHEN @SortField = 'Cat2' AND  @Direction != 'DESC' THEN [Cat2] END,
 CASE WHEN @SortField = 'Cat3' AND  @Direction = 'DESC' THEN [Cat2] END DESC,
-CASE WHEN @SortField = 'Cat3' AND  @Direction != 'DESC' THEN [Cat2] END
+CASE WHEN @SortField = 'Cat3' AND  @Direction != 'DESC' THEN [Cat2] END,
+CASE WHEN @SortField = 'Quantity_TY' AND  @Direction = 'DESC' THEN [Quantity_TY] END DESC,
+CASE WHEN @SortField = 'Quantity_TY' AND  @Direction != 'DESC' THEN [Quantity_TY] END
+
 
 OFFSET @startRowIndex ROWS FETCH NEXT @pageSize ROWS ONLY
 
