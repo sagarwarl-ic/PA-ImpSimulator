@@ -181,8 +181,8 @@ CASE WHEN @SortField = 'Cat2' AND  @Direction = 'DESC' THEN [Cat2] END DESC,
 CASE WHEN @SortField = 'Cat2' AND  @Direction != 'DESC' THEN [Cat2] END,
 CASE WHEN @SortField = 'Cat3' AND  @Direction = 'DESC' THEN [Cat2] END DESC,
 CASE WHEN @SortField = 'Cat3' AND  @Direction != 'DESC' THEN [Cat2] END,
-CASE WHEN @SortField = 'Quantity_TY' AND  @Direction = 'DESC' THEN [Quantity_TY] END DESC,
-CASE WHEN @SortField = 'Quantity_TY' AND  @Direction != 'DESC' THEN [Quantity_TY] END
+CASE WHEN @SortField = 'Quantity_TY' AND  @Direction = 'ASC' THEN [Quantity_TY] END ASC,
+CASE WHEN @SortField = 'Quantity_TY' AND  @Direction != 'ASC' THEN [Quantity_TY] END DESC
 
 
 OFFSET @startRowIndex ROWS FETCH NEXT @pageSize ROWS ONLY
