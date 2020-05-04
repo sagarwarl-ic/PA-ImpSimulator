@@ -6,11 +6,13 @@ public class MenuItem {
 	private String cat2;
 	private String cat3;
 	private String priceSensitivity;
+	private String productId;
 	private String tier;
 	
 	public String getCat1() {
 		return cat1;
 	}
+
 	public String getCat2() {
 		return cat2;
 	}
@@ -19,6 +21,9 @@ public class MenuItem {
 	}
 	public String getPriceSensitivity() {
 		return priceSensitivity;
+	}
+	public String getProductId() {
+		return productId;
 	}
 	public String getTier() {
 		return tier;
@@ -34,6 +39,9 @@ public class MenuItem {
 	}
 	public void setPriceSensitivity(String priceSensitivity) {
 		this.priceSensitivity = priceSensitivity;
+	}
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 	public void setTier(String tier) {
 		this.tier = tier;
