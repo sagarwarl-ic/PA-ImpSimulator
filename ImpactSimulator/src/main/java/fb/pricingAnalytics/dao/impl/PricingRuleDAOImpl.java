@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.StoredProcedureQuery;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fb.pricingAnalytics.dao.PricingRuleDAO;
+import fb.pricingAnalytics.model.Operator;
+import fb.pricingAnalytics.model.ScenarioMenuPricingRule;
 import fb.pricingAnalytics.model.ScenarioPricingRule;
 import fb.pricingAnalytics.model.vo.MenuPricingVo;
 import fb.pricingAnalytics.model.vo.PricingRuleData;
@@ -125,7 +128,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	@Override
 	public List<ApplyRulesStatusResponse> applyRules(int brandId,List<ApplyRuleRequest> rulesApplicable,String userName) throws SQLException,Exception {
 		
-		List<ApplyRulesStatusResponse> applyRulesResponseList = new ArrayList<ApplyRulesStatusResponse>();
+		List<ApplyRulesStatusResponse> applyRulesResponseList = new ArrayList<>();
 		
 		for(ApplyRuleRequest ruleRequest : rulesApplicable){
 			ScenarioPricingRule pricingRule = fetchPricingRule(brandId,ruleRequest.getRuleId());
@@ -174,9 +177,43 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	}
 	
 	@Override
+	public BigInteger createScenarioMenuPricingRule(ScenarioMenuPricingRule scenarioMenuPricingRuleObject,
+			int brandId,
+			String userName) throws SQLException, Exception {
+		entityManager.persist(scenarioMenuPricingRuleObject);
+		return scenarioMenuPricingRuleObject.getRuleId();
+	}
+
+	@Override
+	public ApplyRulesStatusResponse deleteMenuRule(int brandId,
+			ApplyRuleRequest deleteRule,
+			String userName) {
+
+		javax.persistence.Query typeUpdateDeeleteQuery = entityManager.createNamedQuery("UpdateDeleteQuery");
+			typeUpdateDeeleteQuery.setParameter("brand_Id", brandId);
+			typeUpdateDeeleteQuery.setParameter("scenario_Id", deleteRule.getScenarioId());
+			typeUpdateDeeleteQuery.setParameter("is_Deleted", deleteRule.isDeleted());
+			typeUpdateDeeleteQuery.setParameter("rule_Id", deleteRule.getRuleId());
+			int isUpdated=typeUpdateDeeleteQuery.executeUpdate();
+			if (isUpdated == 0) {
+
+				return new ApplyRulesStatusResponse(deleteRule.getRuleId(),
+						false,
+						"Exception occured while deleting rule ");
+			} else {
+				return 
+						new ApplyRulesStatusResponse(deleteRule.getRuleId(), true,
+								"Rule deleted successfully");
+			}
+
+
+
+	}
+
+	@Override
 	public List<ApplyRulesStatusResponse> deleteRules(int brandId,List<ApplyRuleRequest> deleteRules, String userName) {
 		
-		List<ApplyRulesStatusResponse> applyRulesResponseList = new ArrayList<ApplyRulesStatusResponse>();
+		List<ApplyRulesStatusResponse> applyRulesResponseList = new ArrayList<>();
 		
 		try {
 				applyRulesResponseList  = revertRules(brandId, deleteRules, userName);
@@ -202,10 +239,14 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 				}
 	
 	
-		List<ApplyRulesStatusResponse> applyRulesResponseSuccessList = new ArrayList<ApplyRulesStatusResponse>();
+		List<ApplyRulesStatusResponse> applyRulesResponseSuccessList = new ArrayList<>();
 		applyRulesResponseSuccessList.add(new ApplyRulesStatusResponse(deleteRules.get(0).getRuleId(),applyRulesResponseList.get(0).getRuleName(),true,"Rule deleted successfully"));
 		return applyRulesResponseSuccessList;
 	}
+
+	
+
+
 
 	private ScenarioPricingRule fetchPricingRule(int brandId,BigInteger ruleId) {
 		
@@ -236,10 +277,6 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			}
 			return dataEntryId;
 		}
-
-	
-
-
 
 	private MenuPricingResponse getMenuItemRecordsForRule(MenuItem menuItem,ApplyRuleRequest ruleRequest, int brandId) {
 		
@@ -315,7 +352,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		List<Object[]> rows = query.getResultList();
 		
 		if((rows!=null)&&(rows.size()>0)){
-			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
+			List<MenuPricingVo> result = new ArrayList<>(rows.size());
 			for (Object[] row : rows) {
 				//result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6], (Double)row[5],(String)row[6]));
 				result.add(new MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],(String)row[9],(Double)row[11],
@@ -327,6 +364,16 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		}
 		return response;
 		
+	}
+	
+	@Override
+	public List<Operator> getOperatorList() throws SQLException, Exception {
+		TypedQuery<Operator> allOperatorQuery = entityManager.createNamedQuery("OperatorList",
+				Operator.class);
+		List<Operator> operatorList = allOperatorQuery.getResultList();
+
+
+		return operatorList;
 	}
 
 	@Override
@@ -342,7 +389,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			List<Object[]> rows = query.list();
 		
 			
-			List<PricingRuleVo> result = new ArrayList<PricingRuleVo>(rows.size());
+			List<PricingRuleVo> result = new ArrayList<>(rows.size());
 			for (Object row : rows) {
 				ScenarioPricingRule pricingRule = (ScenarioPricingRule)row;
 				PricingRuleData ruleData = new ObjectMapper().readValue(pricingRule.getRuleData(),PricingRuleData.class);
@@ -360,7 +407,25 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		return response;
 
 	}
+	
+	
+	@Override
+	public List<ScenarioMenuPricingRule> getScenarioMenuRules(BigInteger scenarioId,
+			int brandId)
+			throws SQLException, Exception {
+		TypedQuery<ScenarioMenuPricingRule> scMenuRoleTypedQuery = entityManager
+				.createNamedQuery("SelectAllMenuQuery",
+				ScenarioMenuPricingRule.class);
 
+		scMenuRoleTypedQuery.setParameter("brand_Id", brandId);
+		scMenuRoleTypedQuery.setParameter("scenario_Id", scenarioId);
+		scMenuRoleTypedQuery.setParameter("is_Deleted", false);
+		return scMenuRoleTypedQuery.getResultList();
+
+	}
+	
+	
+	
 	private StoreTierResponse getStoreTierRecordsForRule(StoreTier storeTier,ApplyRuleRequest ruleRequest, int brandId) {
 		
 		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, ruleRequest.getProjectId());
@@ -415,7 +480,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		
 		
 		if((rows!=null)&&(rows.size()>0)){
-			List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
+			List<StoreTierVo> result = new ArrayList<>(rows.size());
 			for (Object[] row : rows) {
 				result.add(new StoreTierVo((Integer)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4]));
 			}
@@ -426,11 +491,13 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		
 		return response;
 	}
+
+	
 	
 	@Override
 	public List<ApplyRulesStatusResponse> revertRules(int brandId,List<ApplyRuleRequest> rulesNotApplicable,String userName) throws SQLException,Exception {
 		
-		List<ApplyRulesStatusResponse> revertRulesResponseList = new ArrayList<ApplyRulesStatusResponse>();
+		List<ApplyRulesStatusResponse> revertRulesResponseList = new ArrayList<>();
 		
 		for(ApplyRuleRequest revertRule : rulesNotApplicable){
 			ScenarioPricingRule pricingRule = fetchPricingRule(brandId,revertRule.getRuleId());
@@ -440,149 +507,144 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		
 		return revertRulesResponseList;
 	}
-
-	private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleRequest, int brandId, MenuPricingResponse responseList,ScenarioPricingRule pricingRule,
-			String userName) {
-		
-		boolean isChanged = true;
-		logger.info("In  updateMenuTierPrice method ,ApplyRuleRequest = " + ruleRequest);
-		try{
-			for(MenuPricingVo menuPricingVo : responseList.getMenuPrice()){
-				RequestMenuTierPriceUpdate menuTierPriceUpdateReq = new RequestMenuTierPriceUpdate();
-				menuTierPriceUpdateReq.setBrandId(brandId);
-				menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
-				menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
-				menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
-				//menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
-				
-				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
-					logger.info("!ruleRequest.isApplied() || ruleRequest.isDeleted()");
+	
+private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleRequest, int brandId, MenuPricingResponse responseList,ScenarioPricingRule pricingRule,
+		String userName) {
+	
+	boolean isChanged = true;
+	logger.info("In  updateMenuTierPrice method ,ApplyRuleRequest = " + ruleRequest);
+	try{
+		for(MenuPricingVo menuPricingVo : responseList.getMenuPrice()){
+			RequestMenuTierPriceUpdate menuTierPriceUpdateReq = new RequestMenuTierPriceUpdate();
+			menuTierPriceUpdateReq.setBrandId(brandId);
+			menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
+			menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
+			menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
+			//menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
+			
+			if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
+				logger.info("!ruleRequest.isApplied() || ruleRequest.isDeleted()");
+				if(pricingRule.isPriceChangeByPercentage()){
+					Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
+					Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
+					if(!(Double.compare(newPrice, menuPricingVo.getNew_Price())==0)){
+						continue;
+					}
+				}else{
+					Double newPrice = menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange();
+					logger.info("menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange() " + newPrice);
+					logger.info("menuPricingVo.getNew_Price()" + menuPricingVo.getNew_Price());
+					if(!(Double.compare(menuPricingVo.getNew_Price(), newPrice)==0)){
+						logger.info(
+								"menuPricingVo.getNew_Price()==newprice not equal");
+						continue;
+					}
+				}
+				isChanged = false;
+				menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
+			}
+			if(ruleRequest.isApplied() && !ruleRequest.isDeleted()){
+				logger.info("ruleRequest.isApplied() && !ruleRequest.isDeleted()");
+				if(Double.compare(menuPricingVo.getCurrent_Price(), menuPricingVo.getNew_Price())==0){
 					if(pricingRule.isPriceChangeByPercentage()){
 						Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
 						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						if(!(Double.compare(newPrice, menuPricingVo.getNew_Price())==0)){
-							continue;
-						}
+						menuTierPriceUpdateReq.setPrice(newPrice);
 					}else{
-						Double newPrice = menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange();
-						logger.info("menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange() " + newPrice);
-						logger.info("menuPricingVo.getNew_Price()" + menuPricingVo.getNew_Price());
-						if(!(Double.compare(menuPricingVo.getNew_Price(), newPrice)==0)){
-							logger.info(
-									"menuPricingVo.getNew_Price()==newprice not equal");
-							continue;
-						}
+						menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
 					}
-					isChanged = false;
-					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
+				}else{
+					logger.info("Skipping from updation as the price is changed manually");
+					continue;
 				}
-				if(ruleRequest.isApplied() && !ruleRequest.isDeleted()){
-					logger.info("ruleRequest.isApplied() && !ruleRequest.isDeleted()");
-					if(Double.compare(menuPricingVo.getCurrent_Price(), menuPricingVo.getNew_Price())==0){
-						if(pricingRule.isPriceChangeByPercentage()){
-							Double priceChange = ((menuPricingVo.getCurrent_Price()*pricingRule.getPriceChange())/100);
-							Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-							menuTierPriceUpdateReq.setPrice(newPrice);
-						}else{
-							menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
-						}
-					}else{
-						logger.info("Skipping from updation as the price is changed manually");
-						continue;
-					}
-				}
-				//menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
-				
-				menuTierPriceUpdateReq.setTier(menuPricingVo.getProposed_Tier());
-				updateMenuTierPrice(menuTierPriceUpdateReq, userName,isChanged);
 			}
-		}catch(Exception ex){
-			logger.info("Excption occured while updating Menu Tier Price");
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
-		}
-		if(!ruleRequest.isApplied()){
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
-		}
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
-		
-	}
-	
-	
-	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName, boolean isChanged) throws SQLException, Exception {
-		StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
-		logger.info("requestMenuTier  =  " + requestMenuTier);
-		logger.info("isChanged  =  " + isChanged);
-		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
-		query.setParameter("price",requestMenuTier.getPrice());	
-		query.setParameter("product_id",requestMenuTier.getProductId());
-		query.setParameter("tier",requestMenuTier.getTier());	
-		query.setParameter("lastUpdated_date",Date.from(Instant.now()));
-		query.setParameter("lastUpdated_by",userName);	
-		query.setParameter("project_Id",requestMenuTier.getProject_Id());	
-		query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
-		query.setParameter("brand_Id", requestMenuTier.getBrandId());
-		query.setParameter("isChanged", isChanged);
-		logger.info("query  =  " + query.toString());
-		int resultObjects = query.executeUpdate();
-		return resultObjects;
-	}
-	
-	
-	
-	private void updateScenarioPricing(ApplyRuleRequest applyRuleRequest, int brandId) {
+			//menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
 			
-				StringBuilder sb =  new StringBuilder("UPDATE ScenarioPricingRule SET IsApplied=:is_Applied where BrandId=:brand_Id and RuleId=:rule_Id and ScenarioId=:scenario_Id");
-				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
-				query.setParameter("brand_Id", brandId);
-				query.setParameter("scenario_Id", applyRuleRequest.getScenarioId());
-				query.setParameter("is_Applied", applyRuleRequest.isApplied());
-				query.setParameter("rule_Id", applyRuleRequest.getRuleId());
-				query.executeUpdate();
-			
+			menuTierPriceUpdateReq.setTier(menuPricingVo.getProposed_Tier());
+			updateMenuTierPrice(menuTierPriceUpdateReq, userName,isChanged);
+		}
+	}catch(Exception ex){
+		logger.info("Excption occured while updating Menu Tier Price");
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
 	}
+	if(!ruleRequest.isApplied()){
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
+	}
+	return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
+	
+}
 
-	
-	
-	private ApplyRulesStatusResponse updateStoreTier(ApplyRuleRequest ruleRequest, int brandId,StoreTierResponse responseList, ScenarioPricingRule pricingRule,
-			String userName) {
+public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName, boolean isChanged) throws SQLException, Exception {
+	StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
+	logger.info("requestMenuTier  =  " + requestMenuTier);
+	logger.info("isChanged  =  " + isChanged);
+	Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+	query.setParameter("price",requestMenuTier.getPrice());	
+	query.setParameter("product_id",requestMenuTier.getProductId());
+	query.setParameter("tier",requestMenuTier.getTier());	
+	query.setParameter("lastUpdated_date",Date.from(Instant.now()));
+	query.setParameter("lastUpdated_by",userName);	
+	query.setParameter("project_Id",requestMenuTier.getProject_Id());	
+	query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
+	query.setParameter("brand_Id", requestMenuTier.getBrandId());
+	query.setParameter("isChanged", isChanged);
+	logger.info("query  =  " + query.toString());
+	int resultObjects = query.executeUpdate();
+	return resultObjects;
+}
+
+private void updateScenarioPricing(ApplyRuleRequest applyRuleRequest, int brandId) {
 		
-		boolean isChanged = true;
+			StringBuilder sb =  new StringBuilder("UPDATE ScenarioPricingRule SET IsApplied=:is_Applied where BrandId=:brand_Id and RuleId=:rule_Id and ScenarioId=:scenario_Id");
+			Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
+			query.setParameter("brand_Id", brandId);
+			query.setParameter("scenario_Id", applyRuleRequest.getScenarioId());
+			query.setParameter("is_Applied", applyRuleRequest.isApplied());
+			query.setParameter("rule_Id", applyRuleRequest.getRuleId());
+			query.executeUpdate();
+		
+}
+
+private ApplyRulesStatusResponse updateStoreTier(ApplyRuleRequest ruleRequest, int brandId,StoreTierResponse responseList, ScenarioPricingRule pricingRule,
+		String userName) {
 	
-		try{
-			for(StoreTierVo storeTierVo : responseList.getStoreTier()){
-				UpdateStoreInfoRequest updateStoreInfoRequest = new UpdateStoreInfoRequest();
-				updateStoreInfoRequest.setBrandId(brandId); 
-				updateStoreInfoRequest.setProject_Id(ruleRequest.getProjectId());
-				updateStoreInfoRequest.setScenario_Id(ruleRequest.getScenarioId());
-				updateStoreInfoRequest.setProposedTier(pricingRule.getTierUpdate());
-				if(ruleRequest.isApplied()){
-					if(!(storeTierVo.getProposed_Tier().equalsIgnoreCase(storeTierVo.getCurrent_Tier()))){
-						continue;
-					}
+	boolean isChanged = true;
+
+	try{
+		for(StoreTierVo storeTierVo : responseList.getStoreTier()){
+			UpdateStoreInfoRequest updateStoreInfoRequest = new UpdateStoreInfoRequest();
+			updateStoreInfoRequest.setBrandId(brandId); 
+			updateStoreInfoRequest.setProject_Id(ruleRequest.getProjectId());
+			updateStoreInfoRequest.setScenario_Id(ruleRequest.getScenarioId());
+			updateStoreInfoRequest.setProposedTier(pricingRule.getTierUpdate());
+			if(ruleRequest.isApplied()){
+				if(!(storeTierVo.getProposed_Tier().equalsIgnoreCase(storeTierVo.getCurrent_Tier()))){
+					continue;
 				}
-				
-				
-				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
-					if(!pricingRule.getTierUpdate().equalsIgnoreCase(storeTierVo.getProposed_Tier())){
-						continue;
-					}
-					isChanged = false;
-					updateStoreInfoRequest.setProposedTier(storeTierVo.getCurrent_Tier());
-				}
-				updateStoreInfoRequest.setStoreCode(storeTierVo.getStore_Code());
-				updateStoreTier(updateStoreInfoRequest, userName,isChanged);
 			}
 			
-		}catch(Exception ex){
-			logger.info("Excption occured while updating Menu Tier Price");
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
+			
+			if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
+				if(!pricingRule.getTierUpdate().equalsIgnoreCase(storeTierVo.getProposed_Tier())){
+					continue;
+				}
+				isChanged = false;
+				updateStoreInfoRequest.setProposedTier(storeTierVo.getCurrent_Tier());
+			}
+			updateStoreInfoRequest.setStoreCode(storeTierVo.getStore_Code());
+			updateStoreTier(updateStoreInfoRequest, userName,isChanged);
 		}
-		if(!ruleRequest.isApplied()){
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
-		}
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
+		
+	}catch(Exception ex){
+		logger.info("Excption occured while updating Menu Tier Price");
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
 	}
-	
+	if(!ruleRequest.isApplied()){
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
+	}
+	return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
+}
+
 public FBRestResponse updateStoreTier(UpdateStoreInfoRequest updateStoreInfoRequest,String userName, boolean isChanged)throws SQLException, Exception {
 	
 	StringBuilder sb =  new StringBuilder ("update IST_Store_Info set  Proposed_Tier=:proposed_Tier,isChanged=:isChanged,"

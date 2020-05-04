@@ -19,6 +19,10 @@ public class PricingRuleVo {
 	private BigInteger scenarioId;
 	private String tierUpdate;
 	
+	public PricingRuleVo() {
+		super();
+	}
+
 	public PricingRuleVo(BigInteger ruleId,String ruleName,BigInteger scenarioId, int brandId,
 			boolean isApplied, boolean isDeleted, Date createdOn,
 			String createdBy, String ruleType, String tierUpdate,
