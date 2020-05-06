@@ -230,16 +230,16 @@ public class MenuPricingController {
 		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
 		logger.info("tenantId = " + tenantId);
 
-		/*
-		 * 
-		 * code to delete
-		 */
-
-		tenantId = 1036;
-
-		/*
-		 * code to delete end
-		 */
+//		/*
+//		 * 
+//		 * code to delete
+//		 */
+//
+//		tenantId = 1036;
+//
+//		/*
+//		 * code to delete end
+//		 */
 		requestPricePlanner.setBrandId(tenantId);
 
 		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
