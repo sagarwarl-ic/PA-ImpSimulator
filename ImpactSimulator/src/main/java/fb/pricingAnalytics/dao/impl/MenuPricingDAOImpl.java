@@ -233,7 +233,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 
-		List<MenuItemDistributionVo> result = new ArrayList<MenuItemDistributionVo>(rows.size());
+		List<MenuItemDistributionVo> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
 			// result.add(new
 			// OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
@@ -352,7 +352,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		List<Object[]> rows = query.getResultList();
 		DecimalFormat f = new DecimalFormat("###,###");
 		if((rows!=null)&&(rows.size()>0)){
-			List<MenuPricingVo> result = new ArrayList<MenuPricingVo>(rows.size());
+			List<MenuPricingVo> result = new ArrayList<>(rows.size());
 			for (Object[] row : rows) {
 			    /*result.add(new MenuPricingVo((String)row[0],(String)row[1],(String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 			    		(String)row[7],(String)row[8],(Double)row[9],(Double)row[10],(Double)row[11],(BigDecimal)row[12],(Double)row[13],(Double)row[14],
@@ -377,6 +377,29 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 
 
 	@Override
+	public FilterDataHierarchy getMenuRulesFilterDataHierarchy(RequestPricePlanner requestPricePlanner)
+			throws SQLException, Exception {
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(requestPricePlanner.getBrandId(),
+				requestPricePlanner.getProject_Id());
+		requestPricePlanner.setDataEntry_Id(dataEntryId);
+		FilterDataHierarchy filterDataHierarchy = new fb.pricingAnalytics.model.vo.FilterDataHierarchy();
+		filterDataHierarchy.setDataEntryId(dataEntryId);
+		List<MenuFilterHierarchyData> menuFilterHierarchyData = null;
+
+		StringBuilder sb = new StringBuilder(
+				"SELECT NEW fb.pricingAnalytics.model.vo.MenuFilterHierarchyData( Cat1,Cat2,Cat3,Current_Tier,(CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Moderate' ELSE 'NA' END),productId,productName) from IST_Store_Product_Info where BrandId=:brand_Id and DataEntryId=:dataEntry_Id group by Cat1,Cat2,Cat3,Current_Tier,(CASE WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'ELASTIC') THEN 'High' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'INELASTIC') THEN 'Low' WHEN (UPPER(LTRIM(RTRIM(Product_Price_Sensitivity))) = 'MOD') THEN 'Moderate' ELSE 'NA' END),productId,productName");
+		Query<MenuFilterHierarchyData> query = entityManager.unwrap(Session.class).createQuery(sb.toString(),
+				MenuFilterHierarchyData.class);
+		query.setParameter("brand_Id", requestPricePlanner.getBrandId());
+		query.setParameter("dataEntry_Id", requestPricePlanner.getDataEntry_Id());
+		menuFilterHierarchyData = query.list();
+		filterDataHierarchy.setMenuFilterHierarchyData(menuFilterHierarchyData);
+		return filterDataHierarchy;
+
+	}
+
+
+	@Override
 	public List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[OtherStoreViewProc]");
@@ -384,7 +407,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 		DecimalFormat f = new DecimalFormat("###,###");
-		List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
+		List<StoreTierVo> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
 		    result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
 		    		null == (Double)row[8] ? null : f.format(row[8]),null == (Double)row[9] ? null : f.format(row[9]),(Double)row[10],null==(BigDecimal)row[11] ? null : f.format(row[11]),(BigInteger)row[12]));
@@ -417,7 +440,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		List<Object[]> rows = query.getResultList();
 		DecimalFormat f = new DecimalFormat("###,###");
 		if(rows.size()>0){
-			List<OverAllImpactsVo> result = new ArrayList<OverAllImpactsVo>(rows.size());
+			List<OverAllImpactsVo> result = new ArrayList<>(rows.size());
 			for (Object[] row : rows) {
 			    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
 			    
@@ -481,7 +504,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.execute();
 		List<Object[]> rows = query.getResultList();
 		
-		List<StoreDistributionVo> result = new ArrayList<StoreDistributionVo>(rows.size());
+		List<StoreDistributionVo> result = new ArrayList<>(rows.size());
 		for (Object[] row : rows) {
 		    //result.add(new OverAllImpactsVo((Double)row[0],(Double)row[1],(Double)row[2],(Double)row[3]));
 		    
@@ -525,8 +548,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		String[] storeSentivityList = rows.stream().toArray(String[]::new);
 		filterData.setStore_Sensitivity(storeSentivityList);
 	}
-
-
+	
+	
 	@Override
 	public StoreTierResponse getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
 		
@@ -618,7 +641,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		List<Object[]> rows = query.getResultList();
 		DecimalFormat f = new DecimalFormat("###,###");
 		if((rows!=null)&&(rows.size()>0)){
-			List<StoreTierVo> result = new ArrayList<StoreTierVo>(rows.size());
+			List<StoreTierVo> result = new ArrayList<>(rows.size());
 			for (Object[] row : rows) {
 			   /* result.add(new StoreTierVo((String)row[0],(String)row[1], (String)row[2],(String)row[3],(String)row[4],(String)row[5],(Integer)row[6],(String)row[7],
 			    		(Double)row[8],(Double)row[9],(Double)row[10],(BigDecimal)row[11],(BigInteger)row[12]));*/
@@ -635,8 +658,8 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		
 		return response;
 	}
-	
-	
+
+
 	private void getTierChange(FilterData filterData,RequestPricePlanner requestPricePlanner) {
 
 		StringBuilder sb =  new StringBuilder("SELECT distinct "
@@ -670,8 +693,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
 	}
-
-
+	
 	@Override
 	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,
 			int tenantId, String userName) throws SQLException, Exception {
@@ -696,7 +718,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		}
 		return new FBRestResponse(true, "Tier Price Updated Successfully");
 	}
-	
+
 	@Override
 	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName,int tenantId)throws SQLException, Exception {
 		

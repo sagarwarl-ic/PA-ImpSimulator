@@ -23,9 +23,12 @@ public interface MenuPricingDAO {
 
 	public FilterDataHierarchy getFilterDataHierarchy(RequestPricePlanner requestPricePlanner)
 			throws SQLException, Exception;
+
 	public List<MenuItemDistributionVo> getMenuItemDistribution(RequestPricePlanner requestPricePlanner)throws SQLException,Exception;
 	//public List<MenuPricingVo> getMenuPricing( RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 	public MenuPricingResponse getMenuPricing( RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
+	public FilterDataHierarchy getMenuRulesFilterDataHierarchy(RequestPricePlanner requestPricePlanner)
+			throws SQLException, Exception;
 	public List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 	public OverAllImpactsVo getOverAllImpacts(RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)throws SQLException,Exception;

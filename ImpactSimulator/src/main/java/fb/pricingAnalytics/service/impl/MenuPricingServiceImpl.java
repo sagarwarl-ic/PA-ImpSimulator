@@ -59,6 +59,13 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	}
 
 	@Override
+	public FilterDataHierarchy getMenuRulesFilterDataHierarchy(RequestPricePlanner requestPricePlanner)
+			throws SQLException, Exception {
+
+		return menuPricingDAO.getMenuRulesFilterDataHierarchy(requestPricePlanner);
+	}
+
+	@Override
 	public List<StoreTierVo> getOtherStoreView(RequestPricePlanner requestPricePlanner) throws SQLException, Exception {
 		return menuPricingDAO.getOtherStoreView(requestPricePlanner);
 	}
@@ -67,7 +74,7 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	public OverAllImpactsVo getOverAllImpacts(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
 		return menuPricingDAO.getOverAllImpacts(requestPricePlanner);
 	}
-
+	
 	@Override
 	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)throws SQLException, Exception {
 		return menuPricingDAO.getStoreDistribution(requestPricePlanner);
@@ -84,7 +91,7 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 
 		return menuPricingDAO.updateMenuTierPrice(requestMenuTier,userName);
 	}
-	
+
 	@Transactional
 	@Override
 	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,int tenantId,String userName)throws SQLException, Exception {

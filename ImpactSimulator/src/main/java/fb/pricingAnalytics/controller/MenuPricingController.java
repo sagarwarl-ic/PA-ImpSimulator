@@ -59,7 +59,7 @@ public class MenuPricingController {
 		requestPricePlanner.setBrandId(tenantId);
 
 		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+			return new ResponseEntity<>(new FBRestResponse(false, "DataEntryId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		
@@ -71,17 +71,17 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<FilterDataResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 		
 	}
 
@@ -102,17 +102,17 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<FilterDataIndividualResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 		
 	}
 	
@@ -122,10 +122,11 @@ public class MenuPricingController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
 		logger.info("tenantId = " + tenantId);
+
 		requestPricePlanner.setBrandId(tenantId);
 
 		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectID  is required field"),
+			return new ResponseEntity<>(new FBRestResponse(false, "ProjectID  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		
@@ -137,54 +138,56 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<FilterDataHierarchyResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value = "/getMenuItemDistribution", method = RequestMethod.POST)
-	public ResponseEntity<?> getMenuItemDistribution (HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+	public ResponseEntity<?> getMenuItemDistribution(HttpServletRequest request,
+			@RequestBody RequestPricePlanner requestPricePlanner) {
 
 		logger.debug("MenuPricingController getMenuItemDistribution function starts :::");
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		String tenantId = userAuth.getBrandId();
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
-		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId  is required field"),
+		if ((requestPricePlanner.getProject_Id() == null) || (requestPricePlanner.getProject_Id().intValue() <= 0)) {
+			return new ResponseEntity<>(new FBRestResponse(false, "DataEntryId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
 		MenuItemDistributionResponse response = new MenuItemDistributionResponse();
 		try {
-			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService.getMenuItemDistribution(requestPricePlanner);
+			List<MenuItemDistributionVo> menuItemDistributionVo = menuPricingService
+					.getMenuItemDistribution(requestPricePlanner);
 			response.setMenuItemDistributionVo(menuItemDistributionVo);
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<MenuItemDistributionResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
-	
+
 	@RequestMapping(value = "/getMenuPricing", method = RequestMethod.POST)
 	public ResponseEntity<?> getMenuPricing(HttpServletRequest request,	@RequestBody RequestPricePlanner requestPricePlanner) {
 
@@ -194,7 +197,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "DataEntryId and ScenarioId are required fields"),
+			return new ResponseEntity<>(new FBRestResponse(false, "DataEntryId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		
@@ -206,18 +209,64 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<MenuPricingResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
+	}
+	
+	@RequestMapping(value = "/getMenuRulesFilterDataHierarchy", method = RequestMethod.POST)
+	public ResponseEntity<?> getMenuRulesFilterDataHierarchy(HttpServletRequest request,@RequestBody RequestPricePlanner requestPricePlanner) {
+		logger.debug("MenuPricingController getMenuRulesFilterDataHierarchy function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		Integer tenantId = Integer.valueOf(userAuth.getBrandId());
+		logger.info("tenantId = " + tenantId);
+
+		/*
+		 * 
+		 * code to delete
+		 */
+
+		tenantId = 1036;
+
+		/*
+		 * code to delete end
+		 */
+		requestPricePlanner.setBrandId(tenantId);
+
+		if((requestPricePlanner.getProject_Id()==null) || (requestPricePlanner.getProject_Id().intValue()<= 0) ){
+			return new ResponseEntity<>(new FBRestResponse(false, "ProjectID  is required field"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		@SuppressWarnings("unchecked")
+		FilterDataHierarchyResponse response = new FilterDataHierarchyResponse();
+		try {
+			FilterDataHierarchy filterDataHierarchy = menuPricingService.getMenuRulesFilterDataHierarchy(requestPricePlanner);
+			response.setFilterDataHierarchy(filterDataHierarchy);
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e.fillInStackTrace());
+			e.printStackTrace();
+			return new ResponseEntity<>(
+					new FBRestResponse(false, "Exception Occured, Please check the log files"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		response.setResponse(true, FBConstants.SUCCESS);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+		
 	}
 	
 	
@@ -230,7 +279,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
+			return new ResponseEntity<>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -241,17 +290,17 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<OverAllImpactsResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
@@ -266,7 +315,7 @@ public class MenuPricingController {
 		
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if ((requestPricePlanner.getProject_Id() == null) || (requestPricePlanner.getProject_Id().intValue() <= 0)) {
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjcetId  is required field"),
+			return new ResponseEntity<>(new FBRestResponse(false, "ProjcetId  is required field"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -277,17 +326,17 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<StoreDistributionResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
@@ -302,7 +351,7 @@ public class MenuPricingController {
 		logger.info("tenantId = " + tenantId);
 		requestPricePlanner.setBrandId(Integer.valueOf(tenantId));
 		if(!validateInputRequest(requestPricePlanner)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
+			return new ResponseEntity<>(new FBRestResponse(false, "ProjectId and ScenarioId are required fields"),
 					HttpStatus.BAD_REQUEST);
 		}
 		@SuppressWarnings("unchecked")
@@ -313,17 +362,17 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<StoreTierResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
@@ -337,7 +386,7 @@ public class MenuPricingController {
 		requestPricePlanner.setBrandId(tenantId);
 
 		if (!validateInputRequest(requestPricePlanner)) {
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "ProjcetId and ScenarioId are required fields"), HttpStatus.BAD_REQUEST);
 		}
 
@@ -357,12 +406,12 @@ public class MenuPricingController {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		response.setResponse(true, FBConstants.SUCCESS);
-		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
@@ -377,7 +426,7 @@ public class MenuPricingController {
 		requestMenuTier.setBrandId(Integer.valueOf(tenantId));
 		if((null == requestMenuTier) || (requestMenuTier.getProductId()== null) || (requestMenuTier.getTier() == null) || 
 				(requestMenuTier.getProject_Id()==null) || (requestMenuTier.getScenario_Id()==null)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+			return new ResponseEntity<>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		
@@ -390,15 +439,15 @@ public class MenuPricingController {
 		}catch(Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+			return new ResponseEntity<>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		if(updatedRows<=0) {
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "No rows updated. Table does not contain the required record"),
+			return new ResponseEntity<>(new FBRestResponse(false, "No rows updated. Table does not contain the required record"),
 				    HttpStatus.BAD_REQUEST);
 		}else {
 			
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
+			return new ResponseEntity<>(new FBRestResponse(true, "Price updated Successfully"),
 			    HttpStatus.OK);
 		}
 	}
@@ -417,7 +466,7 @@ public class MenuPricingController {
 		FBRestResponse response = null;
 		//requestMenuTier.setBrandId(Integer.valueOf(tenantId));
 		if((null == menuTierPriceUpdateReq) || menuTierPriceUpdateReq.isEmpty()){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+			return new ResponseEntity<>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		
@@ -426,11 +475,11 @@ public class MenuPricingController {
 		}catch(Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
+			return new ResponseEntity<>(new FBRestResponse(false, "Exception Occured, Please check the log files"),
 				    HttpStatus.BAD_REQUEST);
 		}
 	
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "Price updated Successfully"),
+			return new ResponseEntity<>(new FBRestResponse(true, "Price updated Successfully"),
 			    HttpStatus.OK);
 	
 	}
@@ -448,7 +497,7 @@ public class MenuPricingController {
 		FBRestResponse response = null;
 		
 		if((null == updateStoreInfoRequest) || updateStoreInfoRequest.isEmpty()){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+			return new ResponseEntity<>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		
@@ -458,16 +507,16 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
@@ -485,7 +534,7 @@ public class MenuPricingController {
 		
 		if((null == updateStoreInfoRequest) || (updateStoreInfoRequest.getStoreCode()== null) || (updateStoreInfoRequest.getProposedTier()== null) || 
 				(updateStoreInfoRequest.getProject_Id()==null) || (updateStoreInfoRequest.getScenario_Id()==null)){
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "The request object is NOT correct"),
+			return new ResponseEntity<>(new FBRestResponse(false, "The request object is NOT correct"),
 				    HttpStatus.BAD_REQUEST);
 		}
 		
@@ -495,17 +544,17 @@ public class MenuPricingController {
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(new FBRestResponse(true, "SQL exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(true, "SQL exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e.fillInStackTrace());
 			e.printStackTrace();
-			return new ResponseEntity<FBRestResponse>(
+			return new ResponseEntity<>(
 					new FBRestResponse(false, "Exception Occured, Please check the log files"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<FBRestResponse>(response, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	
