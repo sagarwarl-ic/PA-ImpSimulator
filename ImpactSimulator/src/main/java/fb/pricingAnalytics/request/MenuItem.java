@@ -7,6 +7,7 @@ public class MenuItem {
 	private String cat3;
 	private String priceSensitivity;
 	private String productId;
+	private String productName;
 	private String tier;
 	
 	public String getCat1() {
@@ -24,6 +25,9 @@ public class MenuItem {
 	}
 	public String getProductId() {
 		return productId;
+	}
+	public String getProductName() {
+		return productName;
 	}
 	public String getTier() {
 		return tier;
@@ -43,16 +47,20 @@ public class MenuItem {
 	public void setProductId(String productId) {
 		this.productId = productId;
 	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
 	public void setTier(String tier) {
 		this.tier = tier;
 	}
 
 	@Override
 	public String toString() {
-		return "MenuItem [cat1=" + cat1 + ", cat2=" + cat2 + ", cat3=" + cat3 + ", tier=" + tier + ", priceSensitivity="
-				+ priceSensitivity + "]";
+		return "MenuItem [cat1=" + cat1 + ", cat2=" + cat2 + ", cat3=" + cat3 + ", priceSensitivity=" + priceSensitivity
+				+ ", productId=" + productId + ", productName=" + productName + ", tier=" + tier + "]";
 	}
-	
 	
 
 }
