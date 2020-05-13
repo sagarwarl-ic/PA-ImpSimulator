@@ -37,31 +37,60 @@ public class PricingRuleController {
 	@Autowired
 	PricingRuleService pricingRuleService;
 	
-	@RequestMapping(value="/applyrules",method=RequestMethod.POST)
-	public ResponseEntity<?> applyPricingRules(HttpServletRequest request,@RequestBody List<ApplyRuleRequest> applyRules){
-		
-		logger.debug("PricingRuleController applyPricingRules function starts :::");
-		UserAuth userAuth=AuthUtils.getUserAuthData(request);
+	@RequestMapping(value = "/applyMenuRules", method = RequestMethod.POST)
+	public ResponseEntity<?> applyMenuRules(HttpServletRequest request , @RequestBody List<ApplyRuleRequest> applyRules){
+
+		logger.debug("PricingRuleController applyMenuRules function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		int brandId = Integer.valueOf(userAuth.getBrandId());
 		String userName = userAuth.getUserName();
-		logger.info("Brand Id ::: "+ brandId +" UserName  ::: "+userName);
-		if((null == applyRules) || applyRules.isEmpty()){
+
+		/*
+		 * code to delete
+		 */
+		brandId = 1036;
+		userName = "abhinavAU";
+		logger.info("Brand Id ::: " + brandId + " UserName  ::: " + userName);
+		if ((null == applyRules) || applyRules.isEmpty()) {
 			return new ResponseEntity<>(new FBRestResponse(false, "ApplyRuleRequest object is not present"),
-				    HttpStatus.BAD_REQUEST);
+					HttpStatus.BAD_REQUEST);
 		}
 		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
-		try{
-			response = pricingRuleService.applyPricingRules(brandId,applyRules,userName);
-			response.setMessage("success");
-			response.setSuccessFlag(true);
-		}catch(Exception ex){
-			return new ResponseEntity<>(new FBRestResponse(true, "exception occured"),
-				    HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		response = pricingRuleService.applyMenuRules(brandId, applyRules, userName);
+		response.setMessage("success");
+		response.setSuccessFlag(true);
+
 		return new ResponseEntity<>(response, HttpStatus.OK);
-		
+
 	}
 	
+	@RequestMapping(value = "/applyrules", method = RequestMethod.POST)
+	public ResponseEntity<?> applyPricingRules(HttpServletRequest request,
+			@RequestBody List<ApplyRuleRequest> applyRules) {
+
+		logger.debug("PricingRuleController applyPricingRules function starts :::");
+		UserAuth userAuth = AuthUtils.getUserAuthData(request);
+		int brandId = Integer.valueOf(userAuth.getBrandId());
+		String userName = userAuth.getUserName();
+		logger.info("Brand Id ::: " + brandId + " UserName  ::: " + userName);
+		if ((null == applyRules) || applyRules.isEmpty()) {
+			return new ResponseEntity<>(new FBRestResponse(false, "ApplyRuleRequest object is not present"),
+					HttpStatus.BAD_REQUEST);
+		}
+		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
+		try {
+			response = pricingRuleService.applyPricingRules(brandId, applyRules, userName);
+			response.setMessage("success");
+			response.setSuccessFlag(true);
+		} catch (Exception ex) {
+			return new ResponseEntity<>(new FBRestResponse(true, "exception occured"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(response, HttpStatus.OK);
+
+	}
+
 	@RequestMapping(value = "/createMenuRule", method = RequestMethod.POST)
 	public ResponseEntity<?> createMenuRule(HttpServletRequest request,
 			@RequestBody ScenarioMenuPricingRuleVo pricingRuleRequest) {

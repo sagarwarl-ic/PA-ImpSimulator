@@ -41,6 +41,36 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 	@Autowired
 	PricingRuleDAO pricingRuleDao;
 
+	@Override
+	public ApplyRulesStatusListResponse applyMenuRules(int brandId, List<ApplyRuleRequest> applyRules,
+			String userName) {
+		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
+		List<ApplyRulesStatusResponse> responseList = new ArrayList<>();
+
+		List<ApplyRuleRequest> rulesApplicable = applyRules.stream().filter(r -> r.isApplied() == true)
+				.collect(Collectors.toList());
+		// List<ApplyRuleRequest> rulesNotApplicable =
+		// applyRules.stream().filter(r -> r.isApplied() == false)
+		// .collect(Collectors.toList());
+
+		// List<ApplyRulesStatusResponse> revertRulesResponse =
+		// pricingRuleDao.revertRules(brandId, rulesNotApplicable,
+		// userName);
+		// responseList.addAll(revertRulesResponse);
+
+		List<ApplyRulesStatusResponse> applyrulesResponse = new ArrayList<>();
+		try {
+			applyrulesResponse = pricingRuleDao.applymenuRules(brandId, rulesApplicable, userName);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		responseList.addAll(applyrulesResponse);
+		response.getApplyRulesStatusResponse().addAll(responseList);
+
+		return response;
+	}
+
 	@Transactional
 	@Override
 	public ApplyRulesStatusListResponse applyPricingRules(int brandId,List<ApplyRuleRequest> applyRules,String userName) throws SQLException, Exception {
@@ -66,6 +96,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 	public BigInteger createPricingRule(PricingRuleRequest pricingRuleRequest,int brandId, String userName) throws SQLException, Exception {
 		return pricingRuleDao.createPricingRule( pricingRuleRequest, brandId,  userName);
 	}
+
 
 	@org.springframework.transaction.annotation.Transactional
 	@Override
@@ -112,7 +143,6 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 		}
 		return revertRulesResponse;
 	}
-
 
 	@Override
 	@org.springframework.transaction.annotation.Transactional
@@ -171,8 +201,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 			List<ScenarioMenuPricingRule> resultList = pricingRuleDao.getScenarioMenuRules(scenarioId, brandId);
 			for (Iterator iterator = resultList.iterator(); iterator.hasNext();) {
 				ScenarioMenuPricingRule scenarioMenuPricingRule = (ScenarioMenuPricingRule) iterator.next();
-				ScenarioMenuPricingRuleVo resultResponseObj = new ScenarioMenuPricingRuleVo(
-						brandId,
+				ScenarioMenuPricingRuleVo resultResponseObj = new ScenarioMenuPricingRuleVo(brandId,
 						scenarioMenuPricingRule.getCreatedBy(), scenarioMenuPricingRule.getCreatedOn(),
 						new ObjectMapper().readValue(scenarioMenuPricingRule.getDecisiveMenuRuleData(), MenuItem.class),
 						new ObjectMapper().readValue(scenarioMenuPricingRule.getDependentMenuRuleData(),

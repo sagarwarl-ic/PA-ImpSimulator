@@ -14,9 +14,12 @@ import fb.pricingAnalytics.utils.FBRestResponse;
 
 public interface PricingRuleDAO {
 	
+	public List<ApplyRulesStatusResponse> applymenuRules(int brandId,List<ApplyRuleRequest> rulesApplicable,String userName)throws SQLException,Exception;
+
 	public FBRestResponse applyPricingRules(int brandId,List<ApplyRuleRequest> applyRules)throws SQLException,Exception;
 
 	public List<ApplyRulesStatusResponse> applyRules(int brandId,List<ApplyRuleRequest> rulesApplicable,String userName)throws SQLException,Exception;
+
 
 	public BigInteger createPricingRule(PricingRuleRequest pricingRuleRequest,int brandId, String userName) throws SQLException,Exception;
 
