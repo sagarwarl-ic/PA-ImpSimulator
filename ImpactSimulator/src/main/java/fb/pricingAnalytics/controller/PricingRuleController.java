@@ -44,11 +44,6 @@ public class PricingRuleController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		int brandId = Integer.valueOf(userAuth.getBrandId());
 		String userName = userAuth.getUserName();
-
-		/*
-		 * code to delete
-		 */
-		brandId = 1036;
 		userName = "abhinavAU";
 		logger.info("Brand Id ::: " + brandId + " UserName  ::: " + userName);
 		if ((null == applyRules) || applyRules.isEmpty()) {
