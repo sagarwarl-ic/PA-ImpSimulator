@@ -50,7 +50,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	
 	private final static Logger logger = LoggerFactory.getLogger(PricingRuleDAOImpl.class);
 	
+	public final static String UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY = "UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.isEditable=:isEditable,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier";
 	
+	public final static String UPDATE_IST_PRODUCT_TIER_PRICE_FROM_PRICING_RULE_QUERY = "UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier and  IST.isEditable=true";
 	
 	
 	@PersistenceContext
@@ -605,6 +607,7 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 		ScenarioMenuPricingRule pricingRule, String userName) throws SQLException, Exception {
 
 	boolean isChanged = true;
+		int resultCount = 0;
 	logger.info("In  updateMenuRuleMenuTierPrice method ,ApplyRuleRequest = " + ruleRequest);
 
 		List<MenuPricingVo> dependentProductList = responseDependentRuleDataList.getMenuPrice();
@@ -662,23 +665,33 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 						}
 					}
 					menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
-					updateMenuTierPrice(menuTierPriceUpdateReq, userName, isChanged);
+					resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY,
+							menuTierPriceUpdateReq,
+							userName, isChanged);
 					break;
 				}
 
 			}
 
 		}
+		if (!ruleRequest.isApplied()) {
+			if (resultCount == 0) {
 
+				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
+						"Rule reverted failed");
+			} else {
 
-
-
-	if (!ruleRequest.isApplied()) {
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-				"Rule reverted successfully ");
-	}
-	return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-			"Rule applied successfully to data");
+				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
+						"Rule reverted successfully ");
+			}
+		}
+		if (resultCount == 0) {
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
+					"Rule applied failed");
+		} else {
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
+					"Rule applied successfully to data");
+		}
 
 }
 
@@ -699,6 +712,7 @@ private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleReques
 		String userName) {
 	
 	boolean isChanged = true;
+		int resultCount = 0;
 	logger.info("In  updateMenuTierPrice method ,ApplyRuleRequest = " + ruleRequest);
 	try{
 		for(MenuPricingVo menuPricingVo : responseList.getMenuPrice()){
@@ -748,21 +762,39 @@ private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleReques
 			//menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()+Double.valueOf(pricingRule.getPriceChange().toString()));
 			
 			menuTierPriceUpdateReq.setTier(menuPricingVo.getProposed_Tier());
-			updateMenuTierPrice(menuTierPriceUpdateReq, userName,isChanged);
+				resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_PRICING_RULE_QUERY,
+						menuTierPriceUpdateReq,
+						userName, isChanged);
 		}
 	}catch(Exception ex){
 		logger.info("Excption occured while updating Menu Tier Price");
 		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
 	}
-	if(!ruleRequest.isApplied()){
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
-	}
-	return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
-	
+
+		if (!ruleRequest.isApplied()) {
+			if (resultCount == 0) {
+
+				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
+						"Rule reverted failed");
+			} else {
+
+				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
+						"Rule reverted successfully ");
+			}
+		}
+		if (resultCount == 0) {
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
+					"Rule applied failed");
+		} else {
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
+					"Rule applied successfully to data");
+		}
+
 }
 
-public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName, boolean isChanged) throws SQLException, Exception {
-	StringBuilder sb =  new StringBuilder ("UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier");
+	public int updateMenuTierPrice(String queryString, RequestMenuTierPriceUpdate requestMenuTier, String userName,
+			boolean isChanged) throws SQLException, Exception {
+		StringBuilder sb = new StringBuilder(queryString);
 	logger.info("requestMenuTier  =  " + requestMenuTier);
 	logger.info("isChanged  =  " + isChanged);
 	Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
@@ -775,6 +807,9 @@ public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, Strin
 	query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
 	query.setParameter("brand_Id", requestMenuTier.getBrandId());
 	query.setParameter("isChanged", isChanged);
+		if (queryString == UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY) {
+			query.setParameter("isEditable", !isChanged);
+		}
 	logger.info("query  =  " + query.toString());
 	int resultObjects = query.executeUpdate();
 	return resultObjects;
