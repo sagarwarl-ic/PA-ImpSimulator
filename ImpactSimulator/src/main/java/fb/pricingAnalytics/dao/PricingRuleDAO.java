@@ -27,7 +27,7 @@ public interface PricingRuleDAO {
 			String userName) throws SQLException, Exception;
 
 	public ApplyRulesStatusResponse deleteMenuRule(int brandId, ApplyRuleRequest deleteRule,
-			String userName);
+			String userName) throws SQLException, Exception;
 
 	public List<ApplyRulesStatusResponse> deleteRules(int brandId, List<ApplyRuleRequest> deleteRules, String userName);
 
@@ -38,6 +38,8 @@ public interface PricingRuleDAO {
 	public List<ScenarioMenuPricingRule> getScenarioMenuRules(BigInteger scenarioId,
 			int brandId)
 			throws SQLException, Exception;
+
+	public List<ApplyRulesStatusResponse> revertMenuRules(int brandId,List<ApplyRuleRequest> rulesNotApplicable,String userName)throws SQLException,Exception;
 
 	public List<ApplyRulesStatusResponse> revertRules(int brandId,List<ApplyRuleRequest> rulesNotApplicable,String userName)throws SQLException,Exception;
 

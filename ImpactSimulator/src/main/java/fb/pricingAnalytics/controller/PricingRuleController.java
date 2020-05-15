@@ -46,7 +46,6 @@ public class PricingRuleController {
 		int brandId = Integer.valueOf(userAuth.getBrandId());
 		String userName = userAuth.getUserName();
 
-		
 		logger.info("Brand Id ::: " + brandId + " UserName  ::: " + userName);
 		if ((null == applyRules) || applyRules.isEmpty()) {
 			return new ResponseEntity<>(new FBRestResponse(false, "ApplyRuleRequest object is not present"),
@@ -205,10 +204,14 @@ public class PricingRuleController {
 			response = pricingRuleService.deleteMenuRules(brandId, deleteRules, userName);
 			response.setMessage("success");
 			response.setSuccessFlag(true);
-		} catch (Exception ex) {
+		} catch (Exception e) {
+			logger.error(e.getMessage());
 			return new ResponseEntity<>(new FBRestResponse(true, "exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
+
 		}
+
+
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}

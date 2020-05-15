@@ -25,7 +25,7 @@ public interface PricingRuleService {
 			String userName);
 
 	public ApplyRulesStatusListResponse deleteMenuRules(int brandId, List<ApplyRuleRequest> applyRules,
-			String userName);
+			String userName) throws SQLException, Exception;
 
 	public ApplyRulesStatusListResponse deletePricingRules(int brandId,List<ApplyRuleRequest> applyRules, String userName)throws SQLException,Exception;
 

@@ -247,8 +247,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	@Override
 	public ApplyRulesStatusResponse deleteMenuRule(int brandId,
 			ApplyRuleRequest deleteRule,
-			String userName) {
-
+			String userName) throws SQLException, Exception {
+		ArrayList<ApplyRuleRequest> applyRequestList = new ArrayList<>();
+		applyRequestList.add(deleteRule);
+		revertMenuRules(brandId, applyRequestList, userName);
 		javax.persistence.Query typeUpdateDeeleteQuery = entityManager.createNamedQuery("UpdateDeleteQuery");
 			typeUpdateDeeleteQuery.setParameter("brand_Id", brandId);
 			typeUpdateDeeleteQuery.setParameter("scenario_Id", deleteRule.getScenarioId());
@@ -570,6 +572,21 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	}
 	
 	@Override
+	public List<ApplyRulesStatusResponse> revertMenuRules(int brandId, List<ApplyRuleRequest> rulesNotApplicable,
+			String userName) throws SQLException, Exception {
+
+		List<ApplyRulesStatusResponse> revertRulesResponseList = new ArrayList<>();
+
+		for (ApplyRuleRequest revertRule : rulesNotApplicable) {
+			ScenarioMenuPricingRule pricingRule = fetchMenuRule(brandId, revertRule.getRuleId());
+			ApplyRulesStatusResponse response = applyOrRevertMenuRule(revertRule, pricingRule, brandId, userName);
+			revertRulesResponseList.add(response);
+		}
+
+		return revertRulesResponseList;
+	}
+
+	@Override
 	public List<ApplyRulesStatusResponse> revertRules(int brandId, List<ApplyRuleRequest> rulesNotApplicable,
 			String userName) throws SQLException, Exception {
 
@@ -583,59 +600,88 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 	
 		return revertRulesResponseList;
 	}
+private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ruleRequest, int brandId,
+		MenuPricingResponse responseDependentRuleDataList, MenuPricingResponse responseDecisiveRuleDataList,
+		ScenarioMenuPricingRule pricingRule, String userName) throws SQLException, Exception {
 
-	private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ruleRequest, int brandId,
-			MenuPricingResponse responseDependentRuleDataList, MenuPricingResponse responseDecisiveRuleDataList,
-			ScenarioMenuPricingRule pricingRule, String userName) throws SQLException, Exception {
+	boolean isChanged = true;
+	logger.info("In  updateMenuRuleMenuTierPrice method ,ApplyRuleRequest = " + ruleRequest);
 
-		boolean isChanged = true;
-		logger.info("In  updateMenuRuleMenuTierPrice method ,ApplyRuleRequest = " + ruleRequest);
-
-			List<MenuPricingVo> dependentProductList = responseDependentRuleDataList.getMenuPrice();
-			for (Iterator iterator = dependentProductList.iterator(); iterator.hasNext();) {
-				MenuPricingVo dependentProduct = (MenuPricingVo) iterator.next();
-				List<MenuPricingVo> decisiveProductList = responseDecisiveRuleDataList.getMenuPrice();
-				for (Iterator iterator2 = decisiveProductList.iterator(); iterator2.hasNext();) {
-					MenuPricingVo decisiveProduct = (MenuPricingVo) iterator2.next();
-					if (decisiveProduct.getProposed_Tier().equalsIgnoreCase(dependentProduct.getProposed_Tier())) {
-						RequestMenuTierPriceUpdate menuTierPriceUpdateReq = new RequestMenuTierPriceUpdate();
-						menuTierPriceUpdateReq.setBrandId(brandId);
-						menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
-						menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
-						menuTierPriceUpdateReq.setProductId(dependentProduct.getProduct_ID());
-						int operator = pricingRule.getOperator();
-						float priceChange = pricingRule.getPriceChange();
-						if ((operator == 1) && (priceChange > 0)) {
-							menuTierPriceUpdateReq.setPrice((double) priceChange);
-						} else {
-							Double decisveNewPrice = decisiveProduct.getNew_Price();
-							if (operator <= 3) {
-								menuTierPriceUpdateReq.setPrice(decisveNewPrice + priceChange);
-							} else {
-								double newPrice = decisveNewPrice - priceChange;
-								menuTierPriceUpdateReq.setPrice(newPrice > 0 ? newPrice : decisveNewPrice);
+		List<MenuPricingVo> dependentProductList = responseDependentRuleDataList.getMenuPrice();
+		for (Iterator iterator = dependentProductList.iterator(); iterator.hasNext();) {
+			MenuPricingVo dependentProduct = (MenuPricingVo) iterator.next();
+			List<MenuPricingVo> decisiveProductList = responseDecisiveRuleDataList.getMenuPrice();
+			for (Iterator iterator2 = decisiveProductList.iterator(); iterator2.hasNext();) {
+				MenuPricingVo decisiveProduct = (MenuPricingVo) iterator2.next();
+				if (decisiveProduct.getProposed_Tier().equalsIgnoreCase(dependentProduct.getProposed_Tier())) {
+					RequestMenuTierPriceUpdate menuTierPriceUpdateReq = new RequestMenuTierPriceUpdate();
+					menuTierPriceUpdateReq.setBrandId(brandId);
+					menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
+					menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
+					menuTierPriceUpdateReq.setProductId(dependentProduct.getProduct_ID());
+					int operator = pricingRule.getOperator();
+					float priceChange = pricingRule.getPriceChange();
+					if ((operator == 1) && (priceChange > 0)) {
+						if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
+							if (!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
+								continue;
 							}
+							isChanged = false;
+							menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
+						} else {
+							menuTierPriceUpdateReq.setPrice((double) priceChange);
 						}
-						menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
-						updateMenuTierPrice(menuTierPriceUpdateReq, userName, isChanged);
-						break;
-					}
 
+					} else {
+						Double decisveNewPrice = decisiveProduct.getNew_Price();
+						if (operator <= 3) {
+							double newPrice = decisveNewPrice + priceChange;
+							if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
+								if (!(Double.compare(dependentProduct.getNew_Price(), newPrice) == 0)) {
+									continue;
+								}
+								isChanged = false;
+								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
+							} else {
+								menuTierPriceUpdateReq.setPrice(newPrice);
+							}
+
+						} else {
+							double newPrice = decisveNewPrice - priceChange;
+							newPrice = newPrice > 0 ? newPrice : decisveNewPrice;
+							if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
+								if (!(Double.compare(dependentProduct.getNew_Price(), newPrice) == 0)) {
+									continue;
+								}
+								isChanged = false;
+								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
+							} else {
+								menuTierPriceUpdateReq.setPrice(newPrice);
+							}
+
+						}
+					}
+					menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
+					updateMenuTierPrice(menuTierPriceUpdateReq, userName, isChanged);
+					break;
 				}
 
 			}
 
-
-
-
-		if (!ruleRequest.isApplied()) {
-			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-					"Rule reverted successfully ");
 		}
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-				"Rule applied successfully to data");
 
+
+
+
+	if (!ruleRequest.isApplied()) {
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
+				"Rule reverted successfully ");
 	}
+	return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
+			"Rule applied successfully to data");
+
+}
+
 private void updateMenuRuleScenarioPricing(ApplyRuleRequest applyRuleRequest, int brandId) {
 	
 		StringBuilder sb = new StringBuilder(
@@ -746,45 +792,45 @@ private void updateScenarioPricing(ApplyRuleRequest applyRuleRequest, int brandI
 		
 }
 
-private ApplyRulesStatusResponse updateStoreTier(ApplyRuleRequest ruleRequest, int brandId,StoreTierResponse responseList, ScenarioPricingRule pricingRule,
-		String userName) {
-	
-	boolean isChanged = true;
-
-	try{
-		for(StoreTierVo storeTierVo : responseList.getStoreTier()){
-			UpdateStoreInfoRequest updateStoreInfoRequest = new UpdateStoreInfoRequest();
-			updateStoreInfoRequest.setBrandId(brandId); 
-			updateStoreInfoRequest.setProject_Id(ruleRequest.getProjectId());
-			updateStoreInfoRequest.setScenario_Id(ruleRequest.getScenarioId());
-			updateStoreInfoRequest.setProposedTier(pricingRule.getTierUpdate());
-			if(ruleRequest.isApplied()){
-				if(!(storeTierVo.getProposed_Tier().equalsIgnoreCase(storeTierVo.getCurrent_Tier()))){
-					continue;
-				}
-			}
-			
-			
-			if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
-				if(!pricingRule.getTierUpdate().equalsIgnoreCase(storeTierVo.getProposed_Tier())){
-					continue;
-				}
-				isChanged = false;
-				updateStoreInfoRequest.setProposedTier(storeTierVo.getCurrent_Tier());
-			}
-			updateStoreInfoRequest.setStoreCode(storeTierVo.getStore_Code());
-			updateStoreTier(updateStoreInfoRequest, userName,isChanged);
-		}
+	private ApplyRulesStatusResponse updateStoreTier(ApplyRuleRequest ruleRequest, int brandId,StoreTierResponse responseList, ScenarioPricingRule pricingRule,
+			String userName) {
 		
-	}catch(Exception ex){
-		logger.info("Excption occured while updating Menu Tier Price");
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
+		boolean isChanged = true;
+	
+		try{
+			for(StoreTierVo storeTierVo : responseList.getStoreTier()){
+				UpdateStoreInfoRequest updateStoreInfoRequest = new UpdateStoreInfoRequest();
+				updateStoreInfoRequest.setBrandId(brandId); 
+				updateStoreInfoRequest.setProject_Id(ruleRequest.getProjectId());
+				updateStoreInfoRequest.setScenario_Id(ruleRequest.getScenarioId());
+				updateStoreInfoRequest.setProposedTier(pricingRule.getTierUpdate());
+				if(ruleRequest.isApplied()){
+					if(!(storeTierVo.getProposed_Tier().equalsIgnoreCase(storeTierVo.getCurrent_Tier()))){
+						continue;
+					}
+				}
+				
+				
+				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
+					if(!pricingRule.getTierUpdate().equalsIgnoreCase(storeTierVo.getProposed_Tier())){
+						continue;
+					}
+					isChanged = false;
+					updateStoreInfoRequest.setProposedTier(storeTierVo.getCurrent_Tier());
+				}
+				updateStoreInfoRequest.setStoreCode(storeTierVo.getStore_Code());
+				updateStoreTier(updateStoreInfoRequest, userName,isChanged);
+			}
+			
+		}catch(Exception ex){
+			logger.info("Excption occured while updating Menu Tier Price");
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),false,"Exception occured while applying rule to data");
+		}
+		if(!ruleRequest.isApplied()){
+			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
+		}
+		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
 	}
-	if(!ruleRequest.isApplied()){
-		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule reverted successfully ");
-	}
-	return new ApplyRulesStatusResponse(ruleRequest.getRuleId(),pricingRule.getRuleName(),true,"Rule applied successfully to data");
-}
 
 	public FBRestResponse updateStoreTier(UpdateStoreInfoRequest updateStoreInfoRequest, String userName,
 			boolean isChanged) throws SQLException, Exception {

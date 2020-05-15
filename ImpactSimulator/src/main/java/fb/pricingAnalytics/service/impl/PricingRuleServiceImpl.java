@@ -50,18 +50,17 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 
 		List<ApplyRuleRequest> rulesApplicable = applyRules.stream().filter(r -> r.isApplied() == true)
 				.collect(Collectors.toList());
-		// List<ApplyRuleRequest> rulesNotApplicable =
-		// applyRules.stream().filter(r -> r.isApplied() == false)
-		// .collect(Collectors.toList());
-
-		// List<ApplyRulesStatusResponse> revertRulesResponse =
-		// pricingRuleDao.revertRules(brandId, rulesNotApplicable,
-		// userName);
-		// responseList.addAll(revertRulesResponse);
-
-		List<ApplyRulesStatusResponse> applyrulesResponse = new ArrayList<>();
-		applyrulesResponse = pricingRuleDao.applymenuRules(brandId, rulesApplicable, userName);
+		List<ApplyRulesStatusResponse> applyrulesResponse = pricingRuleDao.applymenuRules(brandId, rulesApplicable, userName);
 		responseList.addAll(applyrulesResponse);
+
+		List<ApplyRuleRequest> rulesNotApplicable = applyRules.stream().filter(r -> r.isApplied() == false)
+				.collect(Collectors.toList());
+
+		List<ApplyRulesStatusResponse> revertRulesResponse = pricingRuleDao.revertMenuRules(brandId, rulesNotApplicable,
+				userName);
+		responseList.addAll(revertRulesResponse);
+
+
 		response.getApplyRulesStatusResponse().addAll(responseList);
 
 		return response;
@@ -125,25 +124,17 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 
 
 	private ApplyRulesStatusResponse deleteMenuRule(int brandId, ApplyRuleRequest deleteRule,
-			String userName) {
+			String userName) throws SQLException, Exception {
 
 		ApplyRulesStatusResponse revertRulesResponse = null;
-		try {
-			revertRulesResponse = pricingRuleDao.deleteMenuRule(brandId, deleteRule,userName);
-		} catch (Exception e) {
-			logger.error("Exception occured inside while fetching operators from DB");
-			logger.error(e.getMessage());
-			return new ApplyRulesStatusResponse(deleteRule.getRuleId(), false,
-					"Exception occured while deleting rule ");
-
-		}
+		revertRulesResponse = pricingRuleDao.deleteMenuRule(brandId, deleteRule, userName);
 		return revertRulesResponse;
 	}
 
 	@Override
 	@org.springframework.transaction.annotation.Transactional
 	public ApplyRulesStatusListResponse deleteMenuRules(int brandId, List<ApplyRuleRequest> deleteRules,
-			String userName) {
+			String userName) throws SQLException, Exception {
 
 		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
 		List<ApplyRulesStatusResponse> responseList = new ArrayList<>();
