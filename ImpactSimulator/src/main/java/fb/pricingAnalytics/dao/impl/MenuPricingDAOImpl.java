@@ -368,7 +368,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 						(Boolean) row[16], (Boolean) row[17], (BigDecimal) row[18], (Double) row[19]));
 			  
 			}
-			Integer count = (Integer)(rows.get(0))[19];
+			Integer count = (Integer) (rows.get(0))[20];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
