@@ -46,8 +46,7 @@ public class PricingRuleController {
 		int brandId = Integer.valueOf(userAuth.getBrandId());
 		String userName = userAuth.getUserName();
 
-
-		userName = "abhinavAU";
+		
 		logger.info("Brand Id ::: " + brandId + " UserName  ::: " + userName);
 		if ((null == applyRules) || applyRules.isEmpty()) {
 			return new ResponseEntity<>(new FBRestResponse(false, "ApplyRuleRequest object is not present"),
