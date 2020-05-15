@@ -678,7 +678,7 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 			if (resultCount == 0) {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-						"Rule reverted failed");
+						"No rows updated. Table does not contain the required record.");
 			} else {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
@@ -687,7 +687,7 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 		}
 		if (resultCount == 0) {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"Rule applied failed");
+					"No rows updated. Table does not contain the required record.");
 		} else {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
 					"Rule applied successfully to data");
@@ -775,7 +775,7 @@ private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleReques
 			if (resultCount == 0) {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-						"Rule reverted failed");
+						"No rows updated. Table does not contain the required record.");
 			} else {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
@@ -784,7 +784,7 @@ private ApplyRulesStatusResponse updateMenuTierPrice(ApplyRuleRequest ruleReques
 		}
 		if (resultCount == 0) {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"Rule applied failed");
+					"No rows updated. Table does not contain the required record");
 		} else {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
 					"Rule applied successfully to data");
