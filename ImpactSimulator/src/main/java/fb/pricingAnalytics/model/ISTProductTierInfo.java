@@ -14,24 +14,41 @@ import javax.persistence.Table;
 @Table(name="IST_Product_Tier_Info",schema="ImpactSimulator.dbo")
 public class ISTProductTierInfo implements Serializable {
 
+	@Column(name="BrandId")
+	private int brandId;
+
+	@Column(name="Comment")
+	private String comment;
+	
+	@Column(name="CreatedBy")
+	private String createdBy;
+	
+	@Column(name="CreatedOn")
+	private Date createdOn;
+	
+	@Column(name="Current_Price")
+	private float currentPrice;
+	
+	@Column(name="DataEntryId")
+	private BigInteger dataEntryId;
+	
+	@Column(name="isChanged")
+	private boolean isChanged;
+	
+	@Column(name="IsEditable")
+	private boolean isEditable;
+	
 	@Id
 	@GeneratedValue
 	@Column(name="IstPrdTierId")
 	private BigInteger istPrdTierId;
-
-	@Column(name="BrandId")
-	private int brandId;
+	
+	@Column(name="Price")
+	private double price;
 	
 	@Id
 	@Column(name="Product_ID")
 	private String productId;
-	
-	@Id
-	@Column(name="Tier")
-	private String tier;
-	
-	@Column(name="Price")
-	private double price;
 	
 	@Id
 	@Column(name="Project_Id")
@@ -41,84 +58,117 @@ public class ISTProductTierInfo implements Serializable {
 	@Column(name="Scenario_Id")
 	private BigInteger scenarioId;
 	
-	@Column(name="Comment")
-	private String comment;
+	@Id
+	@Column(name="Tier")
+	private String tier;
 	
-	@Column(name="isChanged")
-	private boolean isChanged;
-	
-	@Column(name="CreatedOn")
-	private Date createdOn;
-	
-	@Column(name="CreatedBy")
-	private String createdBy;
-	
-	@Column(name="UpdatedOn")
-	private Date updatedOn;
 	
 	@Column(name="UpdatedBy")
 	private String updatedBy;
 	
-	@Column(name="Current_Price")
-	private float currentPrice;
+	@Column(name="UpdatedOn")
+	private Date updatedOn;
 	
 	
-	@Column(name="DataEntryId")
-	private BigInteger dataEntryId;
-	
-	
-	
-	
-	public BigInteger getProjectId() {
-		return projectId;
+	public int getBrandId() {
+		return brandId;
 	}
 
-	public void setProjectId(BigInteger projectId) {
-		this.projectId = projectId;
+	public String getComment() {
+		return comment;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public Date getCreatedOn() {
+		return createdOn;
+	}
+
+	public float getCurrentPrice() {
+		return currentPrice;
+	}
+
+	public BigInteger getDataEntryId() {
+		return dataEntryId;
 	}
 
 	public BigInteger getIstPrdTierId() {
 		return istPrdTierId;
 	}
 
-	public void setIstPrdTierId(BigInteger istPrdTierId) {
-		this.istPrdTierId = istPrdTierId;
-	}
-
-	public BigInteger getScenarioId() {
-		return scenarioId;
-	}
-
-	public void setScenarioId(BigInteger scenarioId) {
-		this.scenarioId = scenarioId;
-	}
-
-	public int getBrandId() {
-		return brandId;
-	}
-
-	public void setBrandId(int brandId) {
-		this.brandId = brandId;
+	public double getPrice() {
+		return price;
 	}
 
 	public String getProductId() {
 		return productId;
 	}
 
-	public void setProductId(String productId) {
-		this.productId = productId;
+	public BigInteger getProjectId() {
+		return projectId;
+	}
+
+	public BigInteger getScenarioId() {
+		return scenarioId;
 	}
 
 	public String getTier() {
 		return tier;
 	}
 
-	public void setTier(String tier) {
-		this.tier = tier;
+	public String getUpdatedBy() {
+		return updatedBy;
 	}
 
-	public double getPrice() {
-		return price;
+	public Date getUpdatedOn() {
+		return updatedOn;
+	}
+
+	
+	public boolean isChanged() {
+		return isChanged;
+	}
+
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	public void setBrandId(int brandId) {
+		this.brandId = brandId;
+	}
+
+	public void setChanged(boolean isChanged) {
+		this.isChanged = isChanged;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
+	}
+
+	public void setCurrentPrice(float currentPrice) {
+		this.currentPrice = currentPrice;
+	}
+
+	public void setDataEntryId(BigInteger dataEntryId) {
+		this.dataEntryId = dataEntryId;
+	}
+
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
+	}
+
+	public void setIstPrdTierId(BigInteger istPrdTierId) {
+		this.istPrdTierId = istPrdTierId;
 	}
 
 	public void setPrice(double price) {
@@ -126,81 +176,37 @@ public class ISTProductTierInfo implements Serializable {
 	}
 
 	
-	public String getComment() {
-		return comment;
+	public void setProductId(String productId) {
+		this.productId = productId;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setProjectId(BigInteger projectId) {
+		this.projectId = projectId;
 	}
 
-	public boolean isChanged() {
-		return isChanged;
+	public void setScenarioId(BigInteger scenarioId) {
+		this.scenarioId = scenarioId;
 	}
 
-	public void setChanged(boolean isChanged) {
-		this.isChanged = isChanged;
-	}
-
-	public Date getCreatedOn() {
-		return createdOn;
-	}
-
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
-
-	public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Date getUpdatedOn() {
-		return updatedOn;
-	}
-
-	public void setUpdatedOn(Date updatedOn) {
-		this.updatedOn = updatedOn;
-	}
-
-	public String getUpdatedBy() {
-		return updatedBy;
+	public void setTier(String tier) {
+		this.tier = tier;
 	}
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
-	
-	public BigInteger getDataEntryId() {
-		return dataEntryId;
-	}
-
-	public void setDataEntryId(BigInteger dataEntryId) {
-		this.dataEntryId = dataEntryId;
-	}
-
-	public float getCurrentPrice() {
-		return currentPrice;
-	}
-
-	public void setCurrentPrice(float currentPrice) {
-		this.currentPrice = currentPrice;
+	public void setUpdatedOn(Date updatedOn) {
+		this.updatedOn = updatedOn;
 	}
 
 	@Override
 	public String toString() {
-		return "ISTProductTierInfo [istPrdTierId=" + istPrdTierId
-				+ ", brandId=" + brandId + ", productId=" + productId
-				+ ", tier=" + tier + ", price=" + price + ", projectId="
-				+ projectId + ", scenarioId=" + scenarioId + ", comment="
-				+ comment + ", isChanged=" + isChanged + ", createdOn="
-				+ createdOn + ", createdBy=" + createdBy + ", updatedOn="
-				+ updatedOn + ", updatedBy=" + updatedBy + ", currentPrice="
-				+ currentPrice + ", dataEntryId=" + dataEntryId + "]";
+		return "ISTProductTierInfo [brandId=" + brandId + ", comment=" + comment + ", createdBy=" + createdBy
+				+ ", createdOn=" + createdOn + ", currentPrice=" + currentPrice + ", dataEntryId=" + dataEntryId
+				+ ", isChanged=" + isChanged + ", isEditable=" + isEditable + ", istPrdTierId=" + istPrdTierId
+				+ ", price=" + price + ", productId=" + productId + ", projectId=" + projectId + ", scenarioId="
+				+ scenarioId + ", tier=" + tier + ", updatedBy=" + updatedBy + ", updatedOn=" + updatedOn + "]";
 	}
 
 	
