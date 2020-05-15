@@ -381,7 +381,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 		}
 		if((menuItem!=null) && (menuItem.getCat3()!=null) && !(menuItem.getCat3().isEmpty())){
 			query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
-			query.setParameter(4, menuItem.getCat1());
+			query.setParameter(4, menuItem.getCat3());
 		}else{
 			query.registerStoredProcedureParameter(4, String.class , ParameterMode.IN);
 			query.setParameter(4, null);
