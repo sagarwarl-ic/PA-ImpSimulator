@@ -14,7 +14,8 @@ import fb.pricingAnalytics.response.ScenarioMenuRuleListResponse;
 
 public interface PricingRuleService {
 	
-	public ApplyRulesStatusListResponse applyMenuRules(int brandId, List<ApplyRuleRequest> applyRules, String userName);
+	public ApplyRulesStatusListResponse applyMenuRules(int brandId, List<ApplyRuleRequest> applyRules, String userName)
+			throws SQLException, Exception;
 
 	public ApplyRulesStatusListResponse applyPricingRules(int brandId,List<ApplyRuleRequest> applyRules, String userName)throws SQLException,Exception;
 

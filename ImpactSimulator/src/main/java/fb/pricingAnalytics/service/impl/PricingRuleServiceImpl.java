@@ -41,9 +41,10 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 	@Autowired
 	PricingRuleDAO pricingRuleDao;
 
+	@Transactional
 	@Override
 	public ApplyRulesStatusListResponse applyMenuRules(int brandId, List<ApplyRuleRequest> applyRules,
-			String userName) {
+			String userName) throws SQLException, Exception {
 		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
 		List<ApplyRulesStatusResponse> responseList = new ArrayList<>();
 
@@ -59,12 +60,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 		// responseList.addAll(revertRulesResponse);
 
 		List<ApplyRulesStatusResponse> applyrulesResponse = new ArrayList<>();
-		try {
-			applyrulesResponse = pricingRuleDao.applymenuRules(brandId, rulesApplicable, userName);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		applyrulesResponse = pricingRuleDao.applymenuRules(brandId, rulesApplicable, userName);
 		responseList.addAll(applyrulesResponse);
 		response.getApplyRulesStatusResponse().addAll(responseList);
 

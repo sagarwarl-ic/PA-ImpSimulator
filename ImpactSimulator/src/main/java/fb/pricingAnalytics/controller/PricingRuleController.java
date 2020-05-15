@@ -1,6 +1,7 @@
 package fb.pricingAnalytics.controller;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,8 @@ public class PricingRuleController {
 		UserAuth userAuth = AuthUtils.getUserAuthData(request);
 		int brandId = Integer.valueOf(userAuth.getBrandId());
 		String userName = userAuth.getUserName();
+
+
 		userName = "abhinavAU";
 		logger.info("Brand Id ::: " + brandId + " UserName  ::: " + userName);
 		if ((null == applyRules) || applyRules.isEmpty()) {
@@ -52,7 +55,14 @@ public class PricingRuleController {
 		}
 		ApplyRulesStatusListResponse response = new ApplyRulesStatusListResponse();
 
-		response = pricingRuleService.applyMenuRules(brandId, applyRules, userName);
+		try {
+			response = pricingRuleService.applyMenuRules(brandId, applyRules, userName);
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 		response.setMessage("success");
 		response.setSuccessFlag(true);
 
