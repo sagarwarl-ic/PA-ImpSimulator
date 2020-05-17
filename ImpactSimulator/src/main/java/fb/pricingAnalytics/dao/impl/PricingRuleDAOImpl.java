@@ -79,7 +79,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			throws SQLException, Exception {
 
 		ApplyRulesStatusResponse response = null;
-
+		MenuPricingResponse responseDecisiveRuleDataList = new MenuPricingResponse();
 			MenuItem decisiveRuleData = new ObjectMapper().readValue(pricingRule.getDecisiveMenuRuleData(),
 					MenuItem.class);
 			logger.info("decisiveRuleData  " + decisiveRuleData);
@@ -88,8 +88,11 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			logger.info("dependentRuleData  " + dependentRuleData);
 			MenuPricingResponse responseDependentRuleDataList = getMenuItemRecordsForRule(dependentRuleData,
 					ruleRequest, brandId);
-			MenuPricingResponse responseDecisiveRuleDataList = getMenuItemRecordsForRule(decisiveRuleData, ruleRequest,
-					brandId);
+		if ((pricingRule.getOperator() > 1)
+				|| ((pricingRule.getOperator() == 1) && (pricingRule.getPriceChange() == 0))) {
+			responseDecisiveRuleDataList = getMenuItemRecordsForRule(decisiveRuleData, ruleRequest, brandId);
+		}
+
 			if ((responseDependentRuleDataList.getCount() == 0)
 					||((responseDecisiveRuleDataList.getCount() == 0)&&((pricingRule.getOperator()>1)||
 					  ((pricingRule.getOperator()==1)&&(pricingRule.getPriceChange()==0))))) {
