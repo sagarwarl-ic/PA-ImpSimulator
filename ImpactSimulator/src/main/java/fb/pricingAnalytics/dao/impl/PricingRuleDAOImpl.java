@@ -613,29 +613,32 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 		List<MenuPricingVo> dependentProductList = responseDependentRuleDataList.getMenuPrice();
 		for (Iterator iterator = dependentProductList.iterator(); iterator.hasNext();) {
 			MenuPricingVo dependentProduct = (MenuPricingVo) iterator.next();
-			List<MenuPricingVo> decisiveProductList = responseDecisiveRuleDataList.getMenuPrice();
-			for (Iterator iterator2 = decisiveProductList.iterator(); iterator2.hasNext();) {
-				MenuPricingVo decisiveProduct = (MenuPricingVo) iterator2.next();
-				if (decisiveProduct.getProposed_Tier().equalsIgnoreCase(dependentProduct.getProposed_Tier())) {
-					RequestMenuTierPriceUpdate menuTierPriceUpdateReq = new RequestMenuTierPriceUpdate();
-					menuTierPriceUpdateReq.setBrandId(brandId);
-					menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
-					menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
-					menuTierPriceUpdateReq.setProductId(dependentProduct.getProduct_ID());
-					int operator = pricingRule.getOperator();
-					float priceChange = pricingRule.getPriceChange();
-					if ((operator == 1) && (priceChange > 0)) {
-						if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
-							if (!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
-								continue;
-							}
-							isChanged = false;
-							menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
-						} else {
-							menuTierPriceUpdateReq.setPrice((double) priceChange);
-						}
+			RequestMenuTierPriceUpdate menuTierPriceUpdateReq = new RequestMenuTierPriceUpdate();
+			menuTierPriceUpdateReq.setBrandId(brandId);
+			menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
+			menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
+			menuTierPriceUpdateReq.setProductId(dependentProduct.getProduct_ID());
+			int operator = pricingRule.getOperator();
+			float priceChange = pricingRule.getPriceChange();
+			if ((operator == 1) && (priceChange > 0)) {
+				if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
+					if (!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
+						continue;
+					}
+					isChanged = false;
+					menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
+				} else {
+					menuTierPriceUpdateReq.setPrice((double) priceChange);
+				}
 
-					} else {
+			} else {
+				List<MenuPricingVo> decisiveProductList = responseDecisiveRuleDataList.getMenuPrice();
+				for (Iterator iterator2 = decisiveProductList.iterator(); iterator2.hasNext();) {
+					MenuPricingVo decisiveProduct = (MenuPricingVo) iterator2.next();
+					if (decisiveProduct.getProposed_Tier().equalsIgnoreCase(dependentProduct.getProposed_Tier())) {
+
+
+
 						Double decisveNewPrice = decisiveProduct.getNew_Price();
 						if (operator <= 3) {
 							double newPrice = decisveNewPrice + priceChange;
@@ -647,9 +650,9 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 							} else {
 								menuTierPriceUpdateReq.setPrice(newPrice);
-							}
+								}
 
-						} else {
+							} else {
 							double newPrice = decisveNewPrice - priceChange;
 							newPrice = newPrice > 0 ? newPrice : decisveNewPrice;
 							if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
@@ -662,16 +665,17 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 								menuTierPriceUpdateReq.setPrice(newPrice);
 							}
 
-						}
-					}
-					menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
-					resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY,
-							menuTierPriceUpdateReq,
-							userName, isChanged);
-					break;
-				}
+							}
 
+						menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
+						resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY,
+								menuTierPriceUpdateReq, userName, isChanged);
+						break;
+					}
+
+				}
 			}
+
 
 		}
 		if (!ruleRequest.isApplied()) {
