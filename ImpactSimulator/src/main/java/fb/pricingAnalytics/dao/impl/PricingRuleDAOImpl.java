@@ -633,7 +633,9 @@ private ApplyRulesStatusResponse updateMenuRuleMenuTierPrice(ApplyRuleRequest ru
 				} else {
 					menuTierPriceUpdateReq.setPrice((double) priceChange);
 				}
-
+				menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
+				resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY,
+						menuTierPriceUpdateReq, userName, isChanged);
 			} else {
 				List<MenuPricingVo> decisiveProductList = responseDecisiveRuleDataList.getMenuPrice();
 				for (Iterator iterator2 = decisiveProductList.iterator(); iterator2.hasNext();) {
