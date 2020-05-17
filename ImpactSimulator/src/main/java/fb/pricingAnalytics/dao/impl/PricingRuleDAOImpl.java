@@ -255,7 +255,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			String userName) throws SQLException, Exception {
 		ArrayList<ApplyRuleRequest> applyRequestList = new ArrayList<>();
 		applyRequestList.add(deleteRule);
-		revertMenuRules(brandId, applyRequestList, userName);
+		List<ApplyRulesStatusResponse> revertRulesResponseList = revertMenuRules(brandId, applyRequestList, userName);
 		javax.persistence.Query typeUpdateDeeleteQuery = entityManager.createNamedQuery("UpdateDeleteQuery");
 			typeUpdateDeeleteQuery.setParameter("brand_Id", brandId);
 			typeUpdateDeeleteQuery.setParameter("scenario_Id", deleteRule.getScenarioId());
@@ -264,12 +264,12 @@ public class PricingRuleDAOImpl implements PricingRuleDAO{
 			int isUpdated=typeUpdateDeeleteQuery.executeUpdate();
 			if (isUpdated == 0) {
 
-				return new ApplyRulesStatusResponse(deleteRule.getRuleId(),
+			return new ApplyRulesStatusResponse(deleteRule.getRuleId(), revertRulesResponseList.get(0).getRuleName(),
 						false,
 						"Exception occured while deleting rule ");
 			} else {
 				return 
-						new ApplyRulesStatusResponse(deleteRule.getRuleId(), true,
+			new ApplyRulesStatusResponse(deleteRule.getRuleId(), revertRulesResponseList.get(0).getRuleName(), true,
 								"Rule deleted successfully");
 			}
 
