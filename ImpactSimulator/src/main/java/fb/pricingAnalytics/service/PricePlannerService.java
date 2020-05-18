@@ -19,7 +19,7 @@ public interface PricePlannerService {
 	public int updateScenario(PricePlannerScenarioRequest scenarioRequest,String brandId, String userName) throws SQLException,Exception;
 	public PricePlannerVo getProject(String brandId, BigInteger projectId) throws SQLException,Exception;
 	public void copyProjectData(BigInteger projectId, String brandId, String userName);
-	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,String brandId, String userName);
+	public void copyScenarioData(BigInteger businessRuleScenarioId,BigInteger projectId, BigInteger scenarioId,String brandId, String userName);
 	public List<ProjectVo> getProjectList(String brandId)throws SQLException,Exception;
 	public int deleteProject(String brandId, BigInteger projectId) throws SQLException,Exception;
 	public int deleteScenario(String brandId, BigInteger projectId,BigInteger scenarioId)throws SQLException,Exception;

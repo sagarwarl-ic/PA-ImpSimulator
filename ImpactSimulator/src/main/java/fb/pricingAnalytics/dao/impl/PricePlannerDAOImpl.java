@@ -215,7 +215,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,
+	public void copyScenarioData(BigInteger businessRuleScenarioId,BigInteger projectId, BigInteger scenarioId,
 			String brandId, String userName)  {
 		
 		try{
@@ -233,6 +233,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		query.setParameter(3, userName);
 		query.registerStoredProcedureParameter(4, BigInteger.class , ParameterMode.IN);
 		query.setParameter(4, dataEntryId);
+		query.registerStoredProcedureParameter(5, BigInteger.class , ParameterMode.IN);
+		query.setParameter(5, businessRuleScenarioId);
 		query.execute();
 		/*List<Object[]> rows = query.getResultList();
 		if(rows.size() > 0){

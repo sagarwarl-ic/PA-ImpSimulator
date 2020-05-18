@@ -94,8 +94,8 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public void copyScenarioData(BigInteger projectId, BigInteger scenarioId,String brandId, String userName) {
-		pricePlannerDAO.copyScenarioData(projectId, scenarioId,brandId, userName);
+	public void copyScenarioData(BigInteger businessRuleScenarioId,BigInteger projectId, BigInteger scenarioId,String brandId, String userName) {
+		pricePlannerDAO.copyScenarioData(businessRuleScenarioId,projectId, scenarioId,brandId, userName);
 		
 	}
 
