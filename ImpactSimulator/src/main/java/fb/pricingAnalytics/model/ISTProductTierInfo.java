@@ -17,18 +17,24 @@ public class ISTProductTierInfo implements Serializable {
 	@Column(name="BrandId")
 	private int brandId;
 
-	@Column(name="Comment")
+	@Column(name = "AssociateRuleId")
+	private BigInteger associateRuleId;
+
+	@Column(name = "ChangeType")
+	private int changeType;
+
+	@Column(name = "Comment")
 	private String comment;
-	
-	@Column(name="CreatedBy")
+
+	@Column(name = "CreatedBy")
 	private String createdBy;
-	
-	@Column(name="CreatedOn")
+
+	@Column(name = "CreatedOn")
 	private Date createdOn;
-	
+
 	@Column(name="Current_Price")
 	private float currentPrice;
-	
+
 	@Column(name="DataEntryId")
 	private BigInteger dataEntryId;
 	
@@ -62,22 +68,25 @@ public class ISTProductTierInfo implements Serializable {
 	@Column(name="Tier")
 	private String tier;
 	
-	
 	@Column(name="UpdatedBy")
 	private String updatedBy;
 	
 	@Column(name="UpdatedOn")
 	private Date updatedOn;
 	
-	
 	public int getBrandId() {
 		return brandId;
 	}
-
+	
+	public int getChangeType() {
+		return changeType;
+	}
+	
 	public String getComment() {
 		return comment;
 	}
-
+	
+	
 	public String getCreatedBy() {
 		return createdBy;
 	}
@@ -126,7 +135,6 @@ public class ISTProductTierInfo implements Serializable {
 		return updatedOn;
 	}
 
-	
 	public boolean isChanged() {
 		return isChanged;
 	}
@@ -135,12 +143,19 @@ public class ISTProductTierInfo implements Serializable {
 		return isEditable;
 	}
 
+	
 	public void setBrandId(int brandId) {
 		this.brandId = brandId;
 	}
 
 	public void setChanged(boolean isChanged) {
 		this.isChanged = isChanged;
+	}
+
+	
+
+	public void setChangeType(int changeType) {
+		this.changeType = changeType;
 	}
 
 	public void setComment(String comment) {
@@ -200,14 +215,27 @@ public class ISTProductTierInfo implements Serializable {
 		this.updatedOn = updatedOn;
 	}
 
+	public BigInteger getAssociateRuleId() {
+		return associateRuleId;
+	}
+
+	public void setAssociateRuleId(BigInteger associateRuleId) {
+		this.associateRuleId = associateRuleId;
+	}
+
 	@Override
 	public String toString() {
-		return "ISTProductTierInfo [brandId=" + brandId + ", comment=" + comment + ", createdBy=" + createdBy
-				+ ", createdOn=" + createdOn + ", currentPrice=" + currentPrice + ", dataEntryId=" + dataEntryId
-				+ ", isChanged=" + isChanged + ", isEditable=" + isEditable + ", istPrdTierId=" + istPrdTierId
-				+ ", price=" + price + ", productId=" + productId + ", projectId=" + projectId + ", scenarioId="
-				+ scenarioId + ", tier=" + tier + ", updatedBy=" + updatedBy + ", updatedOn=" + updatedOn + "]";
+		return "ISTProductTierInfo [brandId=" + brandId + ", associateRuleId=" + associateRuleId + ", changeType="
+				+ changeType + ", comment=" + comment + ", createdBy=" + createdBy + ", createdOn=" + createdOn
+				+ ", currentPrice=" + currentPrice + ", dataEntryId=" + dataEntryId + ", isChanged=" + isChanged
+				+ ", isEditable=" + isEditable + ", istPrdTierId=" + istPrdTierId + ", price=" + price + ", productId="
+				+ productId + ", projectId=" + projectId + ", scenarioId=" + scenarioId + ", tier=" + tier
+				+ ", updatedBy=" + updatedBy + ", updatedOn=" + updatedOn + "]";
 	}
+	
+
+	
+
 
 	
 	
