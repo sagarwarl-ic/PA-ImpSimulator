@@ -229,7 +229,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 			}
 			applyMenuRules(brandId,applyRequestList, userName);
 		}
-		return null;
+		return resultResponse;
 	}
 
 	/*@Override
