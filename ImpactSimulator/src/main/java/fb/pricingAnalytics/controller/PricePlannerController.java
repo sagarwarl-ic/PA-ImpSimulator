@@ -165,7 +165,7 @@ public class PricePlannerController {
 						return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the Scenario table"),
 							    HttpStatus.INTERNAL_SERVER_ERROR);
 					}
-					pricePlannerService.copyScenarioData(scenarioRequest.getProjectId(),scenarioId,brandId,userName);
+					pricePlannerService.copyScenarioData(scenarioRequest.getBusinessRuleScenarioId(),scenarioRequest.getProjectId(),scenarioId,brandId,userName);
 					response.setResult(scenarioId.intValue());
 				}
 			}
