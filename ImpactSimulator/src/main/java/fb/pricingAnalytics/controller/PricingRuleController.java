@@ -55,14 +55,20 @@ public class PricingRuleController {
 
 		try {
 			response = pricingRuleService.applyMenuRules(brandId, applyRules, userName);
+			response.setMessage("success");
+			response.setSuccessFlag(true);
 		} catch (SQLException e) {
+			response.setMessage("failed");
+			response.setSuccessFlag(false);
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		} catch (Exception e) {
+			response.setMessage("success");
+			response.setSuccessFlag(false);
 			logger.error(e.getMessage());
 		}
-		response.setMessage("success");
-		response.setSuccessFlag(true);
+
+
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
