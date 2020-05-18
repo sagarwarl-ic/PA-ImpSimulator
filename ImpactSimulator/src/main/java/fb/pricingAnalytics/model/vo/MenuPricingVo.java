@@ -1,6 +1,7 @@
 package fb.pricingAnalytics.model.vo;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class MenuPricingVo {
 
@@ -73,6 +74,10 @@ public class MenuPricingVo {
 	
 	// @SerializedName("salesImpact")
 	private BigDecimal Total_Sales_Gross;
+	
+	private Integer ChangeType;
+	
+	private BigInteger ChangeRuleId;
 
 	public MenuPricingVo(String cat1, String cat2, String cat3, String product_ID, String proposed_Tier,
 			Double current_Price, String product_Price_Sensitivity) {
@@ -87,7 +92,8 @@ public class MenuPricingVo {
 	}
 
 	public MenuPricingVo(String cat1, String cat2, String cat3,
-			String product_ID, String proposed_Tier,String product_Price_Sensitivity,Double new_Price,Double current_Price
+			String product_ID, String proposed_Tier,String product_Price_Sensitivity,Double new_Price,Double current_Price,
+			Integer changeType,BigInteger changeRuleId
 			) {
 		super();
 		Cat1 = cat1;
@@ -98,6 +104,8 @@ public class MenuPricingVo {
 		Product_Price_Sensitivity = product_Price_Sensitivity;
 		New_Price = new_Price;
 		Current_Price = current_Price;
+		ChangeType=changeType;
+		ChangeRuleId=changeRuleId;
 	}
 	
 	/*public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
@@ -354,7 +362,23 @@ public class MenuPricingVo {
 	public void setTotal_Sales_Gross(BigDecimal total_Sales_Gross) {
 		Total_Sales_Gross = total_Sales_Gross;
 	}
-	
-	
 
+	public Integer getChangeType() {
+		return ChangeType;
+	}
+
+	public void setChangeType(Integer changeType) {
+		ChangeType = changeType;
+	}
+
+	public BigInteger getChangeRuleId() {
+		return ChangeRuleId;
+	}
+
+	public void setChangeRuleId(BigInteger changeRuleId) {
+		ChangeRuleId = changeRuleId;
+	}
+	
+	
+	
 }
