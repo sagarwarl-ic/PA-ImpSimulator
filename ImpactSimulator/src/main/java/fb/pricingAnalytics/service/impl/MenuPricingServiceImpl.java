@@ -1,6 +1,7 @@
 package fb.pricingAnalytics.service.impl;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.dao.PricingRuleDAO;
+import fb.pricingAnalytics.entity.dao.ScenarioPricingRuleDao;
+import fb.pricingAnalytics.model.ISTProductTierInfo;
+import fb.pricingAnalytics.model.ScenarioMenuPricingRule;
 import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.FilterDataHierarchy;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
 import fb.pricingAnalytics.model.vo.OverAllImpactsVo;
 import fb.pricingAnalytics.model.vo.StoreDistributionVo;
 import fb.pricingAnalytics.model.vo.StoreTierVo;
+import fb.pricingAnalytics.request.ApplyRuleRequest;
 import fb.pricingAnalytics.request.RequestMenuTierPriceUpdate;
 import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
@@ -29,6 +35,12 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	
 	@Autowired
 	MenuPricingDAO menuPricingDAO;
+	
+	@Autowired
+	PricingRuleDAO pricingRuleDAO;
+	
+	@Autowired
+	ScenarioPricingRuleDao scenarioPricingRuleDao;
 	
 	@Override
 	public FilterData getFilterData(RequestPricePlanner requestPricePlanner) throws SQLException,Exception {
@@ -89,15 +101,45 @@ public class MenuPricingServiceImpl implements MenuPricingService{
 	@Override
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
 
-		return menuPricingDAO.updateMenuTierPrice(requestMenuTier,userName);
+		int resultObjects = menuPricingDAO.updateMenuTierPrice(requestMenuTier,userName);
+		if(resultObjects>0){
+			applyMenuPricesOnManualChange(requestMenuTier,requestMenuTier.getBrandId(),userName);
+		}
+		return resultObjects;
 	}
 
 	@Transactional
 	@Override
 	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,int tenantId,String userName)throws SQLException, Exception {
-		return menuPricingDAO.updateMenuTierPrices(menuTierPriceUpdateReq,tenantId,userName);
+		boolean success=false;
+		for(RequestMenuTierPriceUpdate priceUpdateRequest : menuTierPriceUpdateReq){
+			priceUpdateRequest.setBrandId(tenantId);
+			int resultObjects =menuPricingDAO.updateMenuTierPrice(priceUpdateRequest,userName);
+			if(resultObjects>0){
+				success=true;
+				applyMenuPricesOnManualChange(priceUpdateRequest,tenantId,userName);
+			}
+		}
+		return new FBRestResponse(success, "Tier Price Updated Successfully");
 	}
-
+	private void applyMenuPricesOnManualChange(RequestMenuTierPriceUpdate priceUpdateRequest,int tenantId,String userName) throws SQLException, Exception{
+		ISTProductTierInfo resultObject=menuPricingDAO.getRecordByProductIdTier(priceUpdateRequest);
+		if(resultObject.getAssociateRuleId()!=null&&resultObject.getAssociateRuleId().intValue()>0){
+			ScenarioMenuPricingRule object=scenarioPricingRuleDao.getScenarioMenuRule(resultObject.getAssociateRuleId());
+			if(object!=null&&object.isApplied()&&object.isDeleted()==false){
+				ApplyRuleRequest applyRuleRequest= new ApplyRuleRequest();
+				applyRuleRequest.setApplied(true);
+				applyRuleRequest.setDeleted(false);
+				applyRuleRequest.setProjectId(priceUpdateRequest.getProject_Id());
+				applyRuleRequest.setRuleId(object.getRuleId());
+				applyRuleRequest.setScenarioId(priceUpdateRequest.getScenario_Id());
+				List<ApplyRuleRequest> rulesApplicable= new ArrayList<>();
+				rulesApplicable.add(applyRuleRequest);
+				pricingRuleDAO.applymenuRules(tenantId, rulesApplicable, userName);
+			}
+			
+		}
+	}
 	@Transactional
 	@Override
 	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName,int tenantId) throws SQLException, Exception {

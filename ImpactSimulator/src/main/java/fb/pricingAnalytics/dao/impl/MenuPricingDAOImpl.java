@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.StoredProcedureQuery;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import fb.pricingAnalytics.dao.MenuPricingDAO;
+import fb.pricingAnalytics.model.ISTProductTierInfo;
 import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.FilterDataHierarchy;
 import fb.pricingAnalytics.model.vo.MenuFilterHierarchyData;
@@ -35,6 +37,7 @@ import fb.pricingAnalytics.request.RequestPricePlanner;
 import fb.pricingAnalytics.request.UpdateStoreInfoRequest;
 import fb.pricingAnalytics.response.MenuPricingResponse;
 import fb.pricingAnalytics.response.StoreTierResponse;
+import fb.pricingAnalytics.utils.FBConstants;
 import fb.pricingAnalytics.utils.FBRestResponse;
 
 
@@ -680,7 +683,7 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 	@Override
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException, Exception {
 		StringBuilder sb = new StringBuilder(
-				"UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier and  IST.isEditable=true");
+				"UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,ChangeType=:changeType,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier and  IST.isEditable=true");
 		
 		Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
 		query.setParameter("price",requestMenuTier.getPrice());	
@@ -692,36 +695,12 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 		query.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
 		query.setParameter("brand_Id", requestMenuTier.getBrandId());
 		query.setParameter("isChanged", requestMenuTier.getChanged());
+		query.setParameter("changeType", FBConstants.PriceChangeType.MANUAL.ordinal());
 		int resultObjects = query.executeUpdate();
 		return resultObjects;
 	}
 	
-	@Override
-	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,
-			int tenantId, String userName) throws SQLException, Exception {
-		try{
-			for(RequestMenuTierPriceUpdate priceUpdateRequest : menuTierPriceUpdateReq){
-				StringBuilder sb = new StringBuilder(
-						"UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier and  IST.isEditable=true");
-				
-				Query query = entityManager.unwrap(Session.class).createQuery(sb.toString());
-				query.setParameter("price",priceUpdateRequest.getPrice());	
-				query.setParameter("product_id",priceUpdateRequest.getProductId());
-				query.setParameter("tier",priceUpdateRequest.getTier());	
-				query.setParameter("lastUpdated_date",Date.from(Instant.now()));
-				query.setParameter("lastUpdated_by",userName);	
-				query.setParameter("project_Id",priceUpdateRequest.getProject_Id());	
-				query.setParameter("scenario_Id", priceUpdateRequest.getScenario_Id());
-				query.setParameter("brand_Id", tenantId);
-				query.setParameter("isChanged", priceUpdateRequest.getChanged());
-				query.executeUpdate();
-			}
-		}catch(Exception ex){
-			return new FBRestResponse(false, "Exception occured while updating tier price");
-		}
-		return new FBRestResponse(true, "Tier Price Updated Successfully");
-	}
-
+	
 	@Override
 	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName,int tenantId)throws SQLException, Exception {
 		
@@ -765,6 +744,20 @@ public class MenuPricingDAOImpl implements MenuPricingDAO{
 			return new FBRestResponse(true, "Store Tier Updated Successfully");
 		}
 		return new FBRestResponse(false, "There are no records to be updated for the provided store code : "+updateStoreInfoRequest.getStoreCode()+" and proposed tier :"+updateStoreInfoRequest.getProposedTier());
+	}
+
+
+	@Override
+	public ISTProductTierInfo getRecordByProductIdTier(RequestMenuTierPriceUpdate requestMenuTier)
+			throws SQLException, Exception {
+
+		TypedQuery<ISTProductTierInfo> typeQuery=entityManager.createNamedQuery("GetRecordBYProductIdTier", ISTProductTierInfo.class);
+		typeQuery.setParameter("brand_Id", requestMenuTier.getBrandId());
+		typeQuery.setParameter("scenario_Id", requestMenuTier.getScenario_Id());
+		typeQuery.setParameter("productId", requestMenuTier.getProductId());
+		typeQuery.setParameter("tier", requestMenuTier.getTier());
+		return typeQuery.getSingleResult();
+	
 	}
 	
 }

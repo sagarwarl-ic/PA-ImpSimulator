@@ -3,6 +3,7 @@ package fb.pricingAnalytics.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import fb.pricingAnalytics.model.ISTProductTierInfo;
 import fb.pricingAnalytics.model.vo.FilterData;
 import fb.pricingAnalytics.model.vo.FilterDataHierarchy;
 import fb.pricingAnalytics.model.vo.MenuItemDistributionVo;
@@ -34,7 +35,7 @@ public interface MenuPricingDAO {
 	public List<StoreDistributionVo> getStoreDistribution(RequestPricePlanner requestPricePlanner)throws SQLException,Exception;
 	public StoreTierResponse getStoreTierView(RequestPricePlanner requestPricePlanner) throws SQLException,Exception;
 	public int updateMenuTierPrice(RequestMenuTierPriceUpdate requestMenuTier, String userName) throws SQLException,Exception;
-	public FBRestResponse updateMenuTierPrices(List<RequestMenuTierPriceUpdate> menuTierPriceUpdateReq,int tenantId, String userName)throws SQLException,Exception;
+	public ISTProductTierInfo getRecordByProductIdTier(RequestMenuTierPriceUpdate requestMenuTier)throws SQLException,Exception;
 	public FBRestResponse updateStores(List<UpdateStoreInfoRequest> updateStoreInfoRequest,String userName, int tenantId)throws SQLException,Exception;
 	public FBRestResponse updateStoreTier(UpdateStoreInfoRequest updateStoreInfoRequest, String userName) throws SQLException,Exception;
 
