@@ -53,7 +53,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 	public final static String UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY = "UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.isEditable=:isEditable,AssociateRuleId=:associateRuleId,ChangeType=:changeType,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier";
 	 public final static String UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_ID_QUERY = "UPDATE ISTProductTierInfo as IST SET AssociateRuleId=:associateRuleId,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier";
 
-	public final static String UPDATE_IST_PRODUCT_TIER_PRICE_FROM_PRICING_RULE_QUERY = "UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier and  IST.isEditable=true";
+	public final static String UPDATE_IST_PRODUCT_TIER_PRICE_FROM_PRICING_RULE_QUERY = "UPDATE ISTProductTierInfo as IST SET IST.price =:price, IST.isChanged=:isChanged,AssociateRuleId=:associateRuleId,ChangeType=:changeType,IST.updatedOn =:lastUpdated_date, IST.updatedBy =:lastUpdated_by WHERE IST.projectId=:project_Id and IST.scenarioId=:scenario_Id and IST.brandId=:brand_Id and IST.productId =:product_id AND IST.tier =:tier and  IST.isEditable=true";
 
 	@PersistenceContext
 	EntityManager entityManager;
@@ -431,9 +431,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				// MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 				// (Double)row[5],(String)row[6]));
 				result.add(new MenuPricingVo((String) row[2], (String) row[3], (String) row[4], (String) row[5],
-						(String) row[6], (String) row[9], (Double) row[11], (Double) row[12]));
+						(String) row[6], (String) row[9], (Double) row[11], (Double) row[12],(Integer) row[13],(BigInteger) row[14]));
 			}
-			Integer count = (Integer) (rows.get(0))[13];
+			Integer count = (Integer) (rows.get(0))[15];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
@@ -496,6 +496,13 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 		scMenuRoleTypedQuery.setParameter("scenario_Id", scenarioId);
 		scMenuRoleTypedQuery.setParameter("is_Deleted", false);
 		return scMenuRoleTypedQuery.getResultList();
+
+	}
+	
+	public ScenarioMenuPricingRule getScenarioMenuRule(BigInteger ruleId)
+			throws SQLException, Exception {
+		 return entityManager.find(ScenarioMenuPricingRule.class, ruleId);
+
 
 	}
 
@@ -732,6 +739,14 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				menuTierPriceUpdateReq.setScenario_Id(ruleRequest.getScenarioId());
 				menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
 				menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
+				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
+					menuTierPriceUpdateReq.setAssociateRuleId(menuPricingVo.getChangeRuleId()==null||menuPricingVo.getChangeRuleId()==ruleRequest.getRuleId()?null:menuPricingVo.getChangeRuleId());
+					menuTierPriceUpdateReq.setChangeType(FBConstants.PriceChangeType.MANUAL.ordinal());
+				}else{
+					menuTierPriceUpdateReq.setAssociateRuleId(menuPricingVo.getChangeRuleId()==null?ruleRequest.getRuleId():menuPricingVo.getChangeRuleId());
+					menuTierPriceUpdateReq.setChangeType(FBConstants.PriceChangeType.PRICERULE.ordinal());
+				}
+				
 				// menuTierPriceUpdateReq.setPrice(Double.valueOf(pricingRule.getPriceChange().toString()));
 
 				if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
@@ -776,6 +791,21 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				menuTierPriceUpdateReq.setTier(menuPricingVo.getProposed_Tier());
 				resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_PRICING_RULE_QUERY,
 						menuTierPriceUpdateReq, userName, isChanged);
+				if(resultCount>0&&menuPricingVo.getChangeRuleId()!=null&&menuPricingVo.getChangeRuleId().intValue()>0){
+					ScenarioMenuPricingRule object=getScenarioMenuRule(menuPricingVo.getChangeRuleId());
+					if(object!=null&&object.isApplied()&&object.isDeleted()==false){
+						ApplyRuleRequest applyRuleRequest= new ApplyRuleRequest();
+						applyRuleRequest.setApplied(true);
+						applyRuleRequest.setDeleted(false);
+						applyRuleRequest.setProjectId(ruleRequest.getProjectId());
+						applyRuleRequest.setRuleId(menuPricingVo.getChangeRuleId());
+						applyRuleRequest.setScenarioId(ruleRequest.getScenarioId());
+						List<ApplyRuleRequest> rulesApplicable= new ArrayList<>();
+						rulesApplicable.add(applyRuleRequest);
+						applymenuRules(brandId, rulesApplicable, userName);
+					}
+					
+				}
 			}
 		} catch (Exception ex) {
 			logger.info("Excption occured while updating Menu Tier Price");
