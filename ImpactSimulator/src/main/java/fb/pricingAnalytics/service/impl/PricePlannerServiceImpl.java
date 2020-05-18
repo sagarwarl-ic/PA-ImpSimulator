@@ -94,6 +94,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
+	@Transactional
 	public void copyScenarioData(BigInteger businessRuleScenarioId,BigInteger projectId, BigInteger scenarioId,String brandId, String userName) {
 		pricePlannerDAO.copyScenarioData(businessRuleScenarioId,projectId, scenarioId,brandId, userName);
 		

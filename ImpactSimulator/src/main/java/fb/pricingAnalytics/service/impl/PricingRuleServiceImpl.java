@@ -182,6 +182,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 	}
 
 	@Override
+	@Transactional
 	public ScenarioMenuRuleListResponse getScenarioMenuRules(BigInteger scenarioId, int brandId) {
 		ScenarioMenuRuleListResponse resultResponse = new ScenarioMenuRuleListResponse(true, "Success");
 		try {
@@ -207,6 +208,28 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 			return new ScenarioMenuRuleListResponse(false, "Exception Occured while fetching data from DB");
 		}
 		return resultResponse;
+	}
+
+	@Override
+	public ScenarioMenuRuleListResponse applyScenarioMenuRules(BigInteger projectId,BigInteger scenarioId, int brandId,String userName) throws SQLException, Exception {
+		ScenarioMenuRuleListResponse resultResponse = getScenarioMenuRules(scenarioId, brandId);
+		if(resultResponse.getSuccessFlag()&&resultResponse.getScenarioMenuPricingRulelist().size()>0){
+			List<ScenarioMenuPricingRuleVo> scenarioMenuPricingRuleList=resultResponse.getScenarioMenuPricingRulelist();
+			List<ApplyRuleRequest> applyRequestList=new ArrayList<>();
+			for (Iterator iterator = scenarioMenuPricingRuleList.iterator(); iterator.hasNext();) {
+				ScenarioMenuPricingRuleVo scenarioMenuPricingRuleVo = (ScenarioMenuPricingRuleVo) iterator.next();
+				ApplyRuleRequest applyRuleRequest = new ApplyRuleRequest();
+				applyRuleRequest.setApplied(scenarioMenuPricingRuleVo.isApplied());
+				applyRuleRequest.setDeleted(scenarioMenuPricingRuleVo.isDeleted());
+				applyRuleRequest.setRuleId(scenarioMenuPricingRuleVo.getRuleId());
+				applyRuleRequest.setScenarioId(scenarioMenuPricingRuleVo.getScenarioId());
+				applyRuleRequest.setProjectId(projectId);
+				applyRequestList.add(applyRuleRequest);
+				
+			}
+			applyMenuRules(brandId,applyRequestList, userName);
+		}
+		return null;
 	}
 
 	/*@Override

@@ -34,6 +34,8 @@ public interface PricingRuleService {
 	public PricingRulesListResponse getPricingRulesForScenario(BigInteger scenarioId, int brandId)throws SQLException,Exception;
 
 	public ScenarioMenuRuleListResponse getScenarioMenuRules(BigInteger scenarioId, int brandId);
+	
+	public ScenarioMenuRuleListResponse applyScenarioMenuRules(BigInteger projectId,BigInteger scenarioId, int brandId,String userName)throws SQLException, Exception ;
 
 	//public ProjectPricingRulesResponse getPricingRulesForProject(BigInteger projectId,	int brandId)throws SQLException,Exception;
 	

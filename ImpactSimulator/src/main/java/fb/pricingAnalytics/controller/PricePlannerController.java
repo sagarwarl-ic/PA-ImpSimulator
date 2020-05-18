@@ -28,6 +28,7 @@ import fb.pricingAnalytics.response.DataEntryResponse;
 import fb.pricingAnalytics.response.PricePlannerResponse;
 import fb.pricingAnalytics.response.ProjectListResponse;
 import fb.pricingAnalytics.service.PricePlannerService;
+import fb.pricingAnalytics.service.PricingRuleService;
 import fb.pricingAnalytics.utils.AuthUtils;
 import fb.pricingAnalytics.utils.FBConstants;
 import fb.pricingAnalytics.utils.FBRestResponse;
@@ -40,6 +41,9 @@ public class PricePlannerController {
 	
 	@Autowired
 	PricePlannerService pricePlannerService;
+	
+	@Autowired
+	PricingRuleService pricingRuleService;
 	
 	@RequestMapping(value="/createProject", method = RequestMethod.POST)
 	public ResponseEntity<?> createProject(HttpServletRequest request,@RequestBody PricePlannerProjectRequest projectRequest) {
@@ -166,6 +170,7 @@ public class PricePlannerController {
 							    HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 					pricePlannerService.copyScenarioData(scenarioRequest.getBusinessRuleScenarioId(),scenarioRequest.getProjectId(),scenarioId,brandId,userName);
+					pricingRuleService.applyScenarioMenuRules(scenarioRequest.getProjectId(),scenarioId, Integer.valueOf(brandId),userName);
 					response.setResult(scenarioId.intValue());
 				}
 			}
