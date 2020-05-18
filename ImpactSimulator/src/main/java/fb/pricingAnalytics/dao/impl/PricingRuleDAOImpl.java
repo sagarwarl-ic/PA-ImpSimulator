@@ -740,10 +740,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				menuTierPriceUpdateReq.setProject_Id(ruleRequest.getProjectId());
 				menuTierPriceUpdateReq.setProductId(menuPricingVo.getProduct_ID());
 				if(!ruleRequest.isApplied() || ruleRequest.isDeleted()){
-					menuTierPriceUpdateReq.setAssociateRuleId(menuPricingVo.getChangeRuleId()==null||menuPricingVo.getChangeRuleId()==ruleRequest.getRuleId()?null:menuPricingVo.getChangeRuleId());
+					menuTierPriceUpdateReq.setAssociateRuleId(menuPricingVo.getChangeRuleId());
 					menuTierPriceUpdateReq.setChangeType(FBConstants.PriceChangeType.MANUAL.ordinal());
 				}else{
-					menuTierPriceUpdateReq.setAssociateRuleId(menuPricingVo.getChangeRuleId()==null?ruleRequest.getRuleId():menuPricingVo.getChangeRuleId());
+					menuTierPriceUpdateReq.setAssociateRuleId(menuPricingVo.getChangeRuleId());
 					menuTierPriceUpdateReq.setChangeType(FBConstants.PriceChangeType.PRICERULE.ordinal());
 				}
 				
