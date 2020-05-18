@@ -8,10 +8,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="IST_Product_Tier_Info",schema="ImpactSimulator.dbo")
+@NamedQueries({
+@NamedQuery(name = "GetRecordBYProductIdTier", query = "Select r from ISTProductTierInfo r where brandId=:brand_Id and scenarioId=:scenario_Id and productId=:productId and tier=:tier")
+})
 public class ISTProductTierInfo implements Serializable {
 
 	@Column(name="BrandId")
