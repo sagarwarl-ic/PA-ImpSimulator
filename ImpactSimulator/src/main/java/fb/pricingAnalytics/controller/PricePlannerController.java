@@ -75,7 +75,10 @@ public class PricePlannerController {
 				}
 				BigInteger latestDataEntryId = pricePlannerService.getDataEntryIdInStoreProductInfo(Integer.valueOf(brandId));
 				if((latestDataEntryId.intValue() < project.getDataEntryId().intValue())){
-					pricePlannerService.copyProjectData(project.getDataEntryId(),brandId,userName);
+					boolean isProjectCopied=pricePlannerService.copyProjectData(project.getDataEntryId(),brandId,userName);
+					if(isProjectCopied){
+						pricePlannerService.updateProjectRecommendedData(project.getDataEntryId(), brandId, userName);
+					}
 				}
 				response.setResult(project.getProjectId().intValue());
 			}

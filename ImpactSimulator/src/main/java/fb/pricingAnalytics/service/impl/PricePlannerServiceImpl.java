@@ -89,8 +89,8 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public void copyProjectData(BigInteger projectId, String brandId, String userName){
-		pricePlannerDAO.copyProjectData(projectId, brandId, userName);
+	public boolean copyProjectData(BigInteger dataEntryId, String brandId, String userName){
+		return pricePlannerDAO.copyProjectData(dataEntryId, brandId, userName);
 	}
 
 	@Override
@@ -133,6 +133,12 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	@Override
 	public BigInteger getDataEntryIdInStoreProductInfo(int brandId) throws SQLException, Exception {
 		return pricePlannerDAO.getDataEntryIdInStoreProductInfo(brandId);
+	}
+
+	@Override
+	public boolean updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
+		return pricePlannerDAO.updateProjectRecommendedData(dataEntryId, brandId, userName);
+		
 	}
 
 }
