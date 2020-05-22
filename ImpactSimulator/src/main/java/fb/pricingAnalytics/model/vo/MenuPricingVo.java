@@ -30,6 +30,8 @@ public class MenuPricingVo {
 	//@SerializedName("newPrice")
 	private Double New_Price;
 	
+	private Float Recommended_Price;
+	
 	//@SerializedName("newSales")
 	private String New_Sales;
 	
@@ -166,7 +168,7 @@ public class MenuPricingVo {
 			Double sales_Impact, String new_Sales,
 			Double sales_Impact_Percentage, String original_Sales,
 			Double price_Change_Percent, Double price_Change, Double new_Price,
-			Double current_Price, String quantity_TY,Boolean is_Changed,Boolean is_Editable,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
+			Double current_Price, String quantity_TY,Boolean is_Changed,Boolean is_Editable,Float recommended_Price,BigDecimal total_Sales_Gross,Double total_Impact_Percent) {
 		super();
 		Cat1 = cat1;
 		Cat2 = cat2;
@@ -188,6 +190,7 @@ public class MenuPricingVo {
 		Total_Impact_Percent = total_Impact_Percent;
 		Is_Changed = is_Changed;
 		Is_Editable=is_Editable;
+		Recommended_Price=recommended_Price;
 	}
 
 	
@@ -377,6 +380,14 @@ public class MenuPricingVo {
 
 	public void setChangeRuleId(BigInteger changeRuleId) {
 		ChangeRuleId = changeRuleId;
+	}
+
+	public Float getRecommended_Price() {
+		return Recommended_Price;
+	}
+
+	public void setRecommended_Price(Float recommended_Price) {
+		Recommended_Price = recommended_Price;
 	}
 	
 	
