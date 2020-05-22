@@ -344,8 +344,9 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	public void updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
+	public void updateScenarioRecommendedData(BigInteger scenarioId,BigInteger projectId, String brandId, String userName) {
 
+		BigInteger dataEntryId = getDataEntryIdFromProjectId(brandId, projectId);
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[UpdateRecommendedPrice]");
 	
@@ -353,6 +354,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		query.setParameter(0, Integer.valueOf(brandId));
 		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
 		query.setParameter(1, dataEntryId);
+		query.registerStoredProcedureParameter(2, BigInteger.class , ParameterMode.IN);
+		query.setParameter(1, scenarioId);
 		query.execute();
 		
 	}

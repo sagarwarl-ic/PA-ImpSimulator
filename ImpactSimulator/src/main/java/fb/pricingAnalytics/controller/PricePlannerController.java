@@ -69,7 +69,6 @@ public class PricePlannerController {
 			
 		try {
 				Project project = pricePlannerService.createProject(projectRequest, brandId, userName);
-				pricePlannerService.updateProjectRecommendedData(project.getDataEntryId(), brandId, userName);
 				response.setResult(project.getProjectId().intValue());
 			}
 		catch(SQLException e) {
@@ -163,6 +162,7 @@ public class PricePlannerController {
 							    HttpStatus.INTERNAL_SERVER_ERROR);
 					}
 					pricePlannerService.copyScenarioData(scenarioRequest.getBusinessRuleScenarioId(),scenarioRequest.getProjectId(),scenarioId,brandId,userName);
+					pricePlannerService.updateScenarioRecommendedData(scenarioId,scenarioRequest.getProjectId(), brandId, userName);
 					pricingRuleService.applyScenarioMenuRules(scenarioRequest.getProjectId(),scenarioId, Integer.valueOf(brandId),userName);
 					response.setResult(scenarioId.intValue());
 				}

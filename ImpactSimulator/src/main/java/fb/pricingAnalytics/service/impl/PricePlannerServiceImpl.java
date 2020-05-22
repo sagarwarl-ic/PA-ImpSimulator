@@ -146,8 +146,8 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 
 	@Override
 	@Transactional
-	public void updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
-		 pricePlannerDAO.updateProjectRecommendedData(dataEntryId, brandId, userName);
+	public void updateScenarioRecommendedData(BigInteger scenarioId,BigInteger projectId, String brandId, String userName) {
+		 pricePlannerDAO.updateScenarioRecommendedData(scenarioId,projectId, brandId, userName);
 		
 	}
 
