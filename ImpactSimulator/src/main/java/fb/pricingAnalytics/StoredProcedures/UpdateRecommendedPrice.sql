@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[UpdateRecommendedPrice]    Script Date: 5/22/2020 12:33:13 PM ******/
+/****** Object:  StoredProcedure [dbo].[UpdateRecommendedPrice]    Script Date: 5/22/2020 12:48:40 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -14,7 +14,8 @@ ALTER     PROCEDURE [dbo].[UpdateRecommendedPrice]
 
 @BrandId int =-1,
 @DataEntryId bigint,
-@ScenarioId bigint
+@ScenarioId bigint,
+@PriceRelationShipType int=0
 AS
 BEGIN
 
@@ -33,7 +34,7 @@ Update IST_Product_Tier_Info  set Recommended_Price =
  Select Recommended_Price from PriceRelationship  
  where (Brandid=@PriceRleationShipBrandId  )
   and IST_Product_Tier_Info.Current_Price=PriceRelationship.Price
-  and IsDeleted=0
+  and IsDeleted=0 and Type=@PriceRelationShipType
   )
  where IST_Product_Tier_Info.BrandId=@BrandId and Scenario_Id=@ScenarioId and IST_Product_Tier_Info.DataEntryId=@DataEntryId
 
@@ -45,6 +46,7 @@ Update IST_Product_Tier_Info  set Price_Barrier =
   and PriceRelationship.Price>=IST_Product_Tier_Info.Current_Price
   and Price_Barrier=1  
   and IsDeleted=0
+  and Type=@PriceRelationShipType
   )
  where IST_Product_Tier_Info.BrandId=@BrandId and IST_Product_Tier_Info.Scenario_Id=@ScenarioId
  and  IST_Product_Tier_Info.DataEntryId=@DataEntryId
