@@ -8,6 +8,8 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import fb.pricingAnalytics.dao.PricePlannerDAO;
@@ -19,6 +21,7 @@ import fb.pricingAnalytics.request.PricePlannerProjectRequest;
 import fb.pricingAnalytics.request.PricePlannerScenarioRequest;
 import fb.pricingAnalytics.response.DataEntryResponse;
 import fb.pricingAnalytics.service.PricePlannerService;
+import fb.pricingAnalytics.utils.FBRestResponse;
 
 @Service
 public class PricePlannerServiceImpl implements PricePlannerService{
@@ -30,7 +33,13 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	@Override
 	public Project createProject(PricePlannerProjectRequest projectRequest, String brandId, String userName) throws SQLException, Exception {
 		
-		return pricePlannerDAO.createProject(projectRequest, brandId, userName);
+		Project project= pricePlannerDAO.createProject(projectRequest, brandId, userName);
+		BigInteger latestDataEntryId = pricePlannerDAO.getDataEntryIdInStoreProductInfo(Integer.valueOf(brandId));
+		if((latestDataEntryId.intValue() < project.getDataEntryId().intValue())){
+			pricePlannerDAO.copyProjectData(project.getDataEntryId(),brandId,userName);
+			pricePlannerDAO.updateProjectRecommendedData(project.getDataEntryId(), brandId, userName);
+		}
+		return project;
 		
 	}
 
@@ -89,8 +98,8 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public boolean copyProjectData(BigInteger dataEntryId, String brandId, String userName){
-		return pricePlannerDAO.copyProjectData(dataEntryId, brandId, userName);
+	public void copyProjectData(BigInteger dataEntryId, String brandId, String userName){
+		 pricePlannerDAO.copyProjectData(dataEntryId, brandId, userName);
 	}
 
 	@Override
@@ -136,8 +145,8 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
-	public boolean updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
-		return pricePlannerDAO.updateProjectRecommendedData(dataEntryId, brandId, userName);
+	public void updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
+		 pricePlannerDAO.updateProjectRecommendedData(dataEntryId, brandId, userName);
 		
 	}
 

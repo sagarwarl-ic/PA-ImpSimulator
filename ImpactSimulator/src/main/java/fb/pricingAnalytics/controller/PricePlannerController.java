@@ -69,17 +69,6 @@ public class PricePlannerController {
 			
 		try {
 				Project project = pricePlannerService.createProject(projectRequest, brandId, userName);
-				if(null != project.getProjectId() && project.getProjectId().intValue()<=0) {
-					return new ResponseEntity<FBRestResponse>(new FBRestResponse(false, "Error during inserting value into the table"),
-						    HttpStatus.INTERNAL_SERVER_ERROR);
-				}
-				BigInteger latestDataEntryId = pricePlannerService.getDataEntryIdInStoreProductInfo(Integer.valueOf(brandId));
-				if((latestDataEntryId.intValue() < project.getDataEntryId().intValue())){
-					boolean isProjectCopied=pricePlannerService.copyProjectData(project.getDataEntryId(),brandId,userName);
-					if(isProjectCopied){
-						pricePlannerService.updateProjectRecommendedData(project.getDataEntryId(), brandId, userName);
-					}
-				}
 				response.setResult(project.getProjectId().intValue());
 			}
 		catch(SQLException e) {

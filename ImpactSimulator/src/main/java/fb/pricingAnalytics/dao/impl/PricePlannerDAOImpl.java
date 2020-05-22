@@ -193,10 +193,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	@Transactional
-	public boolean copyProjectData(BigInteger dataEntryId, String brandId,String userName) {
+	public void copyProjectData(BigInteger dataEntryId, String brandId,String userName) {
 	
-		try{
 		StoredProcedureQuery query = entityManager
 				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[CopyProjectData_NEW]");
 	
@@ -206,15 +204,8 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		query.setParameter(1, dataEntryId);
 		query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
 		query.setParameter(2, userName);
-		return query.execute();
-		/*List<Object[]> rows = query.getResultList();
-		if(rows.size() > 0){
-			logger.info("Project Data Copied Successfully from Store_Product_Info to IST_Store_Product_Info ... ");
-		}*/
-		}catch(Exception ex){
-			logger.info("Exception occured while copying Project Data from Store_Product_Info to IST_Store_Product_Info ... ");
-		}
-		return false;
+		query.execute();
+		
 	}
 
 	@Override
@@ -353,23 +344,19 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 	}
 
 	@Override
-	@Transactional
-	public boolean updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
-		try{
-			StoredProcedureQuery query = entityManager
-					.createStoredProcedureQuery("[ImpactSimulator].[dbo].[UpdateRecommendedPrice]");
+	public void updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
+
+		StoredProcedureQuery query = entityManager
+				.createStoredProcedureQuery("[ImpactSimulator].[dbo].[UpdateRecommendedPrice]");
+	
+		query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
+		query.setParameter(0, Integer.valueOf(brandId));
+		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
+		query.setParameter(1, dataEntryId);
+		query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
+		query.setParameter(2, userName);
+		query.execute();
 		
-			query.registerStoredProcedureParameter(0, Integer.class , ParameterMode.IN);
-			query.setParameter(0, Integer.valueOf(brandId));
-			query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
-			query.setParameter(1, dataEntryId);
-			query.registerStoredProcedureParameter(2, String.class , ParameterMode.IN);
-			query.setParameter(2, userName);
-			return query.execute();
-			}catch(Exception ex){
-				logger.info("Exception occured while updating recommended price IST_Store_Product_Info ... ");
-			}
-			return false;
 	}
 
 }
