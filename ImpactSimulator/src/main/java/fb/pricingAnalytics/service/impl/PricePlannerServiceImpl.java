@@ -37,7 +37,6 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 		BigInteger latestDataEntryId = pricePlannerDAO.getDataEntryIdInStoreProductInfo(Integer.valueOf(brandId));
 		if((latestDataEntryId.intValue() < project.getDataEntryId().intValue())){
 			pricePlannerDAO.copyProjectData(project.getDataEntryId(),brandId,userName);
-			pricePlannerDAO.updateProjectRecommendedData(project.getDataEntryId(), brandId, userName);
 		}
 		return project;
 		
@@ -98,6 +97,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
+	@Transactional
 	public void copyProjectData(BigInteger dataEntryId, String brandId, String userName){
 		 pricePlannerDAO.copyProjectData(dataEntryId, brandId, userName);
 	}
@@ -145,6 +145,7 @@ public class PricePlannerServiceImpl implements PricePlannerService{
 	}
 
 	@Override
+	@Transactional
 	public void updateProjectRecommendedData(BigInteger dataEntryId, String brandId, String userName) {
 		 pricePlannerDAO.updateProjectRecommendedData(dataEntryId, brandId, userName);
 		

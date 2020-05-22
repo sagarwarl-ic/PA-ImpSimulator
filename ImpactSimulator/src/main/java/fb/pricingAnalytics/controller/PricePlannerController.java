@@ -69,6 +69,7 @@ public class PricePlannerController {
 			
 		try {
 				Project project = pricePlannerService.createProject(projectRequest, brandId, userName);
+				pricePlannerService.updateProjectRecommendedData(project.getDataEntryId(), brandId, userName);
 				response.setResult(project.getProjectId().intValue());
 			}
 		catch(SQLException e) {
