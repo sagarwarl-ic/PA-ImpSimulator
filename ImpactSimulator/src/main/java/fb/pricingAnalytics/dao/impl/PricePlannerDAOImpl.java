@@ -355,7 +355,7 @@ public class PricePlannerDAOImpl implements PricePlannerDAO {
 		query.registerStoredProcedureParameter(1, BigInteger.class , ParameterMode.IN);
 		query.setParameter(1, dataEntryId);
 		query.registerStoredProcedureParameter(2, BigInteger.class , ParameterMode.IN);
-		query.setParameter(1, scenarioId);
+		query.setParameter(2, scenarioId);
 		query.execute();
 		
 	}
