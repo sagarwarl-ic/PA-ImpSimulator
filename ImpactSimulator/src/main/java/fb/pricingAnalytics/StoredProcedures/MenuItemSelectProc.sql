@@ -74,7 +74,8 @@ ROUND(MIN([Custom SQL Query].[New_Price]),2) AS [New_Price],
 ROUND(MIN([Custom SQL Query].[Current_Price_product]),2) AS [Current_Price],
 SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS [Quantity_TY],
 [Custom SQL Query].isChanged,
-[Custom SQL Query].IsEditable
+[Custom SQL Query].IsEditable,
+[Custom SQL Query].Recommended_Price
 FROM (
 select a.*,
 IST_Product_Tier_Info.Tier ,
@@ -98,6 +99,7 @@ SELECT
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
 [IST_Store_Product_Info].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
+[IST_Store_Product_Info].[Recommended_Price] AS [Recommended_Price],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
 [IST_Store_Info].Project_Id,
@@ -129,7 +131,8 @@ GROUP BY
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Moderate' ELSE 'NA' END),
 [Custom SQL Query].[Proposed_Tier],
 [Custom SQL Query].isChanged,
-[Custom SQL Query].IsEditable) t0
+[Custom SQL Query].IsEditable,
+[Custom SQL Query].Recommended_Price) t0
 
 
 CROSS JOIN (
