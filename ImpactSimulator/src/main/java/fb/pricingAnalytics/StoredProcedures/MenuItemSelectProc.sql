@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 4/29/2020 2:15:16 AM ******/
+/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 5/22/2020 2:13:45 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -73,13 +73,15 @@ ROUND((MIN([Custom SQL Query].[New_Price]) - MIN([Custom SQL Query].[Current_Pri
 ROUND(MIN([Custom SQL Query].[New_Price]),2) AS [New_Price],
 ROUND(MIN([Custom SQL Query].[Current_Price_product]),2) AS [Current_Price],
 SUM(CAST(([Custom SQL Query].[Quantity_TY]) as BIGINT)) AS [Quantity_TY],
-[Custom SQL Query].isChanged
+[Custom SQL Query].isChanged,
+[Custom SQL Query].IsEditable
 FROM (
 select a.*,
 IST_Product_Tier_Info.Tier ,
 IST_Product_Tier_Info.[Scenario_Id] as Scenario_Id_Product,
 IST_Product_Tier_Info.[Price] AS [New_Price],
 IST_Product_Tier_Info.isChanged,
+IST_Product_Tier_Info.IsEditable,
 IST_Product_Tier_Info.[Current_Price] as Current_Price_product
 from
 (
@@ -126,7 +128,8 @@ GROUP BY
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'INELASTIC') THEN 'Low' WHEN
 (UPPER(LTRIM(RTRIM([Custom SQL Query].[Product_Price_Sensitivity]))) = 'MOD') THEN 'Moderate' ELSE 'NA' END),
 [Custom SQL Query].[Proposed_Tier],
-[Custom SQL Query].isChanged) t0
+[Custom SQL Query].isChanged,
+[Custom SQL Query].IsEditable) t0
 
 
 CROSS JOIN (
