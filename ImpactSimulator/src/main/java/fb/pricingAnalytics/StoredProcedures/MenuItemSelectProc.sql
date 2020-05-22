@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 5/22/2020 2:13:45 AM ******/
+/****** Object:  StoredProcedure [dbo].[MenuitemSelectProc_NEW]    Script Date: 5/22/2020 11:53:33 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -83,7 +83,8 @@ IST_Product_Tier_Info.[Scenario_Id] as Scenario_Id_Product,
 IST_Product_Tier_Info.[Price] AS [New_Price],
 IST_Product_Tier_Info.isChanged,
 IST_Product_Tier_Info.IsEditable,
-IST_Product_Tier_Info.[Current_Price] as Current_Price_product
+IST_Product_Tier_Info.[Current_Price] as Current_Price_product,
+IST_Product_Tier_Info.[Recommended_Price] AS [Recommended_Price]
 from
 (
 SELECT
@@ -99,7 +100,6 @@ SELECT
 [IST_Store_Product_Info].[Quantity_TY] AS [Quantity_TY],
 [IST_Store_Product_Info].[Current_Price] AS [Current_Price],
 [IST_Store_Product_Info].[Product_Price_Sensitivity] AS [Product_Price_Sensitivity],
-[IST_Store_Product_Info].[Recommended_Price] AS [Recommended_Price],
 [IST_Store_Info].[Store_Code] AS [Store_Code (IST_Store_Info)],
 [IST_Store_Info].[Proposed_Tier] AS [Proposed_Tier],
 [IST_Store_Info].Project_Id,
