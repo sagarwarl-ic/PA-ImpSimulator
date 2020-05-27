@@ -34,10 +34,12 @@ public class ScenarioMenuPricingRuleVo {
 	private String updatedBy;
 
 	private Date updatedOn;
+	
+	private int priceBarrierOption;
 
 	public ScenarioMenuPricingRuleVo(int brandId, String createdBy, Date createdOn, MenuItem decisiveMenuRuleData,
 			MenuItem dependentMenuRuleData, boolean isApplied, boolean isDeleted, int operator, float priceChange,
-			BigInteger ruleId, String ruleName, BigInteger scenarioId, String updatedBy, Date updatedOn) {
+			BigInteger ruleId, String ruleName, int priceBarrierOption,BigInteger scenarioId, String updatedBy, Date updatedOn) {
 		super();
 		this.brandId = brandId;
 		this.createdBy = createdBy;
@@ -53,6 +55,7 @@ public class ScenarioMenuPricingRuleVo {
 		this.scenarioId = scenarioId;
 		this.updatedBy = updatedBy;
 		this.updatedOn = updatedOn;
+		this.priceBarrierOption=priceBarrierOption;
 	}
 
 	public int getBrandId() {
@@ -165,6 +168,14 @@ public class ScenarioMenuPricingRuleVo {
 
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
+	}
+
+	public int getPriceBarrierOption() {
+		return priceBarrierOption;
+	}
+
+	public void setPriceBarrierOption(int priceBarrierOption) {
+		this.priceBarrierOption = priceBarrierOption;
 	}
 
 
