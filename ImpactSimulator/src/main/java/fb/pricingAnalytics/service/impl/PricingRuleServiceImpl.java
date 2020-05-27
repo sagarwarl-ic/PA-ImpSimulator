@@ -107,7 +107,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 					pricingRuleRequest.isApplied(), pricingRuleRequest.isDeleted(), pricingRuleRequest.getOperator(),
 							pricingRuleRequest.getPriceChange(), null, pricingRuleRequest
 									.getRuleName(),
-					pricingRuleRequest.getScenarioId(), userName, Date.from(Instant.now()));
+					pricingRuleRequest.getScenarioId(),pricingRuleRequest.getPriceBarrierOption(), userName, Date.from(Instant.now()));
 					return pricingRuleDao.createScenarioMenuPricingRule(object, brandId, userName);
 				} catch (JsonProcessingException e) {
 					logger.error("Exception occured inside while fetching operators from DB");
@@ -197,6 +197,7 @@ public class PricingRuleServiceImpl implements PricingRuleService{
 						scenarioMenuPricingRule.isApplied(), scenarioMenuPricingRule.isDeleted(),
 						scenarioMenuPricingRule.getOperator(), scenarioMenuPricingRule.getPriceChange(),
 						scenarioMenuPricingRule.getRuleId(), scenarioMenuPricingRule.getRuleName(),
+						scenarioMenuPricingRule.getPriceBarrierOption(),
 						scenarioMenuPricingRule.getScenarioId(), scenarioMenuPricingRule.getUpdatedBy(),
 						scenarioMenuPricingRule.getUpdatedOn());
 				resultResponse.getScenarioMenuPricingRulelist().add(resultResponseObj);
