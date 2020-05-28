@@ -1,6 +1,6 @@
 USE [ImpactSimulator]
 GO
-/****** Object:  StoredProcedure [dbo].[MenuitemSelectProcForSearch_NEW]    Script Date: 5/13/2020 3:19:45 AM ******/
+/****** Object:  StoredProcedure [dbo].[MenuitemSelectProcForSearch_NEW]    Script Date: 5/28/2020 2:38:56 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -33,7 +33,11 @@ AS
 select a.*,
 IST_Product_Tier_Info.[Scenario_Id] as Scenario_Id_Product,
 IST_Product_Tier_Info.[Price] AS [New_Price],
-ROUND(IST_Product_Tier_Info.[Current_Price],2) AS Current_Price_product
+ROUND(IST_Product_Tier_Info.[Current_Price],2) AS Current_Price_product,
+IST_Product_Tier_Info.[ChangeType] AS [ChangeType],
+IST_Product_Tier_Info.[AssociateRuleId] AS [AssociateRuleId],
+IST_Product_Tier_Info.[Recommended_Price] AS [Recommended_Price],
+IST_Product_Tier_Info.[Price_Barrier] AS [Price_Barrier]
 from
 (
 SELECT distinct

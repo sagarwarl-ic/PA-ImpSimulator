@@ -641,7 +641,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 
 				} else {
-					menuTierPriceUpdateReq.setPrice((double) priceChange);
+					boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, Double.valueOf(priceChange), dependentProduct, pricingRule.getPriceBarrierOption());
+					if(result==false)
+						continue;
 				}
 				menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
 				resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY,
@@ -662,7 +664,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 								isChanged = false;
 								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 							} else {
-								menuTierPriceUpdateReq.setPrice(newPrice);
+								boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq,Double.valueOf(newPrice) , dependentProduct, pricingRule.getPriceBarrierOption());
+								if(result==false)
+									continue;
+								
 							}
 
 						} else {
@@ -675,7 +680,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 								isChanged = false;
 								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 							} else {
-								menuTierPriceUpdateReq.setPrice(newPrice);
+								boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, Double.valueOf(newPrice), dependentProduct, pricingRule.getPriceBarrierOption());
+								if(result==false)
+									continue;
 							}
 
 						}
@@ -777,10 +784,15 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 							Double priceChange = ((menuPricingVo.getCurrent_Price() * pricingRule.getPriceChange())
 									/ 100);
 							Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-							menuTierPriceUpdateReq.setPrice(newPrice);
+							boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo, pricingRule.getPriceBarrierOption());
+							if(result==false)
+								continue;
 						} else {
-							menuTierPriceUpdateReq.setPrice(menuPricingVo.getCurrent_Price()
-									+ Double.valueOf(pricingRule.getPriceChange().toString()));
+							
+							boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, menuPricingVo.getCurrent_Price()
+									+ Double.valueOf(pricingRule.getPriceChange().toString()), menuPricingVo, pricingRule.getPriceBarrierOption());
+							if(result==false)
+								continue;
 						}
 					} else {
 						logger.info("Skipping from updation as the price is changed manually");
@@ -960,6 +972,44 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				"There are no records to be updated for the provided store code : "
 						+ updateStoreInfoRequest.getStoreCode() + " and proposed tier :"
 						+ updateStoreInfoRequest.getProposedTier());
+	}
+	
+	private boolean checkNUpdatePriceBarrier(RequestMenuTierPriceUpdate menuTierPriceUpdateReq,Double priceChange,MenuPricingVo dependentProduct,int barrierOption ){
+		logger.info(" checkNUpdatePriceBarrier product id"+ dependentProduct.getProduct_ID() );
+		logger.info(" checkNUpdatePriceBarrier product tier"+ dependentProduct.getProposed_Tier() );
+		if(barrierOption==0)
+		menuTierPriceUpdateReq.setPrice((double) priceChange);
+		else{
+			logger.info("dependentProduct.getPrice_Barrier() "+ dependentProduct.getPrice_Barrier() );
+			logger.info(" priceChange"+ priceChange );
+			logger.info("(double) priceChange"+ (double) priceChange );
+			logger.info("Compare result"+ Double.compare( (double) priceChange,dependentProduct.getPrice_Barrier()) );
+			if(dependentProduct.getPrice_Barrier() !=null&&Double.compare( (double) priceChange,dependentProduct.getPrice_Barrier())>0){
+				if(barrierOption==1){
+					logger.info("product "+dependentProduct.getProduct_ID()+" and tier "+ dependentProduct.getProposed_Tier()+" price does not get updated as it was breaking price barrier");
+					return false;
+				}else if(barrierOption==2){
+					if(dependentProduct.getRecommended_Price()!=null){
+						logger.info("product "+dependentProduct.getProduct_ID()+" and tier "+ dependentProduct.getProposed_Tier()+" price  get updated with recommended price as it was breaking price barrier");
+						menuTierPriceUpdateReq.setPrice(dependentProduct.getRecommended_Price());
+					}else{
+						logger.info("product "+dependentProduct.getProduct_ID()+" and tier "+ dependentProduct.getProposed_Tier()+" price  does get updated with recommended price as it was breaking price barrier but recommended price maintained as null");
+						return false;
+					}
+					
+				}else if(barrierOption==3){
+					logger.info("product "+dependentProduct.getProduct_ID()+" and tier "+ dependentProduct.getProposed_Tier()+" price  get updated with price barrier limit as it was breaking price barrier");
+					menuTierPriceUpdateReq.setPrice(dependentProduct.getPrice_Barrier());
+				}else{
+					logger.info("Setting price chnage as calculated as no option maintained for price barrier");
+					menuTierPriceUpdateReq.setPrice((double) priceChange);
+				}
+			}else{
+				logger.info("Setting price change as calculated as it is not crossing price barrier");
+				menuTierPriceUpdateReq.setPrice((double) priceChange);
+			}
+		}
+		return true;
 	}
 
 }
