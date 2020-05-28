@@ -18,6 +18,7 @@ public class PricingRuleVo {
 	private String ruleType;
 	private BigInteger scenarioId;
 	private String tierUpdate;
+	private int priceBarrierOption;
 	
 	public PricingRuleVo() {
 		super();
@@ -26,7 +27,7 @@ public class PricingRuleVo {
 	public PricingRuleVo(BigInteger ruleId,String ruleName,BigInteger scenarioId, int brandId,
 			boolean isApplied, boolean isDeleted, Date createdOn,
 			String createdBy, String ruleType, String tierUpdate,
-			Double priceChange, PricingRuleData ruleData, boolean priceChangeByPercentage) {
+			Double priceChange, PricingRuleData ruleData, boolean priceChangeByPercentage, int priceBarrierOption) {
 		super();
 		this.ruleId = ruleId;
 		this.scenarioId = scenarioId;
@@ -41,6 +42,7 @@ public class PricingRuleVo {
 		this.ruleData = ruleData;
 		this.ruleName = ruleName;
 		this.priceChangeByPercentage = priceChangeByPercentage;
+		this.priceBarrierOption=priceBarrierOption;
 	}
 
 	public int getBrandId() {
@@ -145,6 +147,14 @@ public class PricingRuleVo {
 
 	public void setTierUpdate(String tierUpdate) {
 		this.tierUpdate = tierUpdate;
+	}
+
+	public int getPriceBarrierOption() {
+		return priceBarrierOption;
+	}
+
+	public void setPriceBarrierOption(int priceBarrierOption) {
+		this.priceBarrierOption = priceBarrierOption;
 	}
 	
 

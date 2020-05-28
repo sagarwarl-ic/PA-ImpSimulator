@@ -220,6 +220,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 			pricingRule.setPriceChange(null);
 			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
 			pricingRule.setPriceChangeByPercentage(pricingRuleRequest.getPriceChangeByPercentage());
+			pricingRule.setPriceBarrierOption(pricingRuleRequest.getPriceBarrierOption());
 			if (null != pricingRuleRequest.getPriceChange()) {
 				pricingRule.setPriceChange(pricingRuleRequest.getPriceChange());
 			}
@@ -472,7 +473,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 						pricingRule.getScenarioId(), pricingRule.getBrandId(), pricingRule.isApplied(),
 						pricingRule.isDeleted(), pricingRule.getCreatedOn(), pricingRule.getCreatedBy(),
 						pricingRule.getRuleType(), pricingRule.getTierUpdate(), pricingRule.getPriceChange(), ruleData,
-						pricingRule.isPriceChangeByPercentage()));
+						pricingRule.isPriceChangeByPercentage(),pricingRule.getPriceBarrierOption()));
 			}
 			response.setCount_PricingRules(rows.size());
 			response.setPricingRules(result);

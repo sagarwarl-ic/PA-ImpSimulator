@@ -54,6 +54,9 @@ public class ScenarioPricingRule {
 	
 	@Column(name="TierUpdate")
 	private String tierUpdate;
+	
+	@Column(name="PriceBarrierOption")
+	private int priceBarrierOption;
 
 	public int getBrandId() {
 		return brandId;
@@ -157,6 +160,14 @@ public class ScenarioPricingRule {
 
 	public void setTierUpdate(String tierUpdate) {
 		this.tierUpdate = tierUpdate;
+	}
+
+	public int getPriceBarrierOption() {
+		return priceBarrierOption;
+	}
+
+	public void setPriceBarrierOption(int priceBarrierOption) {
+		this.priceBarrierOption = priceBarrierOption;
 	}
 	
 

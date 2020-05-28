@@ -28,6 +28,9 @@ public class PricingRuleRequest {
 	@JsonIgnore
 	private String type;
 	
+	@JsonIgnore
+	private int priceBarrierOption;
+	
 	public MenuItem getMenuItem() {
 		return menuItem;
 	}
@@ -82,6 +85,12 @@ public class PricingRuleRequest {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public int getPriceBarrierOption() {
+		return priceBarrierOption;
+	}
+	public void setPriceBarrierOption(int priceBarrierOption) {
+		this.priceBarrierOption = priceBarrierOption;
 	}
 	
 	
