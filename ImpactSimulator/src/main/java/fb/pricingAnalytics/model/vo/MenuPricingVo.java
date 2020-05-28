@@ -31,6 +31,7 @@ public class MenuPricingVo {
 	private Double New_Price;
 	
 	private Double Recommended_Price;
+	private Double Price_Barrier;
 	
 	//@SerializedName("newSales")
 	private String New_Sales;
@@ -95,7 +96,7 @@ public class MenuPricingVo {
 
 	public MenuPricingVo(String cat1, String cat2, String cat3,
 			String product_ID, String proposed_Tier,String product_Price_Sensitivity,Double new_Price,Double current_Price,
-			Integer changeType,BigInteger changeRuleId
+			Integer changeType,BigInteger changeRuleId,Double recommended_Price,Double price_Barrier
 			) {
 		super();
 		Cat1 = cat1;
@@ -108,6 +109,8 @@ public class MenuPricingVo {
 		Current_Price = current_Price;
 		ChangeType=changeType;
 		ChangeRuleId=changeRuleId;
+		Recommended_Price=recommended_Price;
+		Price_Barrier=price_Barrier;
 	}
 	
 	/*public MenuPricingVo(String tier_Change, String cat1, String cat2, String cat3,String current_Tier, String product_ID,
@@ -389,6 +392,16 @@ public class MenuPricingVo {
 	public void setRecommended_Price(Double recommended_Price) {
 		Recommended_Price = recommended_Price;
 	}
+
+	public Double getPrice_Barrier() {
+		return Price_Barrier;
+	}
+
+	public void setPrice_Barrier(Double price_Barrier) {
+		Price_Barrier = price_Barrier;
+	}
+
+	
 	
 	
 	
