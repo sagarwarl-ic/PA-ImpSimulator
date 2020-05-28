@@ -432,9 +432,9 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				// MenuPricingVo((String)row[2],(String)row[3],(String)row[4],(String)row[5],(String)row[6],
 				// (Double)row[5],(String)row[6]));
 				result.add(new MenuPricingVo((String) row[2], (String) row[3], (String) row[4], (String) row[5],
-						(String) row[6], (String) row[9], (Double) row[11], (Double) row[12],(Integer) row[13],(BigInteger) row[14]));
+						(String) row[6], (String) row[9], (Double) row[11], (Double) row[12],(Integer) row[13],(BigInteger) row[14],(Double) row[15], (Double) row[16]));
 			}
-			Integer count = (Integer) (rows.get(0))[15];
+			Integer count = (Integer) (rows.get(0))[17];
 			response.setCount(count);
 			response.setMenuPrice(result);
 		}
