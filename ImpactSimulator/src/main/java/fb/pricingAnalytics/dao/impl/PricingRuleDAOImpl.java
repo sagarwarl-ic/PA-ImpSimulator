@@ -634,9 +634,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 			float priceChange = pricingRule.getPriceChange();
 			if ((operator == 1) && (priceChange > 0)) {
 				if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
-					if (!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
+					boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, Double.valueOf(priceChange),
+									dependentProduct, pricingRule.getPriceBarrierOption(),FBConstants.PriceChangeType.MENURULE.ordinal());
+					if(result==false)
 						continue;
-					}
 					isChanged = false;
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 
@@ -658,9 +659,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 						if (operator <= 3) {
 							double newPrice = decisveNewPrice + priceChange;
 							if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
-								if (!(Double.compare(dependentProduct.getNew_Price(), newPrice) == 0)) {
+								boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, newPrice, dependentProduct, 
+												pricingRule.getPriceBarrierOption(),FBConstants.PriceChangeType.MENURULE.ordinal());
+								if(result==false)
 									continue;
-								}
 								isChanged = false;
 								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 							} else {
@@ -674,9 +676,10 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 							double newPrice = decisveNewPrice - priceChange;
 							newPrice = newPrice > 0 ? newPrice : decisveNewPrice;
 							if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
-								if (!(Double.compare(dependentProduct.getNew_Price(), newPrice) == 0)) {
+								boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, newPrice, dependentProduct, 
+																		pricingRule.getPriceBarrierOption(),FBConstants.PriceChangeType.MENURULE.ordinal());
+								if(result==false)
 									continue;
-								}
 								isChanged = false;
 								menuTierPriceUpdateReq.setPrice(Double.valueOf(dependentProduct.getCurrent_Price()));
 							} else {
@@ -686,7 +689,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 							}
 
 						}
-
+						logger.info("Updating Price  of product "+dependentProduct.getProduct_ID() + "with price "+menuTierPriceUpdateReq.getPrice());
 						menuTierPriceUpdateReq.setTier(dependentProduct.getProposed_Tier());
 						resultCount = updateMenuTierPrice(UPDATE_IST_PRODUCT_TIER_PRICE_FROM_MENU_RULE_QUERY,
 								menuTierPriceUpdateReq, userName, isChanged);
@@ -762,17 +765,20 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 					if (pricingRule.isPriceChangeByPercentage()) {
 						Double priceChange = ((menuPricingVo.getCurrent_Price() * pricingRule.getPriceChange()) / 100);
 						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						if (!(Double.compare(newPrice, menuPricingVo.getNew_Price()) == 0)) {
+						
+						boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo,
+																	pricingRule.getPriceBarrierOption(),FBConstants.PriceChangeType.PRICERULE.ordinal());
+						if(result==false)
 							continue;
-						}
 					} else {
 						Double newPrice = menuPricingVo.getCurrent_Price() + pricingRule.getPriceChange();
 						logger.info("menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange() " + newPrice);
 						logger.info("menuPricingVo.getNew_Price()" + menuPricingVo.getNew_Price());
-						if (!(Double.compare(menuPricingVo.getNew_Price(), newPrice) == 0)) {
-							logger.info("menuPricingVo.getNew_Price()==newprice not equal");
+						boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo,
+																	pricingRule.getPriceBarrierOption()
+																	,FBConstants.PriceChangeType.PRICERULE.ordinal());
+						if(result==false)
 							continue;
-						}
 					}
 					isChanged = false;
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
@@ -1009,6 +1015,50 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				menuTierPriceUpdateReq.setPrice((double) priceChange);
 			}
 		}
+		return true;
+	}
+	
+	private boolean checkNRevertPriceBarrier(RequestMenuTierPriceUpdate menuTierPriceUpdateReq,Double priceChange,
+			MenuPricingVo dependentProduct,int barrierOption ,int ruleType){
+		logger.info(" checkNRevertPriceBarrier product id"+ dependentProduct.getProduct_ID() );
+		logger.info(" checkNRevertPriceBarrier product tier"+ dependentProduct.getProposed_Tier() );
+		 logger.info("dependentProduct.getChangeType()"+dependentProduct.getChangeType());
+		 logger.info("ruleType"+ruleType);
+		 logger.info("dependentProduct.getRecommended_Price()"+dependentProduct.getRecommended_Price());
+		 logger.info("priceChange"+priceChange);
+		 logger.info("dependentProduct.getNew_Price()"+dependentProduct.getNew_Price());
+		 if (barrierOption==2
+					&&dependentProduct.getChangeType()==ruleType
+					&&dependentProduct.getRecommended_Price()!=null
+					&&
+					(!(Double.compare(dependentProduct.getNew_Price(), dependentProduct.getRecommended_Price()) == 0)
+							&&
+					!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0))
+					){
+
+			 logger.info("reverting recommended price not happened ");
+			 logger.info("!(Double.compare(dependentProduct.getNew_Price(), dependentProduct.getRecommended_Price()) == 0)"+!(Double.compare(dependentProduct.getNew_Price(), dependentProduct.getRecommended_Price()) == 0));
+			 logger.info("!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0))"+!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0));
+			 return false;
+		}
+		else if (barrierOption==3
+				&&dependentProduct.getChangeType()==ruleType
+				&&dependentProduct.getPrice_Barrier()!=null
+				&&
+				(
+						!(Double.compare(dependentProduct.getNew_Price(), dependentProduct.getPrice_Barrier()) == 0
+						&&
+						!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)
+						
+				)
+				)){
+			 logger.info("reverting price barrier price not happened ");
+			return false;
+	   }else if (barrierOption==0&&barrierOption==1&&!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
+		   logger.info("reverting  price not happened ");
+			return false;
+		}
+		logger.info("reverting  price  happened ");
 		return true;
 	}
 
