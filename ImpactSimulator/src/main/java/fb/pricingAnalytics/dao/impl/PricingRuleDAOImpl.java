@@ -96,7 +96,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 						|| ((pricingRule.getOperator() == 1) && (pricingRule.getPriceChange() == 0))))) {
 			logger.info("responseList count is 0  ");
 			response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"There are no records present for the associated rule criteria");
+					"No rows updated for rule. Table does not contain the required record.");
 		} else {
 			logger.info("updating rulescenariopricing table");
 			response = updateMenuRuleMenuTierPrice(ruleRequest, brandId, responseDependentRuleDataList,
@@ -126,7 +126,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				if (responseList.getCount() == 0) {
 					logger.info("responseList count is 0  ");
 					response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-							"There are no records present for the associated rule criteria");
+							"No rows updated for rule. Table does not contain the required record.");
 				} else {
 					logger.info("updating rulescenariopricing table");
 					response = updateMenuTierPrice(ruleRequest, brandId, responseList, pricingRule, userName);
@@ -143,7 +143,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 
 				if (responseList.getCount() == 0) {
 					response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-							"There are no records present for the associated rule type criteria");
+							"No rows updated for rule. Table does not contain the required record.");
 				} else {
 					response = updateStoreTier(ruleRequest, brandId, responseList, pricingRule, userName);
 					logger.info("update rulescenariopricing table");
@@ -154,7 +154,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 			}
 		} catch (Exception ex) {
 			response = new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"Exception occured while processing the Rule");
+					"Exception occured while processing the rule.");
 		}
 		return response;
 	}
@@ -707,19 +707,19 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 			if (resultCount == 0) {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-						"No rows updated. Table does not contain the required record.");
+						"No rows updated for rule. Table does not contain the required record.");
 			} else {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-						"Rule reverted successfully ");
+						"Rule reverted successfully.");
 			}
 		}
 		if (resultCount == 0) {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"No rows updated. Table does not contain the required record.");
+					"No rows updated for rule. Table does not contain the required record.");
 		} else {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-					"Rule applied successfully to data");
+					"Rule applied successfully to data.");
 		}
 
 	}
@@ -827,28 +827,28 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				}
 			}
 		} catch (Exception ex) {
-			logger.info("Excption occured while updating Menu Tier Price");
+			logger.info("Exception occured while updating Menu Tier Price");
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"Exception occured while applying rule to data");
+					"Exception occured while processing the rule.");
 		}
 
 		if (!ruleRequest.isApplied()) {
 			if (resultCount == 0) {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-						"No rows updated. Table does not contain the required record.");
+						"No rows updated for rule. Table does not contain the required record.");
 			} else {
 
 				return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-						"Rule reverted successfully ");
+						"Rule reverted successfully.");
 			}
 		}
 		if (resultCount == 0) {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"No rows updated. Table does not contain the required record");
+					"No rows updated for rule. Table does not contain the required record.");
 		} else {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-					"Rule applied successfully to data");
+					"Rule applied successfully to data.");
 		}
 
 	}
@@ -945,14 +945,14 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 		} catch (Exception ex) {
 			logger.info("Excption occured while updating Menu Tier Price");
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), false,
-					"Exception occured while applying rule to data");
+					"Exception occured while processing the rule.");
 		}
 		if (!ruleRequest.isApplied()) {
 			return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-					"Rule reverted successfully ");
+					"Rule reverted successfully. ");
 		}
 		return new ApplyRulesStatusResponse(ruleRequest.getRuleId(), pricingRule.getRuleName(), true,
-				"Rule applied successfully to data");
+				"Rule applied successfully to data.");
 	}
 
 	public FBRestResponse updateStoreTier(UpdateStoreInfoRequest updateStoreInfoRequest, String userName,
