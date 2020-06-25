@@ -1068,7 +1068,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				)){
 			 logger.info("reverting price barrier price not happened ");
 			return false;
-	   }else if (barrierOption==0||barrierOption==1&&!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
+	   }else if ((barrierOption==0||barrierOption==1)&&!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
 		   logger.info("reverting  price not happened ");
 			return false;
 		}
