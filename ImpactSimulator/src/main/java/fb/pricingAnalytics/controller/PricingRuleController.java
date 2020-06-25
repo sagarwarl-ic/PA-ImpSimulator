@@ -93,7 +93,7 @@ public class PricingRuleController {
 			response.setMessage("success");
 			response.setSuccessFlag(true);
 		} catch (Exception ex) {
-			return new ResponseEntity<>(new FBRestResponse(true, "exception occured"),
+			return new ResponseEntity<>(new FBRestResponse(false, "exception occured"),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<>(response, HttpStatus.OK);
