@@ -57,6 +57,9 @@ public class ScenarioPricingRule {
 	
 	@Column(name="PriceBarrierOption")
 	private int priceBarrierOption;
+	
+	@Column(name="PriceChangeBy")
+	private int priceChangeBy;
 
 	public int getBrandId() {
 		return brandId;
@@ -145,6 +148,7 @@ public class ScenarioPricingRule {
 	public void setRuleId(BigInteger ruleId) {
 		this.ruleId = ruleId;
 	}
+	
 
 	public void setRuleName(String ruleName) {
 		this.ruleName = ruleName;
@@ -168,6 +172,14 @@ public class ScenarioPricingRule {
 
 	public void setPriceBarrierOption(int priceBarrierOption) {
 		this.priceBarrierOption = priceBarrierOption;
+	}
+
+	public int getPriceChangeBy() {
+		return priceChangeBy;
+	}
+
+	public void setPriceChangeBy(int priceChangeBy) {
+		this.priceChangeBy = priceChangeBy;
 	}
 	
 

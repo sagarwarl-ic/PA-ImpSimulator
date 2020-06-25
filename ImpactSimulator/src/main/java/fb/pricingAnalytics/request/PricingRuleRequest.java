@@ -31,6 +31,9 @@ public class PricingRuleRequest {
 	@JsonIgnore
 	private int priceBarrierOption;
 	
+	@JsonIgnore
+	private int priceChangeBy;
+	
 	public MenuItem getMenuItem() {
 		return menuItem;
 	}
@@ -91,6 +94,12 @@ public class PricingRuleRequest {
 	}
 	public void setPriceBarrierOption(int priceBarrierOption) {
 		this.priceBarrierOption = priceBarrierOption;
+	}
+	public int getPriceChangeBy() {
+		return priceChangeBy;
+	}
+	public void setPriceChangeBy(int priceChangeBy) {
+		this.priceChangeBy = priceChangeBy;
 	}
 	
 	

@@ -221,6 +221,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
 			pricingRule.setPriceChangeByPercentage(pricingRuleRequest.getPriceChangeByPercentage());
 			pricingRule.setPriceBarrierOption(pricingRuleRequest.getPriceBarrierOption());
+			pricingRule.setPriceChangeBy(pricingRuleRequest.getPriceChangeBy());
 			if (null != pricingRuleRequest.getPriceChange()) {
 				pricingRule.setPriceChange(pricingRuleRequest.getPriceChange());
 			}
@@ -473,7 +474,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 						pricingRule.getScenarioId(), pricingRule.getBrandId(), pricingRule.isApplied(),
 						pricingRule.isDeleted(), pricingRule.getCreatedOn(), pricingRule.getCreatedBy(),
 						pricingRule.getRuleType(), pricingRule.getTierUpdate(), pricingRule.getPriceChange(), ruleData,
-						pricingRule.isPriceChangeByPercentage(),pricingRule.getPriceBarrierOption()));
+						pricingRule.isPriceChangeByPercentage(),pricingRule.getPriceBarrierOption(),pricingRule.getPriceChangeBy()));
 			}
 			response.setCount_PricingRules(rows.size());
 			response.setPricingRules(result);
@@ -762,15 +763,16 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 
 				if (!ruleRequest.isApplied() || ruleRequest.isDeleted()) {
 					logger.info("!ruleRequest.isApplied() || ruleRequest.isDeleted()");
-					if (pricingRule.isPriceChangeByPercentage()) {
-						Double priceChange = ((menuPricingVo.getCurrent_Price() * pricingRule.getPriceChange()) / 100);
-						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-						
-						boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo,
-																	pricingRule.getPriceBarrierOption(),FBConstants.PriceChangeType.PRICERULE.ordinal());
-						if(result==false)
-							continue;
-					} else {
+//					if (pricingRule.isPriceChangeByPercentage()) {
+//						Double priceChange = ((menuPricingVo.getCurrent_Price() * pricingRule.getPriceChange()) / 100);
+//						Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
+//						
+//						boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo,
+//																	pricingRule.getPriceBarrierOption(),FBConstants.PriceChangeType.PRICERULE.ordinal());
+//						if(result==false)
+//							continue;
+//					} 
+					if(pricingRule.getPriceChangeBy()==0) {
 						Double newPrice = menuPricingVo.getCurrent_Price() + pricingRule.getPriceChange();
 						logger.info("menuPricingVo.getCurrent_Price()+pricingRule.getPriceChange() " + newPrice);
 						logger.info("menuPricingVo.getNew_Price()" + menuPricingVo.getNew_Price());
@@ -779,6 +781,15 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 																	,FBConstants.PriceChangeType.PRICERULE.ordinal());
 						if(result==false)
 							continue;
+					}else{
+
+						
+						boolean result=checkNRevertPriceBarrier(menuTierPriceUpdateReq, menuPricingVo.getRecommended_Price(), menuPricingVo,
+																	pricingRule.getPriceBarrierOption()
+																	,FBConstants.PriceChangeType.PRICERULE.ordinal());
+						if(result==false)
+							continue;
+					
 					}
 					isChanged = false;
 					menuTierPriceUpdateReq.setPrice(Double.valueOf(menuPricingVo.getCurrent_Price()));
@@ -786,19 +797,22 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				if (ruleRequest.isApplied() && !ruleRequest.isDeleted()) {
 					logger.info("ruleRequest.isApplied() && !ruleRequest.isDeleted()");
 					if (Double.compare(menuPricingVo.getCurrent_Price(), menuPricingVo.getNew_Price()) == 0) {
-						if (pricingRule.isPriceChangeByPercentage()) {
-							Double priceChange = ((menuPricingVo.getCurrent_Price() * pricingRule.getPriceChange())
-									/ 100);
-							Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
-							boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo, pricingRule.getPriceBarrierOption());
-							if(result==false)
-								continue;
-						} else {
+//						if (pricingRule.isPriceChangeByPercentage()) {
+//							Double priceChange = ((menuPricingVo.getCurrent_Price() * pricingRule.getPriceChange())
+//									/ 100);
+//							Double newPrice = menuPricingVo.getCurrent_Price() + priceChange;
+//							boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, newPrice, menuPricingVo, pricingRule.getPriceBarrierOption());
+//							if(result==false)
+//								continue;
+//						} 
+						if(pricingRule.getPriceChangeBy()==0) {
 							
 							boolean result=checkNUpdatePriceBarrier(menuTierPriceUpdateReq, menuPricingVo.getCurrent_Price()
 									+ Double.valueOf(pricingRule.getPriceChange().toString()), menuPricingVo, pricingRule.getPriceBarrierOption());
 							if(result==false)
 								continue;
+						}else{
+							menuTierPriceUpdateReq.setPrice(menuPricingVo.getRecommended_Price());
 						}
 					} else {
 						logger.info("Skipping from updation as the price is changed manually");
@@ -1054,7 +1068,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				)){
 			 logger.info("reverting price barrier price not happened ");
 			return false;
-	   }else if (barrierOption==0&&barrierOption==1&&!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
+	   }else if (barrierOption==0||barrierOption==1&&!(Double.compare(dependentProduct.getNew_Price(), priceChange) == 0)) {
 		   logger.info("reverting  price not happened ");
 			return false;
 		}
