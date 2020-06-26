@@ -11,7 +11,6 @@ public class PricingRuleVo {
 	private boolean isApplied;
 	private boolean isDeleted;
 	private Double priceChange;
-	private boolean priceChangeByPercentage;
 	private PricingRuleData ruleData;
 	private BigInteger ruleId;
 	private String ruleName;
@@ -28,7 +27,7 @@ public class PricingRuleVo {
 	public PricingRuleVo(BigInteger ruleId,String ruleName,BigInteger scenarioId, int brandId,
 			boolean isApplied, boolean isDeleted, Date createdOn,
 			String createdBy, String ruleType, String tierUpdate,
-			Double priceChange, PricingRuleData ruleData, boolean priceChangeByPercentage, int priceBarrierOption,int priceChangeBy) {
+			Double priceChange, PricingRuleData ruleData, int priceBarrierOption,int priceChangeBy) {
 		super();
 		this.ruleId = ruleId;
 		this.scenarioId = scenarioId;
@@ -42,7 +41,6 @@ public class PricingRuleVo {
 		this.priceChange = priceChange;
 		this.ruleData = ruleData;
 		this.ruleName = ruleName;
-		this.priceChangeByPercentage = priceChangeByPercentage;
 		this.priceBarrierOption=priceBarrierOption;
 		this.priceChangeBy=priceChangeBy;
 	}
@@ -95,9 +93,6 @@ public class PricingRuleVo {
 		return isDeleted;
 	}
 
-	public boolean isPriceChangeByPercentage() {
-		return priceChangeByPercentage;
-	}
 
 	public void setApplied(boolean isApplied) {
 		this.isApplied = isApplied;
@@ -121,10 +116,6 @@ public class PricingRuleVo {
 
 	public void setPriceChange(Double priceChange) {
 		this.priceChange = priceChange;
-	}
-
-	public void setPriceChangeByPercentage(boolean priceChangeByPercentage) {
-		this.priceChangeByPercentage = priceChangeByPercentage;
 	}
 
 	public void setRuleData(PricingRuleData ruleData) {

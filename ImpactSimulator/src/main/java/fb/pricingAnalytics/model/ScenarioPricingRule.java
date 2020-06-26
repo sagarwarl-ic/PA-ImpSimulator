@@ -29,8 +29,6 @@ public class ScenarioPricingRule {
 	@Column(name="IsDeleted")
 	private boolean isDeleted;
 	
-	@Column(name="IsPriceChangeByPercentage")
-	private boolean isPriceChangeByPercentage;
 	
 	@Column(name="PriceChange")
 	private Double priceChange;
@@ -109,9 +107,7 @@ public class ScenarioPricingRule {
 		return isDeleted;
 	}
 
-	public boolean isPriceChangeByPercentage() {
-		return isPriceChangeByPercentage;
-	}
+	
 
 	public void setApplied(boolean isApplied) {
 		this.isApplied = isApplied;
@@ -137,9 +133,7 @@ public class ScenarioPricingRule {
 		this.priceChange = priceChange;
 	}
 
-	public void setPriceChangeByPercentage(boolean isPriceChangeByPercentage) {
-		this.isPriceChangeByPercentage = isPriceChangeByPercentage;
-	}
+	
 
 	public void setRuleData(String ruleData) {
 		this.ruleData = ruleData;

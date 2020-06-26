@@ -219,7 +219,6 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 			pricingRule.setTierUpdate(pricingRuleRequest.getTierUpdate());
 			pricingRule.setPriceChange(null);
 			pricingRule.setRuleName(pricingRuleRequest.getRuleName());
-			pricingRule.setPriceChangeByPercentage(pricingRuleRequest.getPriceChangeByPercentage());
 			pricingRule.setPriceBarrierOption(pricingRuleRequest.getPriceBarrierOption());
 			pricingRule.setPriceChangeBy(pricingRuleRequest.getPriceChangeBy());
 			if (null != pricingRuleRequest.getPriceChange()) {
@@ -473,8 +472,7 @@ public class PricingRuleDAOImpl implements PricingRuleDAO {
 				result.add(new PricingRuleVo(pricingRule.getRuleId(), pricingRule.getRuleName(),
 						pricingRule.getScenarioId(), pricingRule.getBrandId(), pricingRule.isApplied(),
 						pricingRule.isDeleted(), pricingRule.getCreatedOn(), pricingRule.getCreatedBy(),
-						pricingRule.getRuleType(), pricingRule.getTierUpdate(), pricingRule.getPriceChange(), ruleData,
-						pricingRule.isPriceChangeByPercentage(),pricingRule.getPriceBarrierOption(),pricingRule.getPriceChangeBy()));
+						pricingRule.getRuleType(), pricingRule.getTierUpdate(), pricingRule.getPriceChange(), ruleData,pricingRule.getPriceBarrierOption(),pricingRule.getPriceChangeBy()));
 			}
 			response.setCount_PricingRules(rows.size());
 			response.setPricingRules(result);

@@ -10,8 +10,6 @@ public class PricingRuleRequest {
 	@JsonIgnore
 	private Double priceChange;
 	@JsonIgnore
-	private boolean priceChangeByPercentage;
-	@JsonIgnore
 	private BigInteger ruleId;
 	
 	@JsonIgnore
@@ -41,9 +39,7 @@ public class PricingRuleRequest {
 		return priceChange;
 	}
 	
-	public boolean getPriceChangeByPercentage() {
-		return priceChangeByPercentage;
-	}
+	
 	public BigInteger getRuleId() {
 		return ruleId;
 	}
@@ -68,9 +64,7 @@ public class PricingRuleRequest {
 	public void setPriceChange(Double priceChange) {
 		this.priceChange = priceChange;
 	}
-	public void setPriceChangeByPercentage(boolean priceChangeByPercentage) {
-		this.priceChangeByPercentage = priceChangeByPercentage;
-	}
+	
 	public void setRuleId(BigInteger ruleId) {
 		this.ruleId = ruleId;
 	}
